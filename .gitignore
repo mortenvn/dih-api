@@ -1,0 +1,10 @@
+.DS_Store
+node_modules
+.tmp
+.idea
+npm-debug.log
+#vim
+*.swp
+*.swo
+.environment
+dist
