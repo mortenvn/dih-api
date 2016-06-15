@@ -1,10 +1,12 @@
 ## circle.yml
 machine:
+    python:
+        version: 2.7.3
     services:
         - docker
-        - aws
 dependencies:
-    override:
+    pre:
+        - pip install awscli
         - docker info
         - docker build -t dih/api-$CIRCLE_SHA1 .
 test:
