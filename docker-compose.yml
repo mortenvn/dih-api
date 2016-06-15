@@ -1,14 +1,17 @@
-dih-api:
-  image: dih/api-test
-  ports:
-   - "9000:9000"
-  links:
-   - postgres
-  command: npm start
-  environment:
-   - PG_URL=postgres://postgres/dih
-  depends_on:
-   - postgres
-
-postgres:
-  image: postgres:latest
+version: '2'
+services:
+  dih-api:
+    build: .
+    ports:
+     - "9000:9000"
+    entrypoint: npm test
+    links:
+     - postgres
+    depends_on:
+     - postgres
+    environment:
+     - PG_URL=postgres://postgres:dih2016@postgres/postgres
+  postgres:
+    image: postgres:latest
+    environment:
+     - POSTGRES_PASSWORD=dih2016

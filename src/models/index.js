@@ -2,7 +2,7 @@ import cls from 'continuation-local-storage';
 import fs from 'fs';
 import path from 'path';
 import Sequelize from 'sequelize';
-import config from '../../config';
+import config from '../config';
 
 const namespace = cls.createNamespace('dih-api');
 const logging = config.nodeEnv === 'development' ? console.log : false; // eslint-disable-line

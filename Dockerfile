@@ -5,9 +5,12 @@ MAINTAINER Capra <kla@capraconsulting.no>
 RUN mkdir -p /app
 WORKDIR /app
 
+EXPOSE 9000
+
 # Copy application
 COPY . /app
 
 # Build image
 RUN set -ex \
-	&& npm install
+	&& npm install \
+    && npm run build
