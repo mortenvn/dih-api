@@ -1,7 +1,7 @@
 version: '2'
 services:
   dih-api:
-    build: .
+    image: dih/api-dev 
     ports:
      - "9000:9000"
     entrypoint: npm test

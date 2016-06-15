@@ -6,19 +6,19 @@ machine:
         - docker
 dependencies:
     pre:
-        - pip install awscli
+        - pip install awscli docker-compose 
         - docker info
-        - docker build -t dih/api-dev:$CIRCLE_SHA1 .
+        - docker build -t dih/api-dev .
 test:
     override:
-        - docker run -t dih/api-dev:$CIRCLE_SHA1 npm test
+        - docker-compose up
 deployment:
     prod:
         branch: master
         commands:
-            - docker build -t dih/api-production:$CIRCLE_SHA1 .
+            - docker build -t dih/api-production .
             - docker login  $EXTERNAL_REGISTRY
-            - docker push dih/api-production:$CIRCLE_SHA1
+            - docker push dih/api-production
     staging:
         branch: dev
         commands:
