@@ -1,0 +1,14 @@
+dih-api:
+  image: dih/api-test
+  ports:
+   - "9000:9000"
+  links:
+   - postgres
+  command: npm start
+  environment:
+   - PG_URL=postgres://postgres/dih
+  depends_on:
+   - postgres
+
+postgres:
+  image: postgres:latest
