@@ -8,19 +8,19 @@ dependencies:
     pre:
         - pip install awscli
         - docker info
-        - docker build -t dih/api-$CIRCLE_SHA1 .
+        - docker build -t dih/api-dev:$CIRCLE_SHA1 .
 test:
     override:
-        - docker run -t dih/api-$CIRCLE_SHA1 'cd app && npm test'
+        - docker run -t dih/api-dev:$CIRCLE_SHA1 npm test
 deployment:
     prod:
         branch: master
         commands:
-            - docker build -t dih/api-production-$CIRCLE_SHA1 .
+            - docker build -t dih/api-production:$CIRCLE_SHA1 .
             - docker login  $EXTERNAL_REGISTRY
-            - docker push dih/api-$CIRCLE_SHA1
+            - docker push dih/api-production:$CIRCLE_SHA1
     staging:
         branch: dev
         commands:
             - docker login  $EXTERNAL_REGISTRY
-            - docker push dih/api-$CIRCLE_SHA1
+            - docker push dih/api-dev:$CIRCLE_SHA1
