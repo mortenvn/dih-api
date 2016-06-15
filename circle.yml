@@ -1,0 +1,17 @@
+## circle.yml
+machine:
+    services:
+        - docker
+dependencies:
+    override:
+        - docker info
+        - docker build -t dih/api-$CIRCLE_SHA1 .
+test:
+    override:
+        - docker run -t dih/api-test-$CIRCLE_SHA1 npm test
+deployment:
+    staging:
+        branch: master
+        commands:
+            - docker login  $EXTERNAL_REGISTRY
+            - docker push dih/api-$CIRCLE_SHA1
