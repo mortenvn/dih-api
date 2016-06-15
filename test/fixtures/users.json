@@ -1,0 +1,32 @@
+[
+	{
+		"model": "User",
+		"data": {
+			"firstname": "test",
+			"lastname": "user",
+			"role": "USER",
+			"email": "user@test.test",
+			"birth": "1990-04-25T01:32:21.196+0200"
+		}
+	},
+	{
+		"model": "User",
+		"data": {
+			"firstname": "test",
+			"lastname": "admin",
+			"role": "ADMIN",
+			"email": "admin@test.test",
+			"birth": "1990-04-25T01:32:21.196+0200"
+		}
+	},
+	{
+		"model": "User",
+		"data": {
+			"firstname": "test",
+			"lastname": "moderator",
+			"role": "MODERATOR",
+			"email": "moderator@test.test",
+			"birth": "1990-04-25T01:32:21.196+0200"
+		}
+	}
+]

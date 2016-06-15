@@ -5,6 +5,8 @@ node_modules
 npm-debug.log
 #vim
 *.swp
+docs
+out
 *.swo
 .environment
 dist
