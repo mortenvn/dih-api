@@ -1,19 +1,16 @@
 ## circle.yml
 machine:
-    python:
-        version: 3.5.1
+    environment:
+        PG_URL: postgres://ubuntu:@127.0.0.1:5432/circle_test
     services:
         - docker
 dependencies:
     pre:
-        - docker info
-        - sudo pip install --upgrade docker-compose==1.7.1
+        - npm install
 
 test:
     override:
-        - docker-compose up
-    pre:
-        - docker build -t dih/api-dev .
+        - npm test
 
 deployment:
     prod:
@@ -25,5 +22,6 @@ deployment:
     staging:
         branch: dev
         commands:
+            - docker build -t dih/api-dev .
             - docker login  $EXTERNAL_REGISTRY
-            - docker push dih/api-dev:$CIRCLE_SHA1
+            - docker push dih/api-dev
