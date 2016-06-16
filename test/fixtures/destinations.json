@@ -2,21 +2,24 @@
     {
         "model" : "Destination",
         "data": {
-            "name" : "Island1"
+            "name" : "Larsen",
+            "id" : 1
         }
     },
 
     {
         "model" : "Destination",
         "data": {
-            "name" : "Island2"
+            "name" : "Sondre",
+            "id" : 2
         }
     },
 
     {
         "model" : "Destination",
         "data": {
-            "name" : "Island3"
+            "name" : "CircleK",
+            "id": 3
         }
     }
 ]
