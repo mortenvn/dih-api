@@ -23,7 +23,7 @@ deployment:
         branch: master
         commands:
             - docker build -t dih-api:latest .
-            - docker tag dih-api-dev:latest $EXTERNAL_REGISTRY:latest
+            - docker tag dih-api:latest $EXTERNAL_REGISTRY:latest
             - docker push $EXTERNAL_REGISTRY:latest
     staging:
         branch: dev
