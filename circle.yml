@@ -6,12 +6,15 @@ machine:
         - docker
 dependencies:
     pre:
-        - pip install docker-compose
         - docker info
-        - docker build -t dih/api-dev .
+        - sudo pip install --upgrade docker-compose==1.7.1
+
 test:
     override:
         - docker-compose up
+    pre:
+        - docker build -t dih/api-dev .
+
 deployment:
     prod:
         branch: master
