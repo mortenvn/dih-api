@@ -4,7 +4,12 @@ export default function (sequelize, DataTypes) {
         name: {
             type: DataTypes.STRING,
             unique: true,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notNull: true,
+                notEmpty: true,
+                isAlpha: true
+            }
         }
     });
     return Destination;
