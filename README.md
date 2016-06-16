@@ -9,15 +9,24 @@
 
 
 ## Setup
-To setup the project locally you have two options: Either start Postgres yourself, and set `PG_URL ` to your database. Run `npm run build` to get a transpiled version of the API, then start with `npm start`.
+To setup the project locally install Postgres and set `PG_URL ` to your database. Run `npm run build` to get a transpiled version of the API, then start with `npm start`.
 
 If you're gonna develop:
 
 1. Install nodemon `npm install -g nodemon`
 2. Run  `npm run start:dev`
 
-Or you can let Docker Compose do the work for you: Run `docker-compose up`, and reach the API on port 9000 (or another port if you've set environment vairable `PORT`).
+This will watch for changes and keep it open for you.
 
+## Tests
+Run unit tests with `npm test`. This will use your local database.
+
+For testing everything isolated (without a local Postgres)  we use Docker Compose, which pulls a Postgres-image, sets it up with the API and runs the tests:
+
+1. Build the image `docker build -t dih/api-dev .`
+2.  Run `docker-compose up`
+
+This is what happens on our CI-setup.
 
 ## Deployment
 We have continuous deployment with [Circle CI](http://circleci.com), which builds Docker-images and pushes to AWS EC2.
