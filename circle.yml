@@ -4,7 +4,13 @@ machine:
         PG_URL: postgres://ubuntu:@127.0.0.1:5432/circle_test
     services:
         - docker
+
 dependencies:
+    override:
+        - sudo pip install awscli
+        - aws configure set default.region eu-west-1
+        - aws configure set default.output json
+        - eval $(aws ecr get-login --region eu-west-1)
     pre:
         - npm install
 
@@ -16,12 +22,12 @@ deployment:
     prod:
         branch: master
         commands:
-            - docker build -t dih/api-production .
-            - docker login  $EXTERNAL_REGISTRY
-            - docker push dih/api-production
+            - docker build -t dih-api:latest .
+            - docker tag dih-api-dev:latest $EXTERNAL_REGISTRY:latest
+            - docker push $EXTERNAL_REGISTRY:latest
     staging:
         branch: dev
         commands:
-            - docker build -t dih/api-dev .
-            - docker login  $EXTERNAL_REGISTRY
-            - docker push dih/api-dev
+            - docker build -t dih-api-dev:latest .
+            - docker tag dih-api-dev:latest $EXTERNAL_REGISTRY-dev:latest
+            - docker push $EXTERNAL_REGISTRY-dev:latest

@@ -1,4 +1,11 @@
 # dih-api
+
+__Build status:__
+
+| `dev` | `master`|
+| :--  |:--|
+|[![CircleCI](https://circleci.com/gh/capraconsulting/dih-api/tree/dev.svg?style=svg&circle-token=31ea42d745bf7499e768623c89901f32adadcf9b)](https://circleci.com/gh/capraconsulting/dih-api/tree/dev)| [![CircleCI](https://circleci.com/gh/capraconsulting/dih-api/tree/master.svg?style=svg&circle-token=31ea42d745bf7499e768623c89901f32adadcf9b)](https://circleci.com/gh/capraconsulting/dih-api/tree/master) |
+
 ## Workflow
 
 1. Get a task on JIRA by talking to you teammates and looking at the sprint backlog.
