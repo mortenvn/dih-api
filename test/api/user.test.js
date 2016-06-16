@@ -4,7 +4,8 @@ import request from 'supertest-as-promised';
 import app from '../../src/app';
 
 const fixtures = [
-    'users'
+    'users',
+    'destinations'
 ];
 
 describe('User api', it => {

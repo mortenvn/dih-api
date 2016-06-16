@@ -1,0 +1,22 @@
+[
+    {
+        "model" : "Destination",
+        "data": {
+            "name" : "Island1"
+        }
+    },
+
+    {
+        "model" : "Destination",
+        "data": {
+            "name" : "Island2"
+        }
+    },
+
+    {
+        "model" : "Destination",
+        "data": {
+            "name" : "Island3"
+        }
+    }
+]
