@@ -37,3 +37,19 @@ export function pageNotFoundMiddleware(req, res) {
             message: 'Page Not Found'
         });
 }
+
+/**
+ * pageNotFoundMiddleware - Returns a 404 Page not Found error it the route requested
+ * is not matched with any corresponding route.
+ *
+ * @param  {Object} req - Express request object
+ * @param  {Object} res - Express response object
+ * @return {Undefined}  - A 404 not found error
+ */
+export class ResourceNotFoundError extends Error {
+    name = 'ResourceNotFoundError';
+    status = 404;
+    constructor(entityType) {
+        super(`Could not find resource of type ${entityType}`);
+    }
+}
