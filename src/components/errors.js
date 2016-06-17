@@ -8,7 +8,8 @@
   * @param  {Object} res - Express response object
   * @return {Undefined}  - The handled error response
   */
-export function errorMiddleware(err, req, res) {
+// eslint-disable-next-line no-unused-vars
+export function errorMiddleware(err, req, res, next) {
     if (process.env.NODE_ENV === 'development') {
         console.log(err.stack); // eslint-disable-line
     }
@@ -36,4 +37,13 @@ export function pageNotFoundMiddleware(req, res) {
         .json({
             message: 'Page Not Found'
         });
+}
+
+export class ValidationError extends Error {
+    name = 'ValidationError';
+    status = 400;
+
+    constructor(error) {
+        super(error.errors[0].message);
+    }
 }
