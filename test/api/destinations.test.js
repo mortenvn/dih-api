@@ -26,7 +26,7 @@ describe.serial('Destination API', it => {
             .get('/destinations')
             .expect(200)
             .then(res => res.body);
-        t.is(response.length, 3);
+        t.is(response.length, dbObjects.length);
     });
 
     it('should be able to create a new destination ', async t => {
@@ -73,7 +73,7 @@ describe.serial('Destination API', it => {
             .expect(200)
             .then(() => request(app).get('/destinations'))
             .then(res => res.body);
-        t.is(response.length, 2);
+        t.is(response.length, dbObjects.length - 1);
     });
 
     it('should return 404 when you try to delete an item that does not exist', async () => {
