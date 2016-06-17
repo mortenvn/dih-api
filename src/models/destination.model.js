@@ -6,7 +6,6 @@ export default function (sequelize, DataTypes) {
             unique: true,
             allowNull: false,
             validate: {
-                notNull: true,
                 notEmpty: true,
                 isAlpha: true
             }
