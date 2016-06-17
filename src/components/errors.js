@@ -8,11 +8,10 @@
   * @param  {Object} res - Express response object
   * @return {Undefined}  - The handled error response
   */
-export function errorMiddleware(err, req, res) {
+export function errorMiddleware(err, req, res, next) { // eslint-disable-line
     if (process.env.NODE_ENV === 'development') {
         console.log(err.stack); // eslint-disable-line
     }
-
     const status = err.status || 500;
     return res
         .status(status)
@@ -64,7 +63,7 @@ export class ValidationError extends Error {
 export class ResourceNotFoundError extends Error {
     name = 'ResourceNotFoundError';
     status = 404;
-    constructor(entityType) {
+    constructor(entityType = 'entity') {
         super(`Could not find resource of type ${entityType}`);
     }
 }
