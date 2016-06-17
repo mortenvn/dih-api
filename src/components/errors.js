@@ -38,13 +38,28 @@ export function pageNotFoundMiddleware(req, res) {
         });
 }
 
+
 /**
- * pageNotFoundMiddleware - Returns a 404 Page not Found error it the route requested
- * is not matched with any corresponding route.
+ * ValidationError - Returns an Error message for Sequelize validation with
+ * information about what's wrong
  *
- * @param  {Object} req - Express request object
- * @param  {Object} res - Express response object
- * @return {Undefined}  - A 404 not found error
+ * @param  {Object} error - Validation error from  Sequelize
+ * @return {Object}  - A ValidationError object
+ */
+export class ValidationError extends Error {
+    name = 'ValidationError';
+    status = 400;
+    constructor(error) {
+        super(error.errors[0].message);
+    }
+ }
+
+/**
+ * ResourceNotFoundError - Returns a 404 Entity not found error for when
+ * a client request an entity that isn't there
+ *
+ * @param  {String} entityType - The type of entity that isn't found
+ * @return {Object}  - Error object
  */
 export class ResourceNotFoundError extends Error {
     name = 'ResourceNotFoundError';
