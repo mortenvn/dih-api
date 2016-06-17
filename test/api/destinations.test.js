@@ -1,5 +1,6 @@
 import { loadFixtures, getAllDestinationElements } from '../helpers';
 import { describe } from 'ava-spec';
+import _ from 'lodash';
 import request from 'supertest-as-promised';
 import app from '../../src/app';
 
@@ -45,14 +46,25 @@ describe.serial('Destination API', it => {
             .expect(400);
     });
 
-    it('should be able to update a destination with a new name', async () => {
+
+    it('should be able to update a destination with a new name', async t => {
         const fixture = dbObjects[0];
         const changedFixture = fixture;
         changedFixture.name = 'changedName';
-        delete changedFixture.id;
+        const response = await request(app)
+            .put(`/destinations/${fixture.id}`)
+            .send(changedFixture)
+            .expect(204)
+            .then(() => request(app).get('/destinations'))
+            .then(res => _.find(res.body, obj => obj.id === fixture.id));
+        t.is(response.name, changedFixture.name);
+    });
+
+    it('it should not be able to update destinations that does not exist', async () => {
         await request(app)
-            .put(`/destinations/${fixture.id}`, changedFixture)
-            .expect(204);
+            .put('/destinations/100')
+            .send(mockDest)
+            .expect(404);
     });
 
     it('should be able to delete a destination', async t => {
@@ -62,5 +74,11 @@ describe.serial('Destination API', it => {
             .then(() => request(app).get('/destinations'))
             .then(res => res.body);
         t.is(response.length, 2);
+    });
+
+    it('should return 404 when you try to delete an item that does not exist', async () => {
+        await request(app)
+            .delete('/destinations/100')
+            .expect(404);
     });
 });
