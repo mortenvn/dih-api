@@ -8,11 +8,10 @@
   * @param  {Object} res - Express response object
   * @return {Undefined}  - The handled error response
   */
-export function errorMiddleware(err, req, res) {
+export function errorMiddleware(err, req, res, next) { // eslint-disable-line
     if (process.env.NODE_ENV === 'development') {
         console.log(err.stack); // eslint-disable-line
     }
-
     const status = err.status || 500;
     return res
         .status(status)
@@ -36,4 +35,35 @@ export function pageNotFoundMiddleware(req, res) {
         .json({
             message: 'Page Not Found'
         });
+}
+
+
+/**
+ * ValidationError - Returns an Error message for Sequelize validation with
+ * information about what's wrong
+ *
+ * @param  {Object} error - Validation error from  Sequelize
+ * @return {Object}  - A ValidationError object
+ */
+export class ValidationError extends Error {
+    name = 'ValidationError';
+    status = 400;
+    constructor(error) {
+        super(error.errors[0].message);
+    }
+ }
+
+/**
+ * ResourceNotFoundError - Returns a 404 Entity not found error for when
+ * a client request an entity that isn't there
+ *
+ * @param  {String} entityType - The type of entity that isn't found
+ * @return {Object}  - Error object
+ */
+export class ResourceNotFoundError extends Error {
+    name = 'ResourceNotFoundError';
+    status = 404;
+    constructor(entityType = 'entity') {
+        super(`Could not find resource of type ${entityType}`);
+    }
 }
