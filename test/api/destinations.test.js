@@ -1,0 +1,66 @@
+import { loadFixtures, getAllDestinationElements } from '../helpers';
+import { describe } from 'ava-spec';
+import request from 'supertest-as-promised';
+import app from '../../src/app';
+
+const fixtures = [
+    'users',
+    'destinations'
+];
+
+const mockDest = { name: 'AdaNora' };
+let dbObjects;
+
+describe.serial('Destination API', it => {
+    it.beforeEach(() =>
+        loadFixtures(fixtures)
+            .then(() => getAllDestinationElements())
+            .then(response => {
+                dbObjects = response;
+            })
+    );
+
+    it('should retrieve a list of all destinations', async t => {
+        const response = await request(app)
+            .get('/destinations')
+            .expect(200)
+            .then(res => res.body);
+        t.is(response.length, 3);
+    });
+
+    it('should be able to create a new destination ', async t => {
+        const response = await request(app)
+            .post('/destinations')
+            .send(mockDest)
+            .expect(201)
+            .then(res => res);
+        t.is(response.body.name, mockDest.name);
+    });
+
+    it('should not be able to create a new destination with no name ', async () => {
+        const mockEmptyString = mockDest;
+        mockEmptyString.name = '';
+        return await request(app)
+            .post('/destinations', mockEmptyString)
+            .expect(400);
+    });
+
+    it('should be able to update a destination with a new name', async () => {
+        const fixture = dbObjects[0];
+        const changedFixture = fixture;
+        changedFixture.name = 'changedName';
+        delete changedFixture.id;
+        await request(app)
+            .put(`/destinations/${fixture.id}`, changedFixture)
+            .expect(204);
+    });
+
+    it('should be able to delete a destination', async t => {
+        const response = await request(app)
+            .delete(`/destinations/${dbObjects[0].id}`)
+            .expect(200)
+            .then(() => request(app).get('/destinations'))
+            .then(res => res.body);
+        t.is(response.length, 2);
+    });
+});

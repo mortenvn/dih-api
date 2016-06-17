@@ -8,7 +8,7 @@ const fixtures = [
     'destinations'
 ];
 
-describe('User api', it => {
+describe.serial('User API', it => {
     it.beforeEach(() => loadFixtures(fixtures));
 
     it('should reitrieve a list of all users', async t => {
