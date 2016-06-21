@@ -8,11 +8,12 @@
     "lint": "eslint --ignore-path .gitignore .",
     "test": "npm run lint && npm run tests",
     "docs": "jsdoc src -r -c jsdoc.json",
-    "start:dev": "nodemon src/index.js --exec babel-node",
     "clean": "rm -rf dist",
     "build": "npm run clean  && npm run dist",
     "dist": "babel src --out-dir dist",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "start:dev": "nodemon src/index.js --exec babel-node",
+    "start:test": "babel-node test/test"
   },
   "ava": {
     "require": "babel-core/register",
