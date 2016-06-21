@@ -68,3 +68,12 @@ export class ResourceNotFoundError extends Error {
         super(`Could not find resource of type ${entityType}`);
     }
 }
+
+export class AuthenticationError extends Error {
+    name = 'AuthenticationError';
+    status = 401;
+    constructor(message = 'You need to authenicate to access this resoucve') {
+        super(message);
+        this.message = message;
+    }
+}
