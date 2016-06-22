@@ -4,13 +4,13 @@ import _ from 'lodash';
 import { ResourceNotFoundError, ValidationError, DatabaseError } from '../components/errors';
 
 export function list(req, res, next) {
-    db.Travel.findAll()
+    db.Trip.findAll()
         .then(res.json.bind(res))
         .catch(next);
 }
 
 export function create(req, res, next) {
-    db.Travel.create(req.body)
+    db.Trip.create(req.body)
         .then(savedObj => res.status(201).json(savedObj))
         .catch(Sequelize.ValidationError, err => {
             throw new ValidationError(err);
@@ -19,14 +19,14 @@ export function create(req, res, next) {
 }
 
 export function destroy(req, res, next) {
-    db.Travel.destroy({
+    db.Trip.destroy({
         where: {
             id: req.params.id
         }
     })
     .then(count => {
         if (count === 0) {
-            throw new ResourceNotFoundError('travel');
+            throw new ResourceNotFoundError('trip');
         }
     })
     .then(() => res.sendStatus(200))
@@ -34,14 +34,14 @@ export function destroy(req, res, next) {
 }
 
 export function update(req, res, next) {
-    db.Travel.update(req.body, {
+    db.Trip.update(req.body, {
         where: {
             id: req.params.id
         },
         fields: _.without(Object.keys(req.body), 'id')
     })
     .spread((count) => {
-        if (!count) throw new ResourceNotFoundError('travel');
+        if (!count) throw new ResourceNotFoundError('trip');
         res.sendStatus(204);
     })
     .catch(Sequelize.ValidationError, err => {

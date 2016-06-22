@@ -31,7 +31,7 @@ export default function (sequelize, DataTypes) {
     }, {
         classMethods: {
             associate(models) {
-                User.hasMany(models.Travel);
+                User.hasMany(models.Trip);
             }
         }
     });

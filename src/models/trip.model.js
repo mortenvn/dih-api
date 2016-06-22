@@ -1,23 +1,23 @@
-import { TRAVEL_STATUSES } from '../components/constants';
+import { TRIP_STATUSES } from '../components/constants';
 import _ from 'lodash';
 
 export default function (sequelize, DataTypes) {
-    const Travel = sequelize.define('travel', {
+    const Trip = sequelize.define('trip', {
         status: {
             type: DataTypes.ENUM,
-            values: _.values(TRAVEL_STATUSES),
-            defaultValue: TRAVEL_STATUSES.PENDING
+            values: _.values(TRIP_STATUSES),
+            defaultValue: TRIP_STATUSES.PENDING
         }
     }, {
         classMethods: {
             associate(models) {
-                Travel.belongsTo(models.User, {
+                Trip.belongsTo(models.User, {
                     foreignKey: {
                         name: 'userId',
                         allowNull: false
                     }
                 });
-                Travel.belongsTo(models.Destination, {
+                Trip.belongsTo(models.Destination, {
                     foreignKey: {
                         name: 'destinationId',
                         allowNull: false
@@ -26,5 +26,5 @@ export default function (sequelize, DataTypes) {
             }
         }
     });
-    return Travel;
+    return Trip;
 }

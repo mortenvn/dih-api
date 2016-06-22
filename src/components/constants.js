@@ -6,7 +6,7 @@ exports.USER_ROLES = {
     ADMIN: 'ADMIN'
 };
 
-exports.TRAVEL_STATUSES = {
+exports.TRIP_STATUSES = {
     PENDING: 'PENDING',
     ACCEPTED: 'ACCEPTED',
     REJECTED: 'REJECTED',

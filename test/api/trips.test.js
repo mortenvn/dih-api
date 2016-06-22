@@ -7,21 +7,21 @@ import app from '../../src/app';
 const fixtures = [
     'users',
     'destinations',
-    'travels'
+    'trips'
 ];
 
-const URI = '/travels';
-let travelObjects;
+const URI = '/trips';
+let tripObjects;
 let userObjects;
 let destinationObjects;
-const mockTravel = { status: 'PENDING' };
+const mockTrip = { status: 'PENDING' };
 
-describe.serial('Travel API', it => {
+describe.serial('Trip API', it => {
     it.beforeEach(() =>
         loadFixtures(fixtures)
-            .then(() => getAllElements('Travel'))
+            .then(() => getAllElements('Trip'))
             .then(response => {
-                travelObjects = response;
+                tripObjects = response;
             })
             .then(() => getAllElements('Destination'))
             .then(response => {
@@ -32,32 +32,32 @@ describe.serial('Travel API', it => {
                 userObjects = response;
             })
             .then(() => {
-                mockTravel.userId = userObjects[1].id;
-                mockTravel.destinationId = destinationObjects[1].id;
+                mockTrip.userId = userObjects[1].id;
+                mockTrip.destinationId = destinationObjects[1].id;
             })
     );
 
-    it('should retrieve a list of all travels', async t => {
+    it('should retrieve a list of all trips', async t => {
         const response = await request(app)
             .get(URI)
             .expect(200)
             .then(res => res.body);
-        t.is(response.length, travelObjects.length);
+        t.is(response.length, tripObjects.length);
     });
 
-    it('should be able to create a new travel ', async t => {
+    it('should be able to create a new trip ', async t => {
         const response = await request(app)
             .post(URI)
-            .send(mockTravel)
+            .send(mockTrip)
             .expect(201)
             .then(res => res);
-        t.is(response.body.status, mockTravel.status);
+        t.is(response.body.status, mockTrip.status);
     });
 
-    it('should not be able to create a new travel with missing fields ', async () => {
-        const mockWithEmptyStatus = mockTravel;
-        const mockWithEmptyUser = mockTravel;
-        const mockWithEmptyDestination = mockTravel;
+    it('should not be able to create a new trip with missing fields ', async () => {
+        const mockWithEmptyStatus = mockTrip;
+        const mockWithEmptyUser = mockTrip;
+        const mockWithEmptyDestination = mockTrip;
         delete mockWithEmptyStatus.status;
         delete mockWithEmptyUser.userId;
         delete mockWithEmptyDestination.destinationId;
@@ -72,8 +72,8 @@ describe.serial('Travel API', it => {
             .expect(400);
     });
 
-    it('should be able to update a travel with a valid new status', async t => {
-        const fixture = travelObjects[0];
+    it('should be able to update a trip with a valid new status', async t => {
+        const fixture = tripObjects[0];
         const changedFixture = fixture;
         changedFixture.status = 'ACCEPTED';
         const validRequestResponse = await request(app)
@@ -85,8 +85,8 @@ describe.serial('Travel API', it => {
         t.is(validRequestResponse.status, changedFixture.status);
     });
 
-    it('should not be able to update a travel with an invalid status', async () => {
-        const fixture = travelObjects[0];
+    it('should not be able to update a trip with an invalid status', async () => {
+        const fixture = tripObjects[0];
         const invalidChangedFixture = fixture;
         invalidChangedFixture.status = 'kek';
         await request(app)
@@ -95,25 +95,25 @@ describe.serial('Travel API', it => {
             .expect(400);
     });
 
-    it('should return 404 when you try to update a travel that does not exist', async () => {
+    it('should return 404 when you try to update a trip that does not exist', async () => {
         await request(app)
-            .put(`${URI}/${travelObjects.length + 100}`)
-            .send(mockTravel)
+            .put(`${URI}/${tripObjects.length + 100}`)
+            .send(mockTrip)
             .expect(404);
     });
 
-    it('should be able to delete a travel', async t => {
+    it('should be able to delete a trip', async t => {
         const response = await request(app)
-            .delete(`${URI}/${travelObjects[0].id}`)
+            .delete(`${URI}/${tripObjects[0].id}`)
             .expect(200)
             .then(() => request(app).get(URI))
             .then(res => res.body);
-        t.is(response.length, travelObjects.length - 1);
+        t.is(response.length, tripObjects.length - 1);
     });
 
     it('should return 404 when you try to delete an item that does not exist', async () => {
         await request(app)
-            .delete(`${URI}/${travelObjects.length + 100}`)
+            .delete(`${URI}/${tripObjects.length + 100}`)
             .expect(404);
     });
 });

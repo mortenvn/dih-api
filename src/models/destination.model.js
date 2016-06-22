@@ -13,7 +13,7 @@ export default function (sequelize, DataTypes) {
     }, {
         classMethods: {
             associate(models) {
-                Destination.hasMany(models.Travel);
+                Destination.hasMany(models.Trip);
             }
         }
     });
