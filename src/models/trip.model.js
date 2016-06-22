@@ -7,6 +7,20 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.ENUM,
             values: _.values(TRIP_STATUSES),
             defaultValue: TRIP_STATUSES.PENDING
+        },
+        startDate: {
+            type: DataTypes.DATE
+        },
+        endDate: {
+            type: DataTypes.DATE
+        },
+        wishStartDate: {
+            type: DataTypes.DATE,
+            allowNull: false
+        },
+        wishEndDate: {
+            type: DataTypes.DATE,
+            allowNull: false
         }
     }, {
         classMethods: {

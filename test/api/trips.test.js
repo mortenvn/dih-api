@@ -14,7 +14,11 @@ const URI = '/trips';
 let tripObjects;
 let userObjects;
 let destinationObjects;
-const mockTrip = { status: 'PENDING' };
+const mockTrip = {
+    status: 'PENDING',
+    wishStartDate: '2020-04-25T01:32:21.196+0200',
+    wishEndDate: '2021-04-25T01:32:21.196+0200'
+};
 
 describe.serial('Trip API', it => {
     it.beforeEach(() =>
