@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 import db from '../models';
 import _ from 'lodash';
-import { ResourceNotFoundError, ValidationError } from '../components/errors';
+import { ResourceNotFoundError, ValidationError, DatabaseError } from '../components/errors';
 
 export function list(req, res, next) {
     db.Travel.findAll()
@@ -40,8 +40,7 @@ export function update(req, res, next) {
         },
         fields: _.without(Object.keys(req.body), 'id')
     })
-    .then(count => {
-        console.log(count);
+    .spread((count) => {
         if (!count) throw new ResourceNotFoundError('travel');
         res.sendStatus(204);
     })
@@ -49,7 +48,7 @@ export function update(req, res, next) {
         throw new ValidationError(err);
     })
     .catch(Sequelize.DatabaseError, err => {
-        throw new ValidationError(err);
+        throw new DatabaseError(err);
     })
     .catch(next);
 }

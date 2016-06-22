@@ -3,24 +3,16 @@
         "model": "Travel",
         "data": {
             "status": "PENDING",
-            "user": {
-                "email": "user@test.test"
-            },
-            "destination": {
-                "name": "Larsen"
-            }
+            "user": 1,
+            "destination": 1
         }
     },
     {
         "model": "Travel",
         "data": {
             "status": "CLOSED",
-            "user": {
-                "email": "user@test.test"
-            },
-            "destination": {
-                "name": "Sondre"
-            }
+            "user": 1,
+            "destination": 2
         }
     }
 ]

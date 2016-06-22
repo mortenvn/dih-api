@@ -38,6 +38,20 @@ export function pageNotFoundMiddleware(req, res) {
         });
 }
 
+/**
+ * ValidationError - Returns an Error message for Sequelize validation with
+ * information about what's wrong
+ *
+ * @param  {Object} error - Validation error from  Sequelize
+ * @return {Object}  - A ValidationError object
+ */
+export class DatabaseError extends Error {
+    name = 'ValidationError';
+    status = 400;
+    constructor(error) {
+        super(error.message);
+    }
+ }
 
 /**
  * ValidationError - Returns an Error message for Sequelize validation with
