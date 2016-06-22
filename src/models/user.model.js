@@ -28,6 +28,12 @@ export default function (sequelize, DataTypes) {
             values: _.values(USER_ROLES),
             defaultValue: USER_ROLES.USER
         }
+    }, {
+        classMethods: {
+            associate(models) {
+                User.hasMany(models.Travel);
+            }
+        }
     });
     return User;
 }

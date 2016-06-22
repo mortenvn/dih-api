@@ -13,12 +13,14 @@ export default function (sequelize, DataTypes) {
             associate(models) {
                 Travel.belongsTo(models.User, {
                     foreignKey: {
-                        allowNull: false
+                        allowNull: false,
+                        constraint: false
                     }
                 });
                 Travel.belongsTo(models.Destination, {
                     foreignKey: {
-                        allowNull: false
+                        allowNull: false,
+                        constraint: false
                     }
                 });
             }

@@ -10,6 +10,12 @@ export default function (sequelize, DataTypes) {
                 isAlpha: true
             }
         }
+    }, {
+        classMethods: {
+            associate(models) {
+                Destination.hasMany(models.Travel);
+            }
+        }
     });
     return Destination;
 }
