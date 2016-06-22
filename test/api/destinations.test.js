@@ -60,7 +60,7 @@ describe.serial('Destination API', it => {
         t.is(response.name, changedFixture.name);
     });
 
-    it('it should not be able to update destinations that does not exist', async () => {
+    it('should not be able to update destinations that does not exist', async () => {
         await request(app)
             .put('/destinations/100')
             .send(mockDest)
