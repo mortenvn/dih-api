@@ -21,3 +21,12 @@ export function loadFixtures(fixtures) {
 export function getAllDestinationElements() {
     return db.Destination.findAll();
 }
+
+/**
+ * getAllUserElements - Gives you all of the user fixture elements
+ *
+ * @return {Array} - All user fixture elements from db
+ */
+export function getAllUserElements() {
+    return db.User.findAll();
+}

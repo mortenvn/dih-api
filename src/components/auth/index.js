@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import Promise from 'bluebird';
 import { AuthenticationError } from '../errors';
 import config from '../../config';
+
 Promise.promisifyAll(jwt);
 
 export function createJWT(payload, expiresIn = config.jwtExpiresIn) {
@@ -12,7 +13,14 @@ export function createJWT(payload, expiresIn = config.jwtExpiresIn) {
 }
 
 export function authorize(req, res, next) {
-    const authToken = req.get('Authorization').split(' ')[1];
+    let authToken = undefined;
+
+    try {
+        authToken = req.get('Authorization').split(' ')[1];
+    } catch (error) {
+        throw new AuthenticationError();
+    }
+
     if (!authToken) next(new AuthenticationError());
     jwt.verifyAsync(authToken, config.secret)
         .then(decodedToken => {

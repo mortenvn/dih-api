@@ -72,7 +72,7 @@ export class ResourceNotFoundError extends Error {
 export class AuthenticationError extends Error {
     name = 'AuthenticationError';
     status = 401;
-    constructor(message = 'You need to authenicate to access this resoucve') {
+    constructor(message = 'You need to authenicate to access this resource') {
         super(message);
         this.message = message;
     }
