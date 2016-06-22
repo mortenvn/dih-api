@@ -1,0 +1,26 @@
+[
+    {
+        "model": "Travel",
+        "data": {
+            "status": "PENDING",
+            "user": {
+                "email": "user@test.test"
+            },
+            "destination": {
+                "name": "Larsen"
+            }
+        }
+    },
+    {
+        "model": "Travel",
+        "data": {
+            "status": "CLOSED",
+            "user": {
+                "email": "user@test.test"
+            },
+            "destination": {
+                "name": "Sondre"
+            }
+        }
+    }
+]
