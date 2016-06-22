@@ -10,6 +10,8 @@ const fixtures = [
     'destinations'
 ];
 
+const URI = '/account';
+
 let dbObjects;
 
 const validJwt = createJWT({ id: 1 });
@@ -27,7 +29,7 @@ describe.serial('Account API', it => {
 
     it('should return AuthenticationError when no jwt is passed', async t => {
         const response = await request(app)
-            .get('/account')
+            .get(URI)
             .expect(401);
         t.is(response.body.name, 'AuthenticationError');
         t.is(response.body.message, 'You need to authenicate to access this resource');
@@ -35,7 +37,7 @@ describe.serial('Account API', it => {
 
     it('should return AuthenticationError when an invalid jwt is passed', async t => {
         const response = await request(app)
-            .get('/account')
+            .get(URI)
             .set('Authorization', `Bearer ${invalidJwt}`)
             .expect(401);
         t.is(response.body.name, 'AuthenticationError');
@@ -44,7 +46,7 @@ describe.serial('Account API', it => {
 
     it('should retrieve current jwt user', async t => {
         const response = await request(app)
-            .get('/account')
+            .get(URI)
             .set('Authorization', `Bearer ${validJwt}`)
             .expect(200);
         t.is(response.body.email, dbObjects[0].email);
@@ -52,7 +54,7 @@ describe.serial('Account API', it => {
 
     it('should not be able to retrieve non existing jwt user', async t => {
         const response = await request(app)
-            .get('/account')
+            .get(URI)
             .set('Authorization', `Bearer ${validJwtNoUser}`)
             .expect(404);
         t.is(response.body.name, 'ResourceNotFoundError');
