@@ -34,7 +34,15 @@ If you're gonna develop:
 This will watch for changes and keep it open for you.
 
 ## Tests
-Run unit tests with `npm test`. This will use your local database.
+
+### Single run
+
+Run unit tests & code lint with `npm test`. This will use your local database.
+Run just unit tests with `npm tests`. This will use your local database.
+
+### Watch
+
+Run the unit tests continuously with `npm test:watch`, only the tests currently worked on will run when updated. All tests will run when a server file is updated. This will use your local database.
 
 For testing everything isolated (without a local Postgres)  we use Docker Compose, which pulls a Postgres-image, sets it up with the API and runs the tests:
 
