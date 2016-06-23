@@ -25,9 +25,7 @@ export function destroy(req, res, next) {
         }
     })
     .then(count => {
-        if (count === 0) {
-            throw new ResourceNotFoundError('trip');
-        }
+        if (!count) throw new ResourceNotFoundError('trip');
     })
     .then(() => res.sendStatus(200))
     .catch(next);
