@@ -58,21 +58,27 @@ describe.serial('Trip API', it => {
         t.is(response.body.status, mockTrip.status);
     });
 
-    it('should not be able to create a new trip with missing fields ', async () => {
+    it('should not be able to create a new trip with missing status field', async () => {
         const mockWithEmptyStatus = mockTrip;
-        const mockWithEmptyUser = mockTrip;
-        const mockWithEmptyDestination = mockTrip;
         delete mockWithEmptyStatus.status;
-        delete mockWithEmptyUser.userId;
-        delete mockWithEmptyDestination.destinationId;
         await request(app)
             .post(URI, mockWithEmptyStatus)
             .expect(400);
-        await request(app)
-            .post(URI, mockWithEmptyUser)
-            .expect(400);
+    });
+
+    it('should not be able to create a new trip with missing destinationId field', async () => {
+        const mockWithEmptyDestination = mockTrip;
+        delete mockWithEmptyDestination.destinationId;
         await request(app)
             .post(URI, mockWithEmptyDestination)
+            .expect(400);
+    });
+
+    it('should not be able to create a new trip with missing userId field', async () => {
+        const mockWithEmptyUser = mockTrip;
+        delete mockWithEmptyUser.userId;
+        await request(app)
+            .post(URI, mockWithEmptyUser)
             .expect(400);
     });
 
