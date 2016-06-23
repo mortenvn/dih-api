@@ -12,10 +12,6 @@ const URI = '/account';
 
 let dbObjects;
 
-const validJwt = createValidJWT({ id: 1 });
-const validJwtNoUser = createValidJWT({ id: 1000 });
-const invalidJwt = createInvalidJWT({ id: 1 });
-
 describe.serial('Account API', it => {
     it.beforeEach(() =>
         loadFixtures(fixtures)
@@ -34,6 +30,8 @@ describe.serial('Account API', it => {
     });
 
     it('should return AuthenticationError when an invalid jwt is passed', async t => {
+        const invalidJwt = createInvalidJWT({ id: 1 });
+
         const response = await request(app)
             .get(URI)
             .set('Authorization', `Bearer ${invalidJwt}`)
@@ -43,6 +41,8 @@ describe.serial('Account API', it => {
     });
 
     it('should retrieve current jwt user', async t => {
+        const validJwt = createValidJWT(dbObjects[0]);
+
         const response = await request(app)
             .get(URI)
             .set('Authorization', `Bearer ${validJwt}`)
@@ -51,6 +51,8 @@ describe.serial('Account API', it => {
     });
 
     it('should not be able to retrieve non existing jwt user', async t => {
+        const validJwtNoUser = createValidJWT({ id: 1000 });
+
         const response = await request(app)
             .get(URI)
             .set('Authorization', `Bearer ${validJwtNoUser}`)

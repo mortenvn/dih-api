@@ -30,22 +30,29 @@ export function getAllDestinationElements() {
  * @return {Array} - All user fixture elements from db
  */
 export function getAllUserElements() {
-    return db.User.findAll();
+    return db.User.findAll().then(users => users.map(user => user.toJSON()));
 }
 
 /**
+ * createValidJWT - Create a valid JWT for testing purposes
  *
+ * @param {Object} payload
+ * @return {String} - Valid JWT token
  */
-export function createValidJWT(payload, expiresIn = config.jwtExpiresIn) {
+export function createValidJWT(payload) {
     return jwt.sign(payload, config.secret, {
-        expiresIn,
-        subject: String(payload.id)
+        expiresIn: config.jwtExpiresIn
     });
 }
 
-export function createInvalidJWT(payload, expiresIn = config.jwtExpiresIn) {
+/**
+ * createInvalidJWT - Create an invalid JWT for testing purposes
+ *
+ * @param {Object} payload
+ * @return {String} - Invalid JWT token
+ */
+export function createInvalidJWT(payload) {
     return jwt.sign(payload, `${config.secret}noise`, {
-        expiresIn,
-        subject: String(payload.id)
+        expiresIn: config.jwtExpiresIn
     });
 }
