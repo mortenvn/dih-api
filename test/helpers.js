@@ -2,6 +2,8 @@ import sequelizeFixtures from 'sequelize-fixtures';
 import db from '../src/models';
 import { syncDB } from '../src/model-helpers';
 import path from 'path';
+import jwt from 'jsonwebtoken';
+import config from '../src/config';
 
 export function loadFixtures(fixtures) {
     const f = fixtures || [
@@ -29,4 +31,21 @@ export function getAllDestinationElements() {
  */
 export function getAllUserElements() {
     return db.User.findAll();
+}
+
+/**
+ *
+ */
+export function createValidJWT(payload, expiresIn = config.jwtExpiresIn) {
+    return jwt.sign(payload, config.secret, {
+        expiresIn,
+        subject: String(payload.id)
+    });
+}
+
+export function createInvalidJWT(payload, expiresIn = config.jwtExpiresIn) {
+    return jwt.sign(payload, `${config.secret}noise`, {
+        expiresIn,
+        subject: String(payload.id)
+    });
 }

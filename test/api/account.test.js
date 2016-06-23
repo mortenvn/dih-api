@@ -1,9 +1,7 @@
-import { loadFixtures, getAllUserElements } from '../helpers';
+import { loadFixtures, getAllUserElements, createValidJWT, createInvalidJWT } from '../helpers';
 import { describe } from 'ava-spec';
 import request from 'supertest-as-promised';
 import app from '../../src/app';
-import jwt from 'jsonwebtoken';
-import { createJWT } from '../../src/components/auth';
 
 const fixtures = [
     'users',
@@ -14,9 +12,9 @@ const URI = '/account';
 
 let dbObjects;
 
-const validJwt = createJWT({ id: 1 });
-const validJwtNoUser = createJWT({ id: 1000 });
-const invalidJwt = jwt.sign({}, 'invalidsecret');
+const validJwt = createValidJWT({ id: 1 });
+const validJwtNoUser = createValidJWT({ id: 1000 });
+const invalidJwt = createInvalidJWT({ id: 1 });
 
 describe.serial('Account API', it => {
     it.beforeEach(() =>
