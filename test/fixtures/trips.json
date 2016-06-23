@@ -1,0 +1,22 @@
+[
+    {
+        "model": "Trip",
+        "data": {
+            "status": "PENDING",
+            "user": 1,
+            "destination": 1,
+            "wishStartDate": "2018-04-25T01:32:21.196+0200",
+            "wishEndDate": "2020-04-25T01:32:21.196+0200"
+        }
+    },
+    {
+        "model": "Trip",
+        "data": {
+            "status": "CLOSED",
+            "user": 1,
+            "destination": 2,
+            "wishStartDate": "2020-04-25T01:32:21.196+0200",
+            "wishEndDate": "2021-04-25T01:32:21.196+0200"
+        }
+    }
+]

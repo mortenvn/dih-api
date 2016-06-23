@@ -14,10 +14,12 @@ export function loadFixtures(fixtures) {
 }
 
 /**
- * getAllDestinationElements - Gives you one of the fixture elements of a given type
+ * getAllElements - Gives you one of the fixture elements of a given type
  *
+ * @param {model} - Model you want to get elements from
  * @return {Array}  - All fixture elements form db
  */
-export function getAllDestinationElements() {
-    return db.Destination.findAll();
+export function getAllElements(model) {
+    return db[model].findAll()
+        .then(objects => objects.map(object => object.toJSON()));
 }

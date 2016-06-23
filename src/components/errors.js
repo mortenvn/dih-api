@@ -38,6 +38,21 @@ export function pageNotFoundMiddleware(req, res) {
         });
 }
 
+/**
+ * DatabaseError - Returns an Error message for Sequelize Database error.
+ * This is thrown in cases where validation in the DBMS is what stops the
+ * databse action, not Sequelize validation.
+ *
+ * @param  {Object} error - Database Error from Sequelize
+ * @return {Object}  - A DatabaseError object
+ */
+export class DatabaseError extends Error {
+    name = 'ValidationError';
+    status = 400;
+    constructor(error) {
+        super(error.message);
+    }
+ }
 
 /**
  * ValidationError - Returns an Error message for Sequelize validation with
