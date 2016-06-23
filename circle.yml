@@ -24,8 +24,8 @@ deployment:
     prod:
         branch: master
         commands:
-            - docker build -t dih-api:latest .
-            - docker tag dih-api:latest $EXTERNAL_REGISTRY:latest
+            - docker build -t $NAME:latest .
+            - docker tag $NAME:latest $EXTERNAL_REGISTRY:latest
             - docker push $EXTERNAL_REGISTRY:latest
             - babel-node deploy.js:
                 environment:
@@ -38,8 +38,8 @@ deployment:
     staging:
         branch: dev
         commands:
-            - docker build -t dih-api-dev:latest .
-            - docker tag dih-api-dev:latest $EXTERNAL_REGISTRY-dev:latest
+            - docker build -t $NAME-dev:latest .
+            - docker tag $NAME-dev:latest $EXTERNAL_REGISTRY-dev:latest
             - docker push $EXTERNAL_REGISTRY-dev:latest
             - npm run docs
             - babel-node deploy.js:
