@@ -9,11 +9,15 @@ __Build status:__
 ## Workflow
 
 1. Get a task on JIRA by talking to you teammates and looking at the sprint backlog.
-2. Create a new branch  from the `dev`-branch : If it's a feature (new functionality) name the branch `feature/DIH-num` where `DIH-num` is the task ID on JIRA. If it's a bugfix name the branch `bugfix/DIH_num`.
+2. Create a new branch  from the `dev`-branch, naming it using our branch naming strategy described below.
 3. Code away and commit often. Try to follow [good commit practice](http://chris.beams.io/posts/git-commit/). Remember to write tests (and run them).
 4. When you're done (see definition of done on GitHub), create a pull request with reference to the JIRA-issue (preferably a link) and an overview of what the pull request is about. Await code review (you can tag people or yell for them on Slack to get your review faster).
 5. When you've reworked your code after the code review, the pull request will be merged.
 
+### Branch naming strategy
+* If it's a feature (new functionality) name the branch `feature/DIH-num` where `DIH-num` is the task ID on JIRA.
+* If it's a bugfix name the branch `bugfix/DIH_num`.
+* If it's a technical task, name the branch `tech/DIH-num`
 
 ## Setup
 To setup the project locally install Postgres and set `PG_URL ` to your database. Run `npm run build` to get a transpiled version of the API, then start with `npm start`.
