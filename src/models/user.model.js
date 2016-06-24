@@ -1,7 +1,19 @@
+/**
+ * User model
+ * @module models/user
+ */
 import { USER_ROLES } from '../components/constants';
 import { sendInvite } from '../components/mail';
 import _ from 'lodash';
 
+
+/**
+ * User model - create and export the database model for the user
+ * including all assosiations and classmethods assiciated with this model.
+ * @memberof  module:models/user
+ * @param  {Object} sequelize description
+ * @param  {Object} DataTypes description
+ */
 export default function (sequelize, DataTypes) {
     const User = sequelize.define('user', {
         email: {

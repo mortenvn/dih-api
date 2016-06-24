@@ -1,4 +1,7 @@
- /** @module components/errors */
+ /**
+  * All error handeling and errors used trouought the application.
+  * @module components/errors
+  */
 
  /**
   * errorMiddleware - Catches all upstream errors and returns them to the requester.
@@ -6,6 +9,7 @@
   * @param  {Object} err - The error to be handled
   * @param  {Object} req - Express request object
   * @param  {Object} res - Express response object
+  * @param  {Function} next - Express next middleware function
   * @return {Undefined}  - The handled error response
   */
 // eslint-disable-next-line no-unused-vars
@@ -84,6 +88,13 @@ export class ResourceNotFoundError extends Error {
     }
 }
 
+/**
+ * AuthenticationError - Returns a 401 You need to authenicate to access this resource,
+ * implying that the user does not have enough premissions to complete this request.
+ *
+ * @param  {String} message - A message sent to the user why he/she is not authenticated
+ * @return {Object}  - Error object
+ */
 export class AuthenticationError extends Error {
     name = 'AuthenticationError';
     status = 401;
