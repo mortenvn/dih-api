@@ -1,3 +1,8 @@
+/**
+ * Main application file, contains all the bootstrapping and boilerplating
+ * for creating a rest server with express
+ * @module app
+ */
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -7,7 +12,6 @@ import methodOverride from 'method-override';
 import cookieParser from 'cookie-parser';
 import routes from './routes';
 
-// Setup server
 const app = express();
 
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -20,6 +24,7 @@ app.use(morgan('dev'));
 if (app.get('env') === 'development') {
     app.use(errorHandler());
 }
+
 
 app.use('/', routes);
 

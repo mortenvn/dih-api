@@ -1,14 +1,36 @@
+/**
+ * Trip controller
+ * @module controllers/trip
+ */
 import Sequelize from 'sequelize';
 import db from '../models';
 import _ from 'lodash';
 import { ResourceNotFoundError, ValidationError, DatabaseError } from '../components/errors';
 
+/**
+ * list - List all trips in the database
+ *
+ * @function list
+ * @memberof  module:controllers/trip
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
 export function list(req, res, next) {
     db.Trip.findAll()
         .then(res.json.bind(res))
         .catch(next);
 }
 
+/**
+ * create - creates a trip.
+ *
+ * @function create
+ * @memberof  module:controllers/trip
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
 export function create(req, res, next) {
     db.Trip.create(req.body)
         .then(savedObj => res.status(201).json(savedObj))
@@ -18,6 +40,15 @@ export function create(req, res, next) {
         .catch(next);
 }
 
+/**
+ * destroy - Deletes a trip given id and that the trip exists
+ *
+ * @function destroy
+ * @memberof  module:controllers/trip
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
 export function destroy(req, res, next) {
     db.Trip.destroy({
         where: {
@@ -31,6 +62,15 @@ export function destroy(req, res, next) {
     .catch(next);
 }
 
+/**
+ * update - Updates a trip given id and that the trip exists
+ *
+ * @function update
+ * @memberof  module:controllers/trip
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
 export function update(req, res, next) {
     db.Trip.update(req.body, {
         where: {
@@ -38,7 +78,7 @@ export function update(req, res, next) {
         },
         fields: _.without(Object.keys(req.body), 'id')
     })
-    .spread((count) => {
+    .spread(count => {
         if (!count) throw new ResourceNotFoundError('trip');
         res.sendStatus(204);
     })
