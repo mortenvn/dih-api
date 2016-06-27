@@ -1,6 +1,8 @@
 import { TRIP_STATUSES } from '../components/constants';
 import _ from 'lodash';
 
+import db from './';
+
 export default function (sequelize, DataTypes) {
     const Trip = sequelize.define('trip', {
         status: {
@@ -36,6 +38,27 @@ export default function (sequelize, DataTypes) {
                         name: 'destinationId',
                         allowNull: false
                     }
+                });
+            }
+        },
+        hooks: {
+            beforeUpdate: [
+                (trip) => {
+                    if (trip.changed('status') &&
+                        trip.status === TRIP_STATUSES.ACCEPTED) {
+                        trip.acceptUser();
+                    }
+                }
+            ]
+        },
+        instanceMethods: {
+            acceptUser() {
+                db.Destination.findById(this.destinationId)
+                .then(destination => {
+                    db.User.findById(this.userId)
+                    .then(user => {
+                        user.sendDestinationAcceptance(destination);
+                    });
                 });
             }
         }
