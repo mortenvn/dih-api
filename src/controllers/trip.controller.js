@@ -4,7 +4,6 @@
  */
 import Sequelize from 'sequelize';
 import db from '../models';
-import _ from 'lodash';
 import { ResourceNotFoundError, ValidationError, DatabaseError } from '../components/errors';
 
 /**
@@ -72,16 +71,16 @@ export function destroy(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function update(req, res, next) {
-    db.Trip.update(req.body, {
+    db.Trip.findOne({
         where: {
             id: req.params.id
-        },
-        fields: _.without(Object.keys(req.body), 'id')
+        }
     })
-    .spread(count => {
-        if (!count) throw new ResourceNotFoundError('trip');
-        res.sendStatus(204);
+    .then(trip => {
+        if (!trip) throw new ResourceNotFoundError('trip');
+        return trip.update(req.body);
     })
+    .then(() => res.sendStatus(204))
     .catch(Sequelize.ValidationError, err => {
         throw new ValidationError(err);
     })
