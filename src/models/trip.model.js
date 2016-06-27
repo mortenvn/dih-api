@@ -1,6 +1,6 @@
 import { TRIP_STATUSES } from '../components/constants';
 import _ from 'lodash';
-
+import Promise from 'bluebird';
 import db from './';
 
 export default function (sequelize, DataTypes) {
@@ -44,22 +44,20 @@ export default function (sequelize, DataTypes) {
         hooks: {
             beforeUpdate: [
                 (trip) => {
-                    if (trip.changed('status') &&
-                        trip.status === TRIP_STATUSES.ACCEPTED) {
-                        trip.acceptUser();
+                    if (trip.changed('status') && trip.status === TRIP_STATUSES.ACCEPTED) {
+                        return trip.acceptUser();
                     }
+                    return Promise.resolve();
                 }
             ]
         },
         instanceMethods: {
             acceptUser() {
-                db.Destination.findById(this.destinationId)
-                .then(destination => {
+                return Promise.all([
+                    db.Destination.findById(this.destinationId),
                     db.User.findById(this.userId)
-                    .then(user => {
-                        user.sendDestinationAcceptance(destination);
-                    });
-                });
+                ])
+                .spread((destination, user) => user.sendDestinationAcceptance(destination));
             }
         }
     });
