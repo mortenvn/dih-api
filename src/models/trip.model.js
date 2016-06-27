@@ -1,6 +1,6 @@
-import { TRIP_STATUSES } from '../components/constants';
 import _ from 'lodash';
 import Promise from 'bluebird';
+import { TRIP_STATUSES } from '../components/constants';
 import db from './';
 
 export default function (sequelize, DataTypes) {
