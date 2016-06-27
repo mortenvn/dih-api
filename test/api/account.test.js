@@ -60,4 +60,13 @@ describe.serial('Account API', it => {
         t.is(response.body.name, 'ResourceNotFoundError');
         t.is(response.body.message, 'Could not find resource of type user');
     });
+
+    it('should update the password of the current user', async () => {
+        const validJwt = createValidJWT(dbObjects[0]);
+        await request(app)
+            .put(URI)
+            .send({ password: '1234password' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(204);
+    });
 });

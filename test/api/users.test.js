@@ -1,15 +1,28 @@
 import { loadFixtures } from '../helpers';
 import { describe } from 'ava-spec';
 import request from 'supertest-as-promised';
+import { updateTransport } from '../../src/components/mail';
 import app from '../../src/app';
 
+let transport;
 const fixtures = [
     'users',
     'destinations'
 ];
 
 describe.serial('User API', it => {
-    it.beforeEach(() => loadFixtures(fixtures));
+    it.beforeEach(() => {
+        transport = {
+            name: 'testsend',
+            version: '1',
+            send(data, callback) {
+                callback();
+            },
+            logger: false
+        };
+        updateTransport(transport);
+        return loadFixtures(fixtures);
+    });
 
     it.serial('should reitrieve a list of all users', async t => {
         const response = await request(app)

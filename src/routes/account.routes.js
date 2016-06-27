@@ -5,5 +5,6 @@ import * as controller from '../controllers/account.controller';
 const router = express.Router();
 
 router.get('/', authorize, controller.retrieve);
+router.put('/', authorize, controller.update);
 
 export default router;

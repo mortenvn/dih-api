@@ -19,8 +19,8 @@ import { ValidationError } from '../components/errors';
  */
 export function list(req, res, next) {
     db.User.findAll()
-        .then(res.json.bind(res))
-        .catch(next);
+    .then(res.json.bind(res))
+    .catch(next);
 }
 
 /**
@@ -33,10 +33,15 @@ export function list(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function create(req, res, next) {
-    db.User.create(req.body)
-        .then(user => res.status(201).json(user))
-        .catch(Sequelize.ValidationError, err => {
-            throw new ValidationError(err);
-        })
-        .catch(next);
+    db.User.invite({
+        firstname: req.body.firstname,
+        lastname: req.body.lastname,
+        birth: req.body.birth,
+        email: req.body.email
+    })
+    .then(user => res.status(201).json(user))
+    .catch(Sequelize.ValidationError, err => {
+        throw new ValidationError(err);
+    })
+    .catch(next);
 }

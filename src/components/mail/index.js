@@ -41,11 +41,11 @@ export function sendInvite(user, token) {
         subject: 'Velkommen til Dråpen I Havet!',
         template: 'action',
         context: {
-            content: `Det har opprettet en bruker for deg på DIH, trykk på knappen under
+            content: `Du har opprettet en bruker hos Dråpen i Havet, trykk på knappen under
                 for å fullføre registreringen.`,
             action: {
                 text: 'Registrer brukerkonto',
-                url: `${config.web}/signup/invite?token=${token}`
+                url: `${config.web}/signup/confirm?token=${token}`
             }
         }
     };

@@ -1,19 +1,22 @@
 /**
- * User model
- * @module models/user
- */
+* User model
+* @module models/user
+*/
+import _ from 'lodash';
+import bcrypt from 'bcrypt';
+import Promise from 'bluebird';
 import { USER_ROLES } from '../components/constants';
 import { sendInvite, sendDestinationAcceptance } from '../components/mail';
-import _ from 'lodash';
-
+import { createJwt } from '../components/auth';
+Promise.promisifyAll(bcrypt);
 
 /**
- * User model - create and export the database model for the user
- * including all assosiations and classmethods assiciated with this model.
- * @memberof  module:models/user
- * @param  {Object} sequelize description
- * @param  {Object} DataTypes description
- */
+* User model - create and export the database model for the user
+* including all assosiations and classmethods assiciated with this model.
+* @memberof  module:models/user
+* @param  {Object} sequelize description
+* @param  {Object} DataTypes description
+*/
 export default function (sequelize, DataTypes) {
     const User = sequelize.define('user', {
         email: {
@@ -36,6 +39,18 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.DATE,
             allowNull: false
         },
+        hash: DataTypes.STRING,
+        password: {
+            type: DataTypes.VIRTUAL,
+            set(password) {
+                this.setDataValue('password', password);
+            },
+            validate: {
+                strength(password) {
+                    if (password.length < 7) throw new Error('Please choose a longer password');
+                }
+            }
+        },
         role: {
             type: DataTypes.ENUM,
             values: _.values(USER_ROLES),
@@ -48,17 +63,21 @@ export default function (sequelize, DataTypes) {
             },
             invite(body) {
                 return User.create(body)
-                    .then(user => user.sendInvite());
+                .then(user => user.sendInvite());
             }
         },
         instanceMethods: {
+            authenticate(password) {
+                return bcrypt.compareAsync(password, this.hash);
+            },
             toJSON() {
-                // TODO here we can remove sensetive data like hash
-                return this.get({ plain: true });
+                const user = this.get({ plain: true });
+                delete user.hash;
+                delete user.password;
+                return user;
             },
             createJwt() {
-                // TODO create instance specifiv jwt
-                return 'pifmapir13mifm1oimrfoi1mfim1imfi1mf';
+                return createJwt(this.toJSON());
             },
             sendInvite() {
                 const token = this.createJwt();
@@ -68,6 +87,16 @@ export default function (sequelize, DataTypes) {
                 const token = this.createJwt();
                 return sendDestinationAcceptance(this, destination, token);
             }
+        },
+        hooks: {
+            beforeUpdate: [
+                (user) => {
+                    if (!user.changed('password')) return Promise.resolve();
+                    return bcrypt.genSaltAsync()
+                        .then(salt => bcrypt.hashAsync(user.get('password'), salt))
+                        .then(hash => user.set('hash', hash));
+                }
+            ]
         }
     });
     return User;
