@@ -3,7 +3,7 @@
  * @module models/user
  */
 import { USER_ROLES } from '../components/constants';
-import { sendInvite } from '../components/mail';
+import { sendInvite, sendDestinationAcceptance } from '../components/mail';
 import _ from 'lodash';
 
 
@@ -63,6 +63,10 @@ export default function (sequelize, DataTypes) {
             sendInvite() {
                 const token = this.createJwt();
                 return sendInvite(this, token);
+            },
+            sendDestinationAcceptance(destination) {
+                const token = this.createJwt();
+                return sendDestinationAcceptance(this, destination, token);
             }
         }
     });

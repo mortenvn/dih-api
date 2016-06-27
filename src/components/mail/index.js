@@ -56,3 +56,34 @@ export function sendInvite(user, token) {
             console.error(err); // eslint-disable-line
         });
 }
+
+/**
+ * userAcceptedToDestination - Sends an e-mail to a user that's accepted to a destiation
+ *
+ * @param  {SequlizeInstance} user The user which is going to recive the email
+ * @param  {SequlizeInstance} destination The destination the user was accepted to
+ * @param  {string} token A JWT used to authorize with the rest api
+ * @return {SequlizeInstance} user The user who was sent the email
+ */
+export function sendDestinationAcceptance(user, destination, token) {
+    // @TODO correct URL for mytrips
+    const mailOptions = {
+        to: user.email,
+        from: `DIH <${config.email}>`,
+        subject: 'Du har blitt godkjent som frivillig hos Dråpen i Havet!',
+        template: 'action',
+        context: {
+            content: `Du har blitt godkjent som frivillig til destinasjonen ${destination.name}`,
+            action: {
+                text: 'Se din reise',
+                url: `${config.web}/mytrips?token=${token}`
+            }
+        }
+    };
+
+    return transporter.sendMailAsync(mailOptions)
+        .then(() => user)
+        .catch(err => { // TODO should add some logger, or better use Sentry!
+            console.error(err); // eslint-disable-line
+        });
+}
