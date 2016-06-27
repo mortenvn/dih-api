@@ -1,4 +1,4 @@
-FROM node:4
+FROM node:6
 MAINTAINER Capra <kla@capraconsulting.no>
 
 # Create app directory
@@ -11,6 +11,5 @@ EXPOSE 9000
 COPY . /app
 
 # Build image
-RUN set -ex \
-	&& npm install \
-    && npm run build
+RUN npm install
+RUN npm run build

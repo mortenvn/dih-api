@@ -10,3 +10,6 @@ out
 *.swo
 .environment
 dist
+coverage
+.nyc_output
+doc

@@ -1,12 +1,13 @@
 ## circle.yml
 machine:
-    environment:
-        PG_URL: postgres://ubuntu:@127.0.0.1:5432/circle_test
+    node:
+        version: 6.2.2
     services:
         - docker
 
 dependencies:
     override:
+        - npm install -g npm babel-cli
         - sudo pip install awscli
         - aws configure set default.region eu-west-1
         - aws configure set default.output json
@@ -16,7 +17,11 @@ dependencies:
 
 test:
     override:
-        - npm test
+        - npm test:
+            environment:
+                PG_URL: postgres://ubuntu:@127.0.0.1:5432/circle_test
+    post:
+        - npm run coverage
 
 deployment:
     prod:
@@ -25,9 +30,25 @@ deployment:
             - docker build -t dih-api:latest .
             - docker tag dih-api:latest $EXTERNAL_REGISTRY:latest
             - docker push $EXTERNAL_REGISTRY:latest
+            - babel-node deploy.js:
+                environment:
+                    WEB: dih.capra.me
+                    EMAIL: production@dih.capra.me
+                    NODE_ENV: production
+                    CLUSTER: dih-cluster
+                    NAME: dih-api
+
     staging:
         branch: dev
         commands:
             - docker build -t dih-api-dev:latest .
             - docker tag dih-api-dev:latest $EXTERNAL_REGISTRY-dev:latest
             - docker push $EXTERNAL_REGISTRY-dev:latest
+            - npm run docs
+            - babel-node deploy.js:
+                environment:
+                    WEB: dev.dih.capra.me
+                    EMAIL: dev@dih.capra.me
+                    NODE_ENV: staging
+                    CLUSTER: dih-cluster-dev
+                    NAME: dih-api-dev
