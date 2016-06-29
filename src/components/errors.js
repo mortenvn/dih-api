@@ -90,7 +90,7 @@ export class ResourceNotFoundError extends Error {
 
 /**
  * AuthenticationError - Returns a 401 You need to authenicate to access this resource,
- * implying that the user does not have enough premissions to complete this request.
+ * indicating that the user does not have enough premissions to complete this request.
  *
  * @param  {String} message - A message sent to the user why he/she is not authenticated
  * @return {Object}  - Error object
@@ -99,6 +99,21 @@ export class AuthenticationError extends Error {
     name = 'AuthenticationError';
     status = 401;
     constructor(message = 'You need to authenicate to access this resource') {
+        super(message);
+        this.message = message;
+    }
+}
+
+/**
+ * InvalidQueryError - Returns a 401 Given query was invalid.
+ * indicating that the query the user gave was invalid.
+ *
+ * @return {Object}  - Error object
+ */
+export class InvalidQueryError extends Error {
+    name = 'InvalidQueryError';
+    status = 400;
+    constructor(message = 'Given query was invalid.') {
         super(message);
         this.message = message;
     }

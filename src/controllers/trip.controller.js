@@ -4,10 +4,14 @@
  */
 import Sequelize from 'sequelize';
 import db from '../models';
-import { ResourceNotFoundError, ValidationError, DatabaseError } from '../components/errors';
+import { ResourceNotFoundError,
+        ValidationError,
+        DatabaseError,
+        InvalidQueryError } from '../components/errors';
+
 
 /**
- * list - List all trips in the database
+ * list - List trips that qualify query
  *
  * @function list
  * @memberof  module:controllers/trip
@@ -16,6 +20,9 @@ import { ResourceNotFoundError, ValidationError, DatabaseError } from '../compon
  * @param  {Function} next Express next middleware function
  */
 export function list(req, res, next) {
+    if (!db.Trip.validateQuery(req.query)) {
+        throw new InvalidQueryError();
+    }
     db.Trip.findAll({
         where: req.query
     })

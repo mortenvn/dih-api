@@ -49,6 +49,101 @@ describe.serial('Trip API', it => {
         t.is(response.length, tripObjects.length);
     });
 
+    it('should be able to get all trips of a spcecific destinationId', async t => {
+        const response = await request(app)
+            .get(`${URI}?destinationId=${tripObjects[0].destinationId}`)
+            .expect(200)
+            .then(res => res.body);
+        t.is(response.length, 1);
+    });
+
+    it('should be able to get trips of a spcecific userId', async t => {
+        const response = await request(app)
+            .get(`${URI}?userId=${tripObjects[0].userId}`)
+            .expect(200)
+            .then(res => res.body);
+        t.is(response.length, 2);
+    });
+
+
+    it('should be able to get all trips of a spcecific status', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?status=${fixture.status}`)
+            .expect(200)
+            .then(res => res.body);
+        t.is(response.length, 1);
+    });
+
+    it('should be able to get trips of a spcecific userId and destinationId', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?userId=${fixture.userId}&destinationId=${fixture.destinationId}`)
+            .expect(200)
+            .then(res => res.body);
+        t.is(response.length, 1);
+    });
+
+    it('should be able to get trips of a spcecific userId, destinationId and status', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?userId=${fixture.userId}
+                        &destinationId=${fixture.destinationId}
+                        &status=${fixture.status}`)
+            .expect(200)
+            .then(res => res.body);
+        t.is(response.length, 1);
+    });
+
+    it('should be not be able to query on startDate', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?startDate=${fixture.startDate}`)
+            .expect(400)
+            .then(res => res.body);
+        t.is(response.name, 'InvalidQueryError');
+        t.is(response.message, 'Given query was invalid.');
+    });
+
+    it('should be not be able to query on endDate', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?endDate=${fixture.endDate}`)
+            .expect(400)
+            .then(res => res.body);
+        t.is(response.name, 'InvalidQueryError');
+        t.is(response.message, 'Given query was invalid.');
+    });
+
+    it('should be not be able to query on wishStartDate', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?wishStartDate=${fixture.wishStartDate}`)
+            .expect(400)
+            .then(res => res.body);
+        t.is(response.name, 'InvalidQueryError');
+        t.is(response.message, 'Given query was invalid.');
+    });
+
+    it('should be not be able to query on wishEndDate', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?wishEndDate=${fixture.wishEndDate}`)
+            .expect(400)
+            .then(res => res.body);
+        t.is(response.name, 'InvalidQueryError');
+        t.is(response.message, 'Given query was invalid.');
+    });
+
+    it('should reject queries on non-existing model properties', async t => {
+        const response = await request(app)
+            .get(`${URI}?topkek=someValue&capra=summmer`)
+            .expect(400)
+            .then(res => res.body);
+        t.is(response.name, 'InvalidQueryError');
+        t.is(response.message, 'Given query was invalid.');
+    });
+
     it('should be able to create a new trip ', async t => {
         const response = await request(app)
             .post(URI)
