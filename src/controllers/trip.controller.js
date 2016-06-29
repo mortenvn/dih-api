@@ -16,9 +16,11 @@ import { ResourceNotFoundError, ValidationError, DatabaseError } from '../compon
  * @param  {Function} next Express next middleware function
  */
 export function list(req, res, next) {
-    db.Trip.findAll()
-        .then(res.json.bind(res))
-        .catch(next);
+    db.Trip.findAll({
+        where: req.query
+    })
+    .then(res.json.bind(res))
+    .catch(next);
 }
 
 /**
