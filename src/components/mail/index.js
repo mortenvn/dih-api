@@ -66,9 +66,9 @@ export function sendInvite(user, token) {
 }
 
 /**
- * userAcceptedToDestination - Sends an e-mail to a user that's accepted to a destiation
+ * sendDestinationAcceptance - Sends an e-mail to a user that's accepted to a destiation
  *
- * @function userAcceptedToDestination
+ * @function sendDestinationAcceptance
  * @memberof  module:components/mail
  * @param  {SequlizeInstance} user The user which is going to recive the email
  * @param  {SequlizeInstance} destination The destination the user was accepted to
