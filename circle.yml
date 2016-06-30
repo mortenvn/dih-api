@@ -24,26 +24,26 @@ test:
         - npm run coverage
 
 deployment:
-    prod:
+
+    production:
         branch: master
         commands:
-            - docker build -t dih-api:latest .
-            - docker tag dih-api:latest $EXTERNAL_REGISTRY:latest
-            - docker push $EXTERNAL_REGISTRY:latest
+            - docker build -t dih-api:production-latest .
+            - docker tag dih-api:production-latest $EXTERNAL_REGISTRY:production-latest
+            - docker push $EXTERNAL_REGISTRY:production-latest
             - babel-node deploy.js:
                 environment:
-                    WEB: dih.capra.me
+                    WEB: http://dih.capra.me
                     EMAIL: production@dih.capra.me
                     NODE_ENV: production
                     CLUSTER: dih-cluster
-                    NAME: dih-api
 
     staging:
         branch: dev
         commands:
-            - docker build -t dih-api-dev:latest .
-            - docker tag dih-api-dev:latest $EXTERNAL_REGISTRY-dev:latest
-            - docker push $EXTERNAL_REGISTRY-dev:latest
+            - docker build -t dih-api:staging-latest .
+            - docker tag dih-api:staging-latest $EXTERNAL_REGISTRY:staging-latest
+            - docker push $EXTERNAL_REGISTRY:staging-latest
             - npm run docs
             - babel-node deploy.js:
                 environment:
@@ -51,4 +51,3 @@ deployment:
                     EMAIL: dev@dih.capra.me
                     NODE_ENV: staging
                     CLUSTER: dih-cluster-dev
-                    NAME: dih-api-dev
