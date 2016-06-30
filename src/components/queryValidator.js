@@ -3,6 +3,8 @@
  * @module components/queryValidator
  */
 
+import _ from 'lodash';
+
 /**
  * validateQuery - Catches all upstream errors and returns them to the requester.
  *
@@ -12,13 +14,9 @@
  * @return {Boolean}  - If the query is valid or not
  */
 export function validateQuery(query, allowedQueryParams) {
-    const keys = Object.keys(query);
     let isValid = true;
-    for (let i = 0; i < keys.length; i++) {
-        if (allowedQueryParams.indexOf(keys[i]) === -1) {
-            isValid = false;
-            break;
-        }
-    }
+    _.mapKeys(query, (value, key) => {
+        if (allowedQueryParams.indexOf(key) === -1) isValid = false;
+    });
     return isValid;
 }
