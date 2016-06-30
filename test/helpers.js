@@ -1,6 +1,6 @@
 import sequelizeFixtures from 'sequelize-fixtures';
 import db from '../src/models';
-import { syncDB } from '../src/model-helpers';
+import { syncDB } from '../src/db-helpers';
 import path from 'path';
 import jwt from 'jsonwebtoken';
 import config from '../src/config';
@@ -24,15 +24,6 @@ export function loadFixtures(fixtures) {
 export function getAllElements(model) {
     return db[model].findAll()
         .then(objects => objects.map(object => object.toJSON()));
-}
-
-/**
- * getAllUserElements - Gives you all of the user fixture elements
- *
- * @return {Array} - All user fixture elements from db
- */
-export function getAllUserElements() {
-    return db.User.findAll().then(users => users.map(user => user.toJSON()));
 }
 
 /**
