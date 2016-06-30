@@ -2,7 +2,7 @@
 import childProcess from 'child-process-promise';
 
 const cluster = process.env.CLUSTER;
-const name = process.env.NAME;
+const env = process.env.NODE_ENV;
 const task = {
     "containerDefinitions": [
         {
@@ -15,7 +15,7 @@ const task = {
                 }
             ],
             essential: true,
-            name: name,
+            name: 'dih-api',
             environment: [
                 {
                     name: "PG_URL",
@@ -50,21 +50,22 @@ const task = {
                     value: process.env.SES_SECRETKEY
                 }
             ],
-            image: `036160847874.dkr.ecr.eu-west-1.amazonaws.com/${name}:latest`,
+            image: `036160847874.dkr.ecr.eu-west-1.amazonaws.com/dih-api:${env}-latest`,
             command: [
                 "npm",
                 "start"
             ],
             dockerLabels: {
-                name: name
+                name: 'dih-api',
+                environment: env
             },
             logConfiguration: {
                 logDriver: "json-file"
             },
-            cpu: 1,
+            cpu: 400,
         }
     ],
-    "family": `${name}-task`
+    "family": `dih-api-${env}`
 }
 
 function createTask() {
@@ -76,7 +77,7 @@ function createTask() {
 function deployTask(definition) {
     let cmd = 'aws ecs update-service';
     cmd += ` --cluster ${cluster}`;
-    cmd += ` --service ${name}`;
+    cmd += ` --service dih-api-${env}`;
     cmd += ` --task-definition ${definition}`;
     return childProcess.exec(cmd);
 }
