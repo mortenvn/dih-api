@@ -4,10 +4,7 @@
  */
 import Sequelize from 'sequelize';
 import db from '../models';
-import { ResourceNotFoundError,
-        ValidationError,
-        DatabaseError,
-        InvalidQueryError } from '../components/errors';
+import * as errors from '../components/errors';
 
 
 /**
@@ -21,7 +18,7 @@ import { ResourceNotFoundError,
  */
 export function list(req, res, next) {
     if (!db.Trip.validateQuery(req.query)) {
-        throw new InvalidQueryError();
+        throw new errors.InvalidQueryError();
     }
     db.Trip.findAll({
         where: req.query,
@@ -51,7 +48,7 @@ export function create(req, res, next) {
     db.Trip.create(req.body)
         .then(savedObj => res.status(201).json(savedObj))
         .catch(Sequelize.ValidationError, err => {
-            throw new ValidationError(err);
+            throw new errors.ValidationError(err);
         })
         .catch(next);
 }
@@ -72,7 +69,7 @@ export function destroy(req, res, next) {
         }
     })
     .then(count => {
-        if (!count) throw new ResourceNotFoundError('trip');
+        if (!count) throw new errors.ResourceNotFoundError('trip');
         res.sendStatus(200);
     })
     .catch(next);
@@ -94,15 +91,15 @@ export function update(req, res, next) {
         }
     })
     .then(trip => {
-        if (!trip) throw new ResourceNotFoundError('trip');
+        if (!trip) throw new errors.ResourceNotFoundError('trip');
         return trip.update(req.body);
     })
     .then(() => res.sendStatus(204))
     .catch(Sequelize.ValidationError, err => {
-        throw new ValidationError(err);
+        throw new errors.ValidationError(err);
     })
     .catch(Sequelize.DatabaseError, err => {
-        throw new DatabaseError(err);
+        throw new errors.DatabaseError(err);
     })
     .catch(next);
 }
