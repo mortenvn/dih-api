@@ -4,7 +4,7 @@
  */
 import app from './app';
 import config from './config';
-import { migrateDB } from './db-helpers';
+import { migrateDB, syncDB } from './db-helpers';
 
 
 /**
@@ -20,5 +20,8 @@ function listen() {
     });
 }
 
-migrateDB()
-    .then(() => listen());
+let db;
+if (config.nodeEnv === 'development') db = syncDB({ force: true });
+else db = migrateDB();
+
+db.then(() => listen());
