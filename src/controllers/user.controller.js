@@ -5,7 +5,7 @@
  */
 import db from '../models';
 import Sequelize from 'sequelize';
-import { ValidationError } from '../components/errors';
+import { ResourceNotFoundError, ValidationError } from '../components/errors';
 
 
 /**
@@ -20,6 +20,28 @@ import { ValidationError } from '../components/errors';
 export function list(req, res, next) {
     db.User.findAll()
     .then(res.json.bind(res))
+    .catch(next);
+}
+
+/**
+ * retrieve - Retrieves a single user by ID.
+ *
+ * @function retrieve
+ * @memberof module:controllers/user
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
+export function retrieve(req, res, next) {
+    db.User.findOne({
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(user => {
+        if (!user) throw new ResourceNotFoundError('user');
+        res.json(user);
+    })
     .catch(next);
 }
 
