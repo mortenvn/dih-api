@@ -105,15 +105,15 @@ export class AuthenticationError extends Error {
 }
 
 /**
- * InvalidQueryError - Returns a 401 Given query was invalid.
- * indicating that the query the user gave was invalid.
+ * UriValidationError - Returns a 400 Invalid URI.
+ * indicating that the URI the user gave was invalid.
  *
  * @return {Object}  - Error object
  */
-export class InvalidQueryError extends Error {
-    name = 'InvalidQueryError';
+export class UriValidationError extends Error {
+    name = 'UriValidationError';
     status = 400;
-    constructor(message = 'Given query was invalid.') {
+    constructor(message = 'Invalid URI.') {
         super(message);
         this.message = message;
     }

@@ -18,7 +18,7 @@ import * as errors from '../components/errors';
  */
 export function list(req, res, next) {
     if (!db.Trip.validateQuery(req.query)) {
-        throw new errors.InvalidQueryError();
+        throw new errors.UriValidationError();
     }
     db.Trip.findAll({
         where: req.query,
