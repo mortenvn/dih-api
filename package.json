@@ -15,7 +15,8 @@
     "start:test": "babel-node test/test",
     "test": "npm run lint && npm run tests",
     "tests": "NODE_ENV=test nyc ava --serial",
-    "test:watch": "NODE_ENV=test ava --serial --watch"
+    "test:watch": "NODE_ENV=test ava --serial --watch",
+    "load": "babel-node test/load.js"
   },
   "ava": {
     "require": "babel-core/register",

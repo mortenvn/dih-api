@@ -33,6 +33,8 @@ If you're gonna develop:
 
 This will watch for changes and keep it open for you.
 
+To enter some test data into your database, run `npm run load`.
+
 ## Tests
 
 ### Single run
