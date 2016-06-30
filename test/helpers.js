@@ -8,7 +8,8 @@ import config from '../src/config';
 export function loadFixtures(fixtures) {
     const f = fixtures || [
         'users',
-        'destinations'
+        'destinations',
+        'trips'
     ];
     const fixturePaths = f.map(file => `${path.resolve(__dirname)}/fixtures/${file}.json`);
     return syncDB({ force: true })

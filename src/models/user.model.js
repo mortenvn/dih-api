@@ -90,7 +90,7 @@ export default function (sequelize, DataTypes) {
         },
         hooks: {
             beforeUpdate: [
-                (user) => {
+                user => {
                     if (!user.changed('password')) return Promise.resolve();
                     return bcrypt.genSaltAsync()
                         .then(salt => bcrypt.hashAsync(user.get('password'), salt))
