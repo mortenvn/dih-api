@@ -24,7 +24,15 @@ export function list(req, res, next) {
         throw new InvalidQueryError();
     }
     db.Trip.findAll({
-        where: req.query
+        where: req.query,
+        include: [{
+            model: db.User,
+            attributes: {
+                exclude: ['hash']
+            }
+        }, {
+            model: db.Destination
+        }]
     })
     .then(res.json.bind(res))
     .catch(next);
