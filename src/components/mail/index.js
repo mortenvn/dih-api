@@ -1,3 +1,7 @@
+/**
+ * All functions and setup regarding generating and sending emails.
+ * @module components/mail
+ */
 import nodemailer from 'nodemailer';
 import handlebars from 'express-handlebars';
 import Promise from 'bluebird';
@@ -17,6 +21,8 @@ const options = hbs({
  * Such that when running tests we can mock the transport and test all the mail functionality
  * The default transporter is AWS SES
  *
+ * @function updateTransport
+ * @memberof  module:components/mail
  * @param  {Object} transport the transport ubject we would like to use
  */
 export function updateTransport(transport) {
@@ -30,6 +36,8 @@ updateTransport(ses(config.ses));
 /**
  * sendInvite - Sends an invite email to the specified user,
  *
+ * @function sendInvite
+ * @memberof  module:components/mail
  * @param  {SequlizeInstance} user The user which is going to recive the email
  * @param  {string} token A JWT used to authorize with the rest api
  * @return {SequlizeInstance} user The user who was sent the email
@@ -58,8 +66,10 @@ export function sendInvite(user, token) {
 }
 
 /**
- * userAcceptedToDestination - Sends an e-mail to a user that's accepted to a destiation
+ * sendDestinationAcceptance - Sends an e-mail to a user that's accepted to a destiation
  *
+ * @function sendDestinationAcceptance
+ * @memberof  module:components/mail
  * @param  {SequlizeInstance} user The user which is going to recive the email
  * @param  {SequlizeInstance} destination The destination the user was accepted to
  * @param  {string} token A JWT used to authorize with the rest api

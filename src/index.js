@@ -4,7 +4,7 @@
  */
 import app from './app';
 import config from './config';
-import { syncDB } from './model-helpers';
+import { migrateDB } from './db-helpers';
 
 
 /**
@@ -20,5 +20,5 @@ function listen() {
     });
 }
 
-syncDB()
+migrateDB()
     .then(() => listen());
