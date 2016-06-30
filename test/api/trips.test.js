@@ -49,7 +49,7 @@ describe.serial('Trip API', it => {
         t.is(response.length, tripObjects.length);
     });
 
-    it('should be able to get all trips of a spcecific destinationId', async t => {
+    it('should be able to get all trips of a specific destinationId', async t => {
         const response = await request(app)
             .get(`${URI}?destinationId=${tripObjects[0].destinationId}`)
             .expect(200)
@@ -57,7 +57,7 @@ describe.serial('Trip API', it => {
         t.is(response.length, 1);
     });
 
-    it('should be able to get trips of a spcecific userId', async t => {
+    it('should be able to get trips of a specific userId', async t => {
         const response = await request(app)
             .get(`${URI}?userId=${tripObjects[0].userId}`)
             .expect(200)
@@ -66,7 +66,7 @@ describe.serial('Trip API', it => {
     });
 
 
-    it('should be able to get all trips of a spcecific status', async t => {
+    it('should be able to get all trips of a specific status', async t => {
         const fixture = tripObjects[0];
         const response = await request(app)
             .get(`${URI}?status=${fixture.status}`)
@@ -75,7 +75,7 @@ describe.serial('Trip API', it => {
         t.is(response.length, 1);
     });
 
-    it('should be able to get trips of a spcecific userId and destinationId', async t => {
+    it('should be able to get trips of a specific userId and destinationId', async t => {
         const fixture = tripObjects[0];
         const response = await request(app)
             .get(`${URI}?userId=${fixture.userId}&destinationId=${fixture.destinationId}`)
@@ -84,7 +84,7 @@ describe.serial('Trip API', it => {
         t.is(response.length, 1);
     });
 
-    it('should be able to get trips of a spcecific userId, destinationId and status', async t => {
+    it('should be able to get trips of a specific userId, destinationId and status', async t => {
         const fixture = tripObjects[0];
         const response = await request(app)
             .get(`${URI}?userId=${fixture.userId}
