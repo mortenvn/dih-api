@@ -101,8 +101,8 @@ describe.serial('Trip API', it => {
             .get(`${URI}?startDate=${fixture.startDate}`)
             .expect(400)
             .then(res => res.body);
-        t.is(response.name, 'InvalidQueryError');
-        t.is(response.message, 'Given query was invalid.');
+        t.is(response.name, 'UriValidationError');
+        t.is(response.message, 'Invalid URI.');
     });
 
     it('should be not be able to query on endDate', async t => {
@@ -111,8 +111,8 @@ describe.serial('Trip API', it => {
             .get(`${URI}?endDate=${fixture.endDate}`)
             .expect(400)
             .then(res => res.body);
-        t.is(response.name, 'InvalidQueryError');
-        t.is(response.message, 'Given query was invalid.');
+        t.is(response.name, 'UriValidationError');
+        t.is(response.message, 'Invalid URI.');
     });
 
     it('should be not be able to query on wishStartDate', async t => {
@@ -121,8 +121,8 @@ describe.serial('Trip API', it => {
             .get(`${URI}?wishStartDate=${fixture.wishStartDate}`)
             .expect(400)
             .then(res => res.body);
-        t.is(response.name, 'InvalidQueryError');
-        t.is(response.message, 'Given query was invalid.');
+        t.is(response.name, 'UriValidationError');
+        t.is(response.message, 'Invalid URI.');
     });
 
     it('should be not be able to query on wishEndDate', async t => {
@@ -131,8 +131,8 @@ describe.serial('Trip API', it => {
             .get(`${URI}?wishEndDate=${fixture.wishEndDate}`)
             .expect(400)
             .then(res => res.body);
-        t.is(response.name, 'InvalidQueryError');
-        t.is(response.message, 'Given query was invalid.');
+        t.is(response.name, 'UriValidationError');
+        t.is(response.message, 'Invalid URI.');
     });
 
     it('should reject queries on non-existing model properties', async t => {
@@ -140,8 +140,8 @@ describe.serial('Trip API', it => {
             .get(`${URI}?topkek=someValue&capra=summmer`)
             .expect(400)
             .then(res => res.body);
-        t.is(response.name, 'InvalidQueryError');
-        t.is(response.message, 'Given query was invalid.');
+        t.is(response.name, 'UriValidationError');
+        t.is(response.message, 'Invalid URI.');
     });
 
     it('should be able to create a new trip ', async t => {
