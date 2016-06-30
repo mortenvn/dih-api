@@ -1,6 +1,6 @@
 import { describe } from 'ava-spec';
 import db from '../../src/models';
-import { syncDB } from '../../src/model-helpers';
+import { syncDB } from '../../src/db-helpers';
 import { updateTransport } from '../../src/components/mail';
 import sinon from 'sinon';
 

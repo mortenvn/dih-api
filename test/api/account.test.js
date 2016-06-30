@@ -1,4 +1,4 @@
-import { loadFixtures, getAllUserElements, createValidJWT, createInvalidJWT } from '../helpers';
+import { loadFixtures, getAllElements, createValidJWT, createInvalidJWT } from '../helpers';
 import { describe } from 'ava-spec';
 import request from 'supertest-as-promised';
 import app from '../../src/app';
@@ -15,7 +15,7 @@ let dbObjects;
 describe.serial('Account API', it => {
     it.beforeEach(() =>
         loadFixtures(fixtures)
-            .then(() => getAllUserElements())
+            .then(() => getAllElements('User'))
             .then(response => {
                 dbObjects = response;
             })

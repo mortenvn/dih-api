@@ -76,6 +76,7 @@
     "sequelize-fixtures": "^0.5.3",
     "sinon": "^1.17.4",
     "supertest": "^1.2.0",
-    "supertest-as-promised": "^3.1.0"
+    "supertest-as-promised": "^3.1.0",
+    "umzug": "^1.11.0"
   }
 }
