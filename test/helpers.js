@@ -2,8 +2,10 @@ import sequelizeFixtures from 'sequelize-fixtures';
 import db from '../src/models';
 import { syncDB } from '../src/db-helpers';
 import path from 'path';
+import Promise from 'bluebird';
 import jwt from 'jsonwebtoken';
 import config from '../src/config';
+Promise.promisifyAll(jwt);
 
 export function loadFixtures(fixtures) {
     const f = fixtures || [
@@ -37,6 +39,16 @@ export function createValidJWT(payload) {
     return jwt.sign(payload, config.secret, {
         expiresIn: config.jwtExpiresIn
     });
+}
+
+/**
+ * validateJwt - Validate a JWT for testing purposes
+ *
+ * @param {String} token
+ * @return {Object} - decoded token
+ */
+export function validateJwt(token) {
+    return jwt.verifyAsync(token, config.secret);
 }
 
 /**

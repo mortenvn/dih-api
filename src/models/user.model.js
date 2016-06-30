@@ -6,6 +6,7 @@ import _ from 'lodash';
 import bcrypt from 'bcrypt';
 import Promise from 'bluebird';
 import { USER_ROLES } from '../components/constants';
+import { CustomValidationError } from '../components/errors';
 import { sendInvite, sendDestinationAcceptance } from '../components/mail';
 import { createJwt } from '../components/auth';
 Promise.promisifyAll(bcrypt);
@@ -40,17 +41,6 @@ export default function (sequelize, DataTypes) {
             allowNull: false
         },
         hash: DataTypes.STRING,
-        password: {
-            type: DataTypes.VIRTUAL,
-            set(password) {
-                this.setDataValue('password', password);
-            },
-            validate: {
-                strength(password) {
-                    if (password.length < 7) throw new Error('Please choose a longer password');
-                }
-            }
-        },
         role: {
             type: DataTypes.ENUM,
             values: _.values(USER_ROLES),
@@ -73,30 +63,30 @@ export default function (sequelize, DataTypes) {
             toJSON() {
                 const user = this.get({ plain: true });
                 delete user.hash;
-                delete user.password;
                 return user;
             },
-            createJwt() {
-                return createJwt(this.toJSON());
+            createJwt(additionalPayload) {
+                return createJwt({ ...this.toJSON(), ...additionalPayload });
             },
             sendInvite() {
-                const token = this.createJwt();
+                const token = this.createJwt({ setPassword: true });
                 return sendInvite(this, token);
+            },
+            updatePassword(password) {
+                if (!password || password.length < 8) {
+                    throw new CustomValidationError('not a valid password');
+                }
+                return bcrypt.genSaltAsync()
+                    .then(salt => bcrypt.hashAsync(password, salt))
+                    .then(hash => {
+                        this.hash = hash;
+                        return this.save();
+                    });
             },
             sendDestinationAcceptance(destination) {
                 const token = this.createJwt();
                 return sendDestinationAcceptance(this, destination, token);
             }
-        },
-        hooks: {
-            beforeUpdate: [
-                user => {
-                    if (!user.changed('password')) return Promise.resolve();
-                    return bcrypt.genSaltAsync()
-                        .then(salt => bcrypt.hashAsync(user.get('password'), salt))
-                        .then(hash => user.set('hash', hash));
-                }
-            ]
         }
     });
     return User;

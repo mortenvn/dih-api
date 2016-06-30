@@ -6,8 +6,7 @@ import app from '../../src/app';
 
 let transport;
 const fixtures = [
-    'users',
-    'destinations'
+    'users'
 ];
 
 const URI = '/users';
