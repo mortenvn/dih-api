@@ -49,7 +49,7 @@ export default function (sequelize, DataTypes) {
         },
         hooks: {
             beforeUpdate: [
-                (trip) => {
+                trip => {
                     if (trip.changed('status') && trip.status === TRIP_STATUSES.ACCEPTED) {
                         return trip.acceptUser();
                     }
