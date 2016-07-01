@@ -21,7 +21,7 @@ function listen() {
 }
 
 let db;
-if (config.nodeEnv === 'development') db = syncDB({ force: true });
+if (config.nodeEnv === 'development') db = syncDB();
 else db = migrateDB();
 
 db.then(() => listen());
