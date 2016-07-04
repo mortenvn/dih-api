@@ -1,4 +1,4 @@
-import { loadFixtures, getAllElements } from '../helpers';
+import { loadFixtures, getAllElements, createValidJWT } from '../helpers';
 import { describe } from 'ava-spec';
 import _ from 'lodash';
 import request from 'supertest-as-promised';
@@ -36,7 +36,6 @@ describe.serial('Trip API', it => {
                 userObjects = response;
             })
             .then(() => {
-                mockTrip.userId = userObjects[1].id;
                 mockTrip.destinationId = destinationObjects[1].id;
             })
     );
@@ -148,6 +147,7 @@ describe.serial('Trip API', it => {
         const response = await request(app)
             .post(URI)
             .send(mockTrip)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(201)
             .then(res => res);
         t.is(response.body.status, mockTrip.status);
@@ -158,6 +158,7 @@ describe.serial('Trip API', it => {
         delete mockWithEmptyStatus.status;
         await request(app)
             .post(URI, mockWithEmptyStatus)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(400);
     });
 
@@ -166,6 +167,7 @@ describe.serial('Trip API', it => {
         delete mockWithEmptyDestination.destinationId;
         await request(app)
             .post(URI, mockWithEmptyDestination)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(400);
     });
 
@@ -174,6 +176,7 @@ describe.serial('Trip API', it => {
         delete mockWithEmptyUser.userId;
         await request(app)
             .post(URI, mockWithEmptyUser)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(400);
     });
 
@@ -184,6 +187,7 @@ describe.serial('Trip API', it => {
         const validRequestResponse = await request(app)
             .put(`${URI}/${fixture.id}`)
             .send(changedFixture)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(204)
             .then(() => request(app).get(URI))
             .then(res => _.find(res.body, obj => obj.id === fixture.id));
@@ -196,6 +200,7 @@ describe.serial('Trip API', it => {
         invalidChangedFixture.status = 'kek';
         await request(app)
             .put(`${URI}/${fixture.id}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(invalidChangedFixture)
             .expect(400);
     });
@@ -203,6 +208,7 @@ describe.serial('Trip API', it => {
     it('should return 404 when you try to update a trip that does not exist', async () => {
         await request(app)
             .put(`${URI}/${tripObjects.length + 100}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(mockTrip)
             .expect(404);
     });

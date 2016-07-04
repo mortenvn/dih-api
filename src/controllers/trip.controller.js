@@ -45,12 +45,15 @@ export function list(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function create(req, res, next) {
-    db.Trip.create(req.body)
-        .then(savedObj => res.status(201).json(savedObj))
-        .catch(Sequelize.ValidationError, err => {
-            throw new errors.ValidationError(err);
-        })
-        .catch(next);
+    db.Trip.create({
+        ...req.body,
+        userId: req.user.id
+    })
+    .then(savedObj => res.status(201).json(savedObj))
+    .catch(Sequelize.ValidationError, err => {
+        throw new errors.ValidationError(err);
+    })
+    .catch(next);
 }
 
 /**
