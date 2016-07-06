@@ -1,6 +1,7 @@
 /* eslint-disable */
 import childProcess from 'child-process-promise';
 
+const PG_URL = `postgres://${process.env.PG_USER}:${process.env.PG_PASSWORD}@dih-{env}.${process.env.PG_URL_BASE}`;
 const env = process.env.NODE_ENV;
 const task = {
     "containerDefinitions": [
@@ -18,7 +19,7 @@ const task = {
             environment: [
                 {
                     name: "PG_URL",
-                    value: process.env.PG_URL
+                    value: PG_URL
                 },
                 {
                     name: "NODE_ENV",
