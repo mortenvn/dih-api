@@ -26,6 +26,12 @@ export default function (sequelize, DataTypes) {
         wishEndDate: {
             type: DataTypes.DATE,
             allowNull: false
+        },
+        hotel: {
+            type: DataTypes.STRING
+        },
+        notes: {
+            type: DataTypes.TEXT
         }
     }, {
         classMethods: {
