@@ -36,6 +36,28 @@ export function list(req, res, next) {
 }
 
 /**
+ * retrieve - Retrieves a single trip by ID.
+ *
+ * @function retrieve
+ * @memberof module:controllers/trip
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
+export function retrieve(req, res, next) {
+    db.Trip.findOne({
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(trip => {
+        if (!trip) throw new errors.ResourceNotFoundError('trip');
+        res.json(trip);
+    })
+    .catch(next);
+}
+
+/**
  * create - creates a trip.
  *
  * @function create

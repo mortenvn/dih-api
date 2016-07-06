@@ -143,6 +143,23 @@ describe.serial('Trip API', it => {
         t.is(response.message, 'Invalid URI.');
     });
 
+    it('should be able to retrieve a single trip', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}/${fixture.id}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
+            .expect(200);
+        t.is(response.body.userId, fixture.userId);
+        t.is(response.body.destinationId, fixture.destinationId);
+    });
+
+    it('should not be able to retrieve a single trip that does not exist', async () => {
+        await request(app)
+            .get(`${URI}/${tripObjects.length + 100}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
+            .expect(404);
+    });
+
     it('should be able to create a new trip ', async t => {
         const response = await request(app)
             .post(URI)
