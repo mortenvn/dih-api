@@ -40,6 +40,7 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.DATE,
             allowNull: false
         },
+        notes: DataTypes.STRING,
         hash: DataTypes.STRING,
         role: {
             type: DataTypes.ENUM,
