@@ -24,11 +24,15 @@ exports.USER_ROLES = {
  * @property {string} REJECTED - The trip is rejected by an admin
  * @property {string} ACTIVE - The trip is currently in progress by a user
  * @property {string} CLOSED - The trip is closed, hence the user has completed this trip
+ * @property {string} PRESENT - Volunteer is present at destination
+ * @property {string} LEFT - Volunteer has left the destination
  */
 exports.TRIP_STATUSES = {
     PENDING: 'PENDING',
     ACCEPTED: 'ACCEPTED',
     REJECTED: 'REJECTED',
     ACTIVE: 'ACTIVE',
-    CLOSED: 'CLOSED'
+    CLOSED: 'CLOSED',
+    PRESENT: 'PRESENT',
+    LEFT: 'LEFT'
 };
