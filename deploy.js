@@ -8,7 +8,7 @@ const task = {
             memory: 500,
             portMappings: [
                 {
-                    hostPort: parseInt(process.env.PG_URL, 10),
+                    hostPort: parseInt(process.env.PORT, 10),
                     containerPort: 9000,
                     protocol: "tcp"
                 }
