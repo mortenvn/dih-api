@@ -1,7 +1,7 @@
 /* eslint-disable */
 import childProcess from 'child-process-promise';
 
-const cluster = process.env.CLUSTER;
+const PG_URL = `postgres://${process.env.PG_USER}:${process.env.PG_PASSWORD}@dih-{env}.${process.env.PG_URL_BASE}`;
 const env = process.env.NODE_ENV;
 const task = {
     "containerDefinitions": [
@@ -9,17 +9,17 @@ const task = {
             memory: 500,
             portMappings: [
                 {
-                    hostPort: 80,
+                    hostPort: parseInt(process.env.PORT, 10),
                     containerPort: 9000,
                     protocol: "tcp"
                 }
             ],
             essential: true,
-            name: 'dih-api',
+            name: `dih-api-${env}`,
             environment: [
                 {
                     name: "PG_URL",
-                    value: process.env.PG_URL
+                    value: PG_URL
                 },
                 {
                     name: "NODE_ENV",
@@ -59,8 +59,12 @@ const task = {
                 name: 'dih-api',
                 environment: env
             },
-            logConfiguration: {
-                logDriver: "json-file"
+            "logConfiguration": {
+                "logDriver": "awslogs",
+                "options": {
+                    "awslogs-group": `dih-api-${env}`,
+                    "awslogs-region": "eu-west-1"
+                }
             },
             cpu: 400,
         }
@@ -76,7 +80,7 @@ function createTask() {
 
 function deployTask(definition) {
     let cmd = 'aws ecs update-service';
-    cmd += ` --cluster ${cluster}`;
+    cmd += ` --cluster dih-cluster`;
     cmd += ` --service dih-api-${env}`;
     cmd += ` --task-definition ${definition}`;
     return childProcess.exec(cmd);
@@ -85,7 +89,7 @@ function deployTask(definition) {
 createTask()
     .then(result => {
         console.log('Created new task revision');
-        console.log(`Deploying new task to cluster ${cluster}`);
+        console.log(`Deploying new task to cluster dih-cluster`);
         const definition = JSON.parse(result.stdout)
         return deployTask(definition.taskDefinition.taskDefinitionArn);
     })

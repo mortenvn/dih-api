@@ -33,10 +33,10 @@ deployment:
             - docker push $EXTERNAL_REGISTRY:production-latest
             - babel-node deploy.js:
                 environment:
-                    WEB: http://dih.capra.me
+                    WEB: https://dih.capra.me
                     EMAIL: production@dih.capra.me
                     NODE_ENV: production
-                    CLUSTER: dih-cluster
+                    PORT: 9000
 
     staging:
         branch: dev
@@ -47,7 +47,7 @@ deployment:
             - npm run docs
             - babel-node deploy.js:
                 environment:
-                    WEB: http://dev.dih.capra.me
-                    EMAIL: dev@dih.capra.me
+                    WEB: https://staging.dih.capra.me
+                    EMAIL: staging@dih.capra.me
                     NODE_ENV: staging
-                    CLUSTER: dih-cluster-dev
+                    PORT: 8000
