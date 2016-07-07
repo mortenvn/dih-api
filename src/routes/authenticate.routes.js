@@ -5,6 +5,7 @@ import * as controller from '../controllers/authenticate.controller';
 const router = express.Router();
 
 router.post('/', controller.login);
+router.put('/password', controller.getPassword);
 router.post('/password', authorize, controller.setPassword);
 
 export default router;

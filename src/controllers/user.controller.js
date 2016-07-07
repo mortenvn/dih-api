@@ -58,7 +58,6 @@ export function create(req, res, next) {
     db.User.invite({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
-        birth: req.body.birth,
         email: req.body.email
     })
     .then(user => res.status(201).json(user))

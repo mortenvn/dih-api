@@ -64,7 +64,6 @@ describe.serial('User API', it => {
                 email: 'eric@example.com',
                 firstname: 'Eric',
                 lastname: 'Cartman',
-                birth: '1990-07-01T12:42:00.196Z',
                 role: 'USER'
             })
             .expect(201);
@@ -78,8 +77,7 @@ describe.serial('User API', it => {
             .send({
                 email: 'kyle@example.com',
                 firstname: 'Kyle',
-                lastname: 'Broflovski',
-                birth: '1999-07-01T12:42:00.196Z'
+                lastname: 'Broflovski'
             })
             .expect(201);
 
@@ -93,7 +91,6 @@ describe.serial('User API', it => {
                 email: 'eric.example.com',
                 firstname: 'Eric',
                 lastname: 'Cartman',
-                birth: '1990-07-01T12:42:00.196Z',
                 role: 'USER'
             })
             .expect(400);
@@ -108,7 +105,6 @@ describe.serial('User API', it => {
                 email: 'user@test.test',
                 firstname: 'User',
                 lastname: 'Test',
-                birth: '1999-07-01T12:42:00.196Z',
                 role: 'USER'
             })
             .expect(400);
