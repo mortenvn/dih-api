@@ -33,15 +33,15 @@ export function updateTransport(transport) {
 updateTransport(ses(config.ses));
 
 /**
- * sendPasswordEmail - Sends an reset password email to the specified user,
+ * sendResetPasswordEmail - Sends an reset password email to the specified user,
  *
- * @function sendPasswordEmail
+ * @function sendResetPasswordEmail
  * @memberof  module:components/mail
  * @param  {SequlizeInstance} user The user which is going to recive the email
  * @param  {string} token A JWT used to authorize with the rest api
  * @return {SequlizeInstance} user The user who was sent the email
  */
-export function sendPasswordEmail(user, token) {
+export function sendResetPasswordEmail(user, token) {
     const mailOptions = {
         to: user.email,
         from: `DIH <${config.email}>`,

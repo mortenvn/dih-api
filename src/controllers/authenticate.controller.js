@@ -39,16 +39,16 @@ export function login(req, res, next) {
 }
 
 /**
- * getPassword - sends an email to the user requested a password reset, such that the
+ * initiateResetPassword - sends an email to the user requested a password reset, such that the
  * user can specify a new password
  *
- * @function getPassword
+ * @function initiateResetPassword
  * @memberof  module:controllers/authenticate
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object
  * @param  {Function} next Express next middleware function
  */
-export function getPassword(req, res, next) {
+export function initiateResetPassword(req, res, next) {
     const { email } = req.body;
 
     db.User.findOne({
@@ -58,7 +58,7 @@ export function getPassword(req, res, next) {
     })
     .then(user => {
         if (!user) throw new errors.ResourceNotFoundError('user');
-        return user.sendPasswordEmail();
+        return user.sendResetPasswordEmail();
     })
     .then(() => res.sendStatus(200))
     .catch(next);
