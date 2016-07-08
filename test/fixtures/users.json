@@ -6,6 +6,7 @@
 			"lastname": "user",
 			"role": "USER",
 			"email": "user@test.test",
+			"hash": "$2a$10$QRhOhZdrjHhECu/l4Mc4keejdvkZDDZgGBKCp5BQ/OFICRTyo7902",
 			"birth": "1990-04-25T01:32:21.196+0200"
 		}
 	},
@@ -16,6 +17,7 @@
 			"lastname": "admin",
 			"role": "ADMIN",
 			"email": "admin@test.test",
+			"hash": "$2a$10$QRhOhZdrjHhECu/l4Mc4keejdvkZDDZgGBKCp5BQ/OFICRTyo7902",
 			"birth": "1990-04-25T01:32:21.196+0200"
 		}
 	},
@@ -26,6 +28,7 @@
 			"lastname": "moderator",
 			"role": "MODERATOR",
 			"email": "moderator@test.test",
+			"hash": "$2a$10$QRhOhZdrjHhECu/l4Mc4keejdvkZDDZgGBKCp5BQ/OFICRTyo7902",
 			"birth": "1990-04-25T01:32:21.196+0200"
 		}
 	}

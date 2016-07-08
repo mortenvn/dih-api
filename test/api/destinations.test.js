@@ -5,7 +5,6 @@ import request from 'supertest-as-promised';
 import app from '../../src/app';
 
 const fixtures = [
-    'users',
     'destinations'
 ];
 

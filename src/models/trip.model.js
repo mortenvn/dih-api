@@ -1,7 +1,10 @@
 import _ from 'lodash';
 import Promise from 'bluebird';
+import { validateQuery } from '../components/queryValidator';
 import { TRIP_STATUSES } from '../components/constants';
 import db from './';
+
+const ALLOWED_QUERY_PARAMS = ['destinationId', 'userId', 'status'];
 
 export default function (sequelize, DataTypes) {
     const Trip = sequelize.define('trip', {
@@ -39,11 +42,14 @@ export default function (sequelize, DataTypes) {
                         allowNull: false
                     }
                 });
+            },
+            validateQuery(query) {
+                return validateQuery(query, ALLOWED_QUERY_PARAMS);
             }
         },
         hooks: {
             beforeUpdate: [
-                (trip) => {
+                trip => {
                     if (trip.changed('status') && trip.status === TRIP_STATUSES.ACCEPTED) {
                         return trip.acceptUser();
                     }

@@ -1,14 +1,17 @@
 import sequelizeFixtures from 'sequelize-fixtures';
 import db from '../src/models';
-import { syncDB } from '../src/model-helpers';
+import { syncDB } from '../src/db-helpers';
 import path from 'path';
+import Promise from 'bluebird';
 import jwt from 'jsonwebtoken';
 import config from '../src/config';
+Promise.promisifyAll(jwt);
 
 export function loadFixtures(fixtures) {
     const f = fixtures || [
         'users',
-        'destinations'
+        'destinations',
+        'trips'
     ];
     const fixturePaths = f.map(file => `${path.resolve(__dirname)}/fixtures/${file}.json`);
     return syncDB({ force: true })
@@ -27,15 +30,6 @@ export function getAllElements(model) {
 }
 
 /**
- * getAllUserElements - Gives you all of the user fixture elements
- *
- * @return {Array} - All user fixture elements from db
- */
-export function getAllUserElements() {
-    return db.User.findAll().then(users => users.map(user => user.toJSON()));
-}
-
-/**
  * createValidJWT - Create a valid JWT for testing purposes
  *
  * @param {Object} payload
@@ -45,6 +39,16 @@ export function createValidJWT(payload) {
     return jwt.sign(payload, config.secret, {
         expiresIn: config.jwtExpiresIn
     });
+}
+
+/**
+ * validateJwt - Validate a JWT for testing purposes
+ *
+ * @param {String} token
+ * @return {Object} - decoded token
+ */
+export function validateJwt(token) {
+    return jwt.verifyAsync(token, config.secret);
 }
 
 /**

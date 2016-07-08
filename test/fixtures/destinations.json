@@ -2,21 +2,35 @@
     {
         "model" : "Destination",
         "data": {
-            "name" : "Larsen"
+            "name" : "Stavern"
         }
     },
 
     {
         "model" : "Destination",
         "data": {
-            "name" : "Sondre"
+            "name" : "Lier"
         }
     },
 
     {
         "model" : "Destination",
         "data": {
-            "name" : "CircleK"
+            "name" : "Sandnessjoen"
+        }
+    },
+
+    {
+        "model" : "Destination",
+        "data": {
+            "name" : "Asker"
+        }
+    },
+
+    {
+        "model" : "Destination",
+        "data": {
+            "name" : "YtreEnebakk"
         }
     }
 ]

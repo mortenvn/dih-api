@@ -4,8 +4,9 @@
  */
 import app from './app';
 import config from './config';
-import { syncDB } from './model-helpers';
+import { migrateDB, syncDB } from './db-helpers';
 
+import Sequelize from 'sequelize';
 
 /**
  * listen - Starts the server with the config given by the environment variables
@@ -20,5 +21,11 @@ function listen() {
     });
 }
 
-syncDB()
-    .then(() => listen());
+let db;
+if (config.nodeEnv === 'development') db = syncDB();
+else {
+    db = migrateDB().catch(Sequelize.DatabaseError, () =>
+        syncDB()
+    );
+}
+db.then(() => listen());

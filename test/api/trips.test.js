@@ -1,4 +1,4 @@
-import { loadFixtures, getAllElements } from '../helpers';
+import { loadFixtures, getAllElements, createValidJWT } from '../helpers';
 import { describe } from 'ava-spec';
 import _ from 'lodash';
 import request from 'supertest-as-promised';
@@ -36,7 +36,6 @@ describe.serial('Trip API', it => {
                 userObjects = response;
             })
             .then(() => {
-                mockTrip.userId = userObjects[1].id;
                 mockTrip.destinationId = destinationObjects[1].id;
             })
     );
@@ -49,10 +48,106 @@ describe.serial('Trip API', it => {
         t.is(response.length, tripObjects.length);
     });
 
+    it('should be able to get all trips of a specific destinationId', async t => {
+        const response = await request(app)
+            .get(`${URI}?destinationId=${tripObjects[0].destinationId}`)
+            .expect(200)
+            .then(res => res.body);
+        t.is(response.length, 1);
+    });
+
+    it('should be able to get trips of a specific userId', async t => {
+        const response = await request(app)
+            .get(`${URI}?userId=${tripObjects[0].userId}`)
+            .expect(200)
+            .then(res => res.body);
+        t.is(response.length, 2);
+    });
+
+
+    it('should be able to get all trips of a specific status', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?status=${fixture.status}`)
+            .expect(200)
+            .then(res => res.body);
+        t.is(response.length, 1);
+    });
+
+    it('should be able to get trips of a specific userId and destinationId', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?userId=${fixture.userId}&destinationId=${fixture.destinationId}`)
+            .expect(200)
+            .then(res => res.body);
+        t.is(response.length, 1);
+    });
+
+    it('should be able to get trips of a specific userId, destinationId and status', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?userId=${fixture.userId}
+                        &destinationId=${fixture.destinationId}
+                        &status=${fixture.status}`)
+            .expect(200)
+            .then(res => res.body);
+        t.is(response.length, 1);
+    });
+
+    it('should be not be able to query on startDate', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?startDate=${fixture.startDate}`)
+            .expect(400)
+            .then(res => res.body);
+        t.is(response.name, 'UriValidationError');
+        t.is(response.message, 'Invalid URI.');
+    });
+
+    it('should be not be able to query on endDate', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?endDate=${fixture.endDate}`)
+            .expect(400)
+            .then(res => res.body);
+        t.is(response.name, 'UriValidationError');
+        t.is(response.message, 'Invalid URI.');
+    });
+
+    it('should be not be able to query on wishStartDate', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?wishStartDate=${fixture.wishStartDate}`)
+            .expect(400)
+            .then(res => res.body);
+        t.is(response.name, 'UriValidationError');
+        t.is(response.message, 'Invalid URI.');
+    });
+
+    it('should be not be able to query on wishEndDate', async t => {
+        const fixture = tripObjects[0];
+        const response = await request(app)
+            .get(`${URI}?wishEndDate=${fixture.wishEndDate}`)
+            .expect(400)
+            .then(res => res.body);
+        t.is(response.name, 'UriValidationError');
+        t.is(response.message, 'Invalid URI.');
+    });
+
+    it('should reject queries on non-existing model properties', async t => {
+        const response = await request(app)
+            .get(`${URI}?topkek=someValue&capra=summmer`)
+            .expect(400)
+            .then(res => res.body);
+        t.is(response.name, 'UriValidationError');
+        t.is(response.message, 'Invalid URI.');
+    });
+
     it('should be able to create a new trip ', async t => {
         const response = await request(app)
             .post(URI)
             .send(mockTrip)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(201)
             .then(res => res);
         t.is(response.body.status, mockTrip.status);
@@ -63,6 +158,7 @@ describe.serial('Trip API', it => {
         delete mockWithEmptyStatus.status;
         await request(app)
             .post(URI, mockWithEmptyStatus)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(400);
     });
 
@@ -71,6 +167,7 @@ describe.serial('Trip API', it => {
         delete mockWithEmptyDestination.destinationId;
         await request(app)
             .post(URI, mockWithEmptyDestination)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(400);
     });
 
@@ -79,6 +176,7 @@ describe.serial('Trip API', it => {
         delete mockWithEmptyUser.userId;
         await request(app)
             .post(URI, mockWithEmptyUser)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(400);
     });
 
@@ -89,6 +187,7 @@ describe.serial('Trip API', it => {
         const validRequestResponse = await request(app)
             .put(`${URI}/${fixture.id}`)
             .send(changedFixture)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(204)
             .then(() => request(app).get(URI))
             .then(res => _.find(res.body, obj => obj.id === fixture.id));
@@ -101,6 +200,7 @@ describe.serial('Trip API', it => {
         invalidChangedFixture.status = 'kek';
         await request(app)
             .put(`${URI}/${fixture.id}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(invalidChangedFixture)
             .expect(400);
     });
@@ -108,6 +208,7 @@ describe.serial('Trip API', it => {
     it('should return 404 when you try to update a trip that does not exist', async () => {
         await request(app)
             .put(`${URI}/${tripObjects.length + 100}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(mockTrip)
             .expect(404);
     });

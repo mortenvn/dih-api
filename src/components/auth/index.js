@@ -10,13 +10,13 @@ Promise.promisifyAll(jwt);
 
 
 /**
- * createJWT - Creates a JWT.
+ * createJwt - Creates a JWT.
  *
  * @param  {Object} payload                         json object
  * @param  {String} expiresIn = config.jwtExpiresIn string indicating how long the jwt is valid
  * @return {String}                                 The created jwt
  */
-export function createJWT(payload, expiresIn = config.jwtExpiresIn) {
+export function createJwt(payload, expiresIn = config.jwtExpiresIn) {
     return jwt.sign(payload, config.secret, {
         expiresIn,
         subject: String(payload.id)

@@ -4,10 +4,11 @@
  */
 import Sequelize from 'sequelize';
 import db from '../models';
-import { ResourceNotFoundError, ValidationError, DatabaseError } from '../components/errors';
+import * as errors from '../components/errors';
+
 
 /**
- * list - List all trips in the database
+ * list - List trips that qualify query
  *
  * @function list
  * @memberof  module:controllers/trip
@@ -16,9 +17,22 @@ import { ResourceNotFoundError, ValidationError, DatabaseError } from '../compon
  * @param  {Function} next Express next middleware function
  */
 export function list(req, res, next) {
-    db.Trip.findAll()
-        .then(res.json.bind(res))
-        .catch(next);
+    if (!db.Trip.validateQuery(req.query)) {
+        throw new errors.UriValidationError();
+    }
+    db.Trip.findAll({
+        where: req.query,
+        include: [{
+            model: db.User,
+            attributes: {
+                exclude: ['hash']
+            }
+        }, {
+            model: db.Destination
+        }]
+    })
+    .then(res.json.bind(res))
+    .catch(next);
 }
 
 /**
@@ -31,12 +45,15 @@ export function list(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function create(req, res, next) {
-    db.Trip.create(req.body)
-        .then(savedObj => res.status(201).json(savedObj))
-        .catch(Sequelize.ValidationError, err => {
-            throw new ValidationError(err);
-        })
-        .catch(next);
+    db.Trip.create({
+        ...req.body,
+        userId: req.user.id
+    })
+    .then(savedObj => res.status(201).json(savedObj))
+    .catch(Sequelize.ValidationError, err => {
+        throw new errors.ValidationError(err);
+    })
+    .catch(next);
 }
 
 /**
@@ -55,7 +72,7 @@ export function destroy(req, res, next) {
         }
     })
     .then(count => {
-        if (!count) throw new ResourceNotFoundError('trip');
+        if (!count) throw new errors.ResourceNotFoundError('trip');
         res.sendStatus(200);
     })
     .catch(next);
@@ -77,15 +94,15 @@ export function update(req, res, next) {
         }
     })
     .then(trip => {
-        if (!trip) throw new ResourceNotFoundError('trip');
+        if (!trip) throw new errors.ResourceNotFoundError('trip');
         return trip.update(req.body);
     })
     .then(() => res.sendStatus(204))
     .catch(Sequelize.ValidationError, err => {
-        throw new ValidationError(err);
+        throw new errors.ValidationError(err);
     })
     .catch(Sequelize.DatabaseError, err => {
-        throw new DatabaseError(err);
+        throw new errors.DatabaseError(err);
     })
     .catch(next);
 }

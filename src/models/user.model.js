@@ -1,19 +1,23 @@
 /**
- * User model
- * @module models/user
- */
-import { USER_ROLES } from '../components/constants';
-import { sendInvite, sendDestinationAcceptance } from '../components/mail';
+* User model
+* @module models/user
+*/
 import _ from 'lodash';
-
+import bcrypt from 'bcrypt';
+import Promise from 'bluebird';
+import { USER_ROLES } from '../components/constants';
+import { CustomValidationError } from '../components/errors';
+import { sendInvite, sendDestinationAcceptance } from '../components/mail';
+import { createJwt } from '../components/auth';
+Promise.promisifyAll(bcrypt);
 
 /**
- * User model - create and export the database model for the user
- * including all assosiations and classmethods assiciated with this model.
- * @memberof  module:models/user
- * @param  {Object} sequelize description
- * @param  {Object} DataTypes description
- */
+* User model - create and export the database model for the user
+* including all assosiations and classmethods assiciated with this model.
+* @memberof  module:models/user
+* @param  {Object} sequelize description
+* @param  {Object} DataTypes description
+*/
 export default function (sequelize, DataTypes) {
     const User = sequelize.define('user', {
         email: {
@@ -36,6 +40,7 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.DATE,
             allowNull: false
         },
+        hash: DataTypes.STRING,
         role: {
             type: DataTypes.ENUM,
             values: _.values(USER_ROLES),
@@ -48,21 +53,35 @@ export default function (sequelize, DataTypes) {
             },
             invite(body) {
                 return User.create(body)
-                    .then(user => user.sendInvite());
+                .then(user => user.sendInvite());
             }
         },
         instanceMethods: {
-            toJSON() {
-                // TODO here we can remove sensetive data like hash
-                return this.get({ plain: true });
+            authenticate(password) {
+                return bcrypt.compareAsync(password, this.hash);
             },
-            createJwt() {
-                // TODO create instance specifiv jwt
-                return 'pifmapir13mifm1oimrfoi1mfim1imfi1mf';
+            toJSON() {
+                const user = this.get({ plain: true });
+                delete user.hash;
+                return user;
+            },
+            createJwt(additionalPayload) {
+                return createJwt({ ...this.toJSON(), ...additionalPayload });
             },
             sendInvite() {
-                const token = this.createJwt();
+                const token = this.createJwt({ setPassword: true });
                 return sendInvite(this, token);
+            },
+            updatePassword(password) {
+                if (!password || password.length < 8) {
+                    throw new CustomValidationError('not a valid password');
+                }
+                return bcrypt.genSaltAsync()
+                    .then(salt => bcrypt.hashAsync(password, salt))
+                    .then(hash => {
+                        this.hash = hash;
+                        return this.save();
+                    });
             },
             sendDestinationAcceptance(destination) {
                 const token = this.createJwt();

@@ -2,4 +2,4 @@ import child from 'child_process';
 import { loadFixtures } from './helpers';
 
 loadFixtures()
-    .then(() => child.exec('node dist/index.js'));
+    .then(() => child.execSync('node dist/index.js'));

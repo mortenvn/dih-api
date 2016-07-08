@@ -1,11 +1,10 @@
-import { loadFixtures, getAllUserElements, createValidJWT, createInvalidJWT } from '../helpers';
+import { loadFixtures, getAllElements, createValidJWT, createInvalidJWT } from '../helpers';
 import { describe } from 'ava-spec';
 import request from 'supertest-as-promised';
 import app from '../../src/app';
 
 const fixtures = [
-    'users',
-    'destinations'
+    'users'
 ];
 
 const URI = '/account';
@@ -15,7 +14,7 @@ let dbObjects;
 describe.serial('Account API', it => {
     it.beforeEach(() =>
         loadFixtures(fixtures)
-            .then(() => getAllUserElements())
+            .then(() => getAllElements('User'))
             .then(response => {
                 dbObjects = response;
             })
@@ -59,5 +58,14 @@ describe.serial('Account API', it => {
             .expect(404);
         t.is(response.body.name, 'ResourceNotFoundError');
         t.is(response.body.message, 'Could not find resource of type user');
+    });
+
+    it('should update the password of the current user', async () => {
+        const validJwt = createValidJWT(dbObjects[0]);
+        await request(app)
+            .put(URI)
+            .send({ password: '1234password' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(204);
     });
 });
