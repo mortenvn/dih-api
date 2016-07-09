@@ -1,12 +1,12 @@
 /* eslint-disable */
 import childProcess from 'child-process-promise';
 
-const PG_URL = `postgres://${process.env.PG_USER}:${process.env.PG_PASSWORD}@dih-${env}.${process.env.PG_URL_BASE}`;
 const env = process.env.NODE_ENV;
+const PG_URL = `postgres://${process.env.PG_USER}:${process.env.PG_PASSWORD}@dih-${env}.${process.env.PG_URL_BASE}`;
 const task = {
     "containerDefinitions": [
         {
-            memory: 500,
+            memory: 400,
             portMappings: [
                 {
                     hostPort: parseInt(process.env.PORT, 10),
@@ -66,7 +66,7 @@ const task = {
                     "awslogs-region": "eu-west-1"
                 }
             },
-            cpu: 400,
+            cpu: 300,
         }
     ],
     "family": `dih-api-${env}`
