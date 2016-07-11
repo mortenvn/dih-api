@@ -1,7 +1,10 @@
 import { loadFixtures, getAllElements, createValidJWT, validateJwt } from '../helpers';
 import { describe } from 'ava-spec';
 import request from 'supertest-as-promised';
+import sinon from 'sinon';
 import app from '../../src/app';
+import { updateTransport } from '../../src/components/mail';
+
 
 const fixtures = [
     'users'
@@ -9,15 +12,26 @@ const fixtures = [
 const URI = '/authenticate';
 const password = 'password';
 let dbObjects;
+let transport;
 
 describe.serial('Authenticate API', it => {
-    it.beforeEach(() =>
-        loadFixtures(fixtures)
+    it.beforeEach(() => {
+        transport = {
+            name: 'testsend',
+            version: '1',
+            send(data, callback) {
+                callback();
+            },
+            logger: false
+        };
+        updateTransport(transport);
+
+        return loadFixtures(fixtures)
             .then(() => getAllElements('User'))
             .then(response => {
                 dbObjects = response;
-            })
-    );
+            });
+    });
 
     it('should return 200 and jwt when a user enter correct email / password', async t => {
         const response = await request(app)
@@ -53,7 +67,7 @@ describe.serial('Authenticate API', it => {
             .then(res => res.body);
 
         t.is(response.name, 'ValidationError');
-        t.is(response.message, 'Authentication requires both email and password');
+        t.is(response.message, 'Authentication requires email and password');
     });
 
     it('Should return an authentication error if wrong password', async t => {
@@ -156,5 +170,21 @@ describe.serial('Authenticate API', it => {
 
         t.is(response.name, 'AuthenticationError');
         t.is(response.message, 'You need to authenicate to access this resource');
+    });
+
+    it('should send an reset passwor email to user', async t => {
+        sinon.stub(transport, 'send').yields(null);
+        await request(app)
+            .put(`${URI}/password`)
+            .send({ email: dbObjects[0].email })
+            .expect(200);
+        t.is(transport.send.callCount, 1);
+    });
+
+    it('should return a 404', async () => {
+        await request(app)
+            .put(`${URI}/password`)
+            .send({ email: 'kyle@example.com' })
+            .expect(404);
     });
 });

@@ -2,7 +2,7 @@
  * Authenticate controller - All functions regarding login/password reset and jwt distrubution
  * @module controllers/authenticate
  */
-import { AuthenticationError, CustomValidationError, NotFoundError } from '../components/errors';
+import * as errors from '../components/errors';
 import db from '../models';
 
 /**
@@ -18,7 +18,7 @@ export function login(req, res, next) {
     const { email, password } = req.body;
 
     if (!email || !password) {
-        return next(new CustomValidationError('Authentication requires both email and password'));
+        return next(new errors.CustomValidationError('Authentication requires email and password'));
     }
 
     db.User.findOne({
@@ -27,14 +27,40 @@ export function login(req, res, next) {
         }
     })
     .then(user => {
-        if (!user) throw new AuthenticationError('Invalid credentials provided');
+        if (!user) throw new errors.AuthenticationError('Invalid credentials provided');
         return [user.authenticate(password), user];
     })
     .spread((valid, user) => {
-        if (!valid) throw new AuthenticationError('Invalid credentials provided');
+        if (!valid) throw new errors.AuthenticationError('Invalid credentials provided');
         return user.createJwt();
     })
     .then(jwt => res.json({ jwt }))
+    .catch(next);
+}
+
+/**
+ * initiateResetPassword - sends an email to the user requested a password reset, such that the
+ * user can specify a new password
+ *
+ * @function initiateResetPassword
+ * @memberof  module:controllers/authenticate
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
+export function initiateResetPassword(req, res, next) {
+    const { email } = req.body;
+
+    db.User.findOne({
+        where: {
+            email
+        }
+    })
+    .then(user => {
+        if (!user) throw new errors.ResourceNotFoundError('user');
+        return user.sendResetPasswordEmail();
+    })
+    .then(() => res.sendStatus(200))
     .catch(next);
 }
 
@@ -52,7 +78,7 @@ export function setPassword(req, res, next) {
     const { password } = req.body;
 
     if (!req.user.setPassword) {
-        return next(new CustomValidationError('Token not valid'));
+        return next(new errors.CustomValidationError('Token not valid'));
     }
 
     db.User.findOne({
@@ -61,7 +87,7 @@ export function setPassword(req, res, next) {
         }
     })
     .then(user => {
-        if (!user) throw new NotFoundError();
+        if (!user) throw new errors.ResourceNotFoundError('user');
         return user.updatePassword(password);
     })
     .then(user => user.createJwt())

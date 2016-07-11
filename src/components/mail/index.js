@@ -32,6 +32,36 @@ export function updateTransport(transport) {
 
 updateTransport(ses(config.ses));
 
+/**
+ * sendResetPasswordEmail - Sends an reset password email to the specified user,
+ *
+ * @function sendResetPasswordEmail
+ * @memberof  module:components/mail
+ * @param  {SequlizeInstance} user The user which is going to recive the email
+ * @param  {string} token A JWT used to authorize with the rest api
+ * @return {SequlizeInstance} user The user who was sent the email
+ */
+export function sendResetPasswordEmail(user, token) {
+    const mailOptions = {
+        to: user.email,
+        from: `DIH <${config.email}>`,
+        subject: 'Password reset, Dråpen I Havet!',
+        template: 'action',
+        context: {
+            content: 'You have requestet a password reset, follow this link to set a new password',
+            action: {
+                text: 'Reset password',
+                url: `${config.web}/password/confirm?token=${token}`
+            }
+        }
+    };
+
+    return transporter.sendMailAsync(mailOptions)
+        .then(() => user)
+        .catch(err => { // TODO should add some logger, or better use Sentry!
+            console.error(err); // eslint-disable-line
+        });
+}
 
 /**
  * sendInvite - Sends an invite email to the specified user,

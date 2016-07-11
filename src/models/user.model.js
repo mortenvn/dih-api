@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 import Promise from 'bluebird';
 import { USER_ROLES } from '../components/constants';
 import { CustomValidationError } from '../components/errors';
-import { sendInvite, sendDestinationAcceptance } from '../components/mail';
+import { sendInvite, sendResetPasswordEmail, sendDestinationAcceptance } from '../components/mail';
 import { createJwt } from '../components/auth';
 Promise.promisifyAll(bcrypt);
 
@@ -37,8 +37,7 @@ export default function (sequelize, DataTypes) {
             allowNull: false
         },
         birth: {
-            type: DataTypes.DATE,
-            allowNull: false
+            type: DataTypes.DATE
         },
         notes: DataTypes.STRING,
         hash: DataTypes.STRING,
@@ -72,6 +71,10 @@ export default function (sequelize, DataTypes) {
             sendInvite() {
                 const token = this.createJwt({ setPassword: true });
                 return sendInvite(this, token);
+            },
+            sendResetPasswordEmail() {
+                const token = this.createJwt({ setPassword: true });
+                return sendResetPasswordEmail(this, token);
             },
             updatePassword(password) {
                 if (!password || password.length < 8) {
