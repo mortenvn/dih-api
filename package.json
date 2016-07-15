@@ -67,7 +67,7 @@
     "esdoc": "^0.4.7",
     "esdoc-es7-plugin": "0.0.3",
     "eslint": "^2.12.0",
-    "eslint-config-airbnb-base": "^4.0.0",
+    "eslint-config-airbnb-base": "^4.0.2",
     "eslint-plugin-async-await": "0.0.0",
     "eslint-plugin-import": "^1.8.1",
     "jsdoc": "^3.4.0",
