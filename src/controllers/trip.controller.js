@@ -67,9 +67,15 @@ export function retrieve(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function create(req, res, next) {
+    let userId;
+    if (req.user.role === 'ADMIN' && req.body.userId) {
+        userId = req.body.userId;
+    } else {
+        userId = req.user.id;
+    }
     db.Trip.create({
         ...req.body,
-        userId: req.user.id
+        userId
     })
     .then(savedObj => res.status(201).json(savedObj))
     .catch(Sequelize.ValidationError, err => {
