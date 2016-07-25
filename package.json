@@ -72,7 +72,7 @@
     "eslint-plugin-import": "^1.8.1",
     "jsdoc": "^3.4.0",
     "jsdoc-babel": "^0.2.0",
-    "nyc": "^7.0.0",
+    "nyc": "^7.1.0",
     "sequelize-fixtures": "^0.5.3",
     "sinon": "^1.17.4",
     "supertest": "^1.2.0",
