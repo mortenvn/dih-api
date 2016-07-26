@@ -116,7 +116,7 @@ export function sendDestinationAction(user, mailContent, token) {
             content: mailContent,
             action: {
                 text: 'Se din reise',
-                url: `${config.web}/mytrips?token=${token}`
+                url: `${config.web}/trips?token=${token}`
             }
         }
     };
