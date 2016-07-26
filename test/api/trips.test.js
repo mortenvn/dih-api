@@ -170,6 +170,19 @@ describe.serial('Trip API', it => {
         t.is(response.body.status, mockTrip.status);
     });
 
+    it('should be able to create a new trip with other user when admin ', async t => {
+        const response = await request(app)
+            .post(URI)
+            .send({
+                ...mockTrip,
+                userId: userObjects[0].id
+            })
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
+            .expect(201)
+            .then(res => res);
+        t.is(response.body.userId, userObjects[0].id);
+    });
+
     it('should not be able to create a new trip with missing status field', async () => {
         const mockWithEmptyStatus = mockTrip;
         delete mockWithEmptyStatus.status;
