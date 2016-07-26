@@ -1,0 +1,20 @@
+[
+	{
+		"model": "MailTemplate",
+		"data": {
+			"html": "Welcome to Dråpen i havet, and thanks for signing up for a trip."
+		}
+	},
+	{
+		"model": "MailTemplate",
+		"data": {
+			"html": "You've been accepted to the destination."
+		}
+	},
+	{
+		"model": "MailTemplate",
+		"data": {
+			"html": "Sadly you've been rejected as a volunteer."
+		}
+	}
+]

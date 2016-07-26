@@ -4,13 +4,8 @@ import _ from 'lodash';
 import request from 'supertest-as-promised';
 import app from '../../src/app';
 
-const fixtures = [
-    'users',
-    'destinations',
-    'trips'
-];
-
 const URI = '/trips';
+
 let tripObjects;
 let userObjects;
 let destinationObjects;
@@ -22,7 +17,7 @@ const mockTrip = {
 
 describe.serial('Trip API', it => {
     it.beforeEach(() =>
-        loadFixtures(fixtures)
+        loadFixtures()
             .then(() => getAllElements('Trip'))
             .then(response => {
                 tripObjects = response;
@@ -37,6 +32,7 @@ describe.serial('Trip API', it => {
             })
             .then(() => {
                 mockTrip.destinationId = destinationObjects[1].id;
+                mockTrip.userId = userObjects[0].id;
             })
     );
 
@@ -69,6 +65,7 @@ describe.serial('Trip API', it => {
         const fixture = tripObjects[0];
         const response = await request(app)
             .get(`${URI}?status=${fixture.status}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(200)
             .then(res => res.body);
         t.is(response.length, 1);
@@ -78,6 +75,7 @@ describe.serial('Trip API', it => {
         const fixture = tripObjects[0];
         const response = await request(app)
             .get(`${URI}?userId=${fixture.userId}&destinationId=${fixture.destinationId}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(200)
             .then(res => res.body);
         t.is(response.length, 1);
@@ -89,6 +87,7 @@ describe.serial('Trip API', it => {
             .get(`${URI}?userId=${fixture.userId}
                         &destinationId=${fixture.destinationId}
                         &status=${fixture.status}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(200)
             .then(res => res.body);
         t.is(response.length, 1);
@@ -163,8 +162,8 @@ describe.serial('Trip API', it => {
     it('should be able to create a new trip ', async t => {
         const response = await request(app)
             .post(URI)
-            .send(mockTrip)
             .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
+            .send(mockTrip)
             .expect(201)
             .then(res => res);
         t.is(response.body.status, mockTrip.status);

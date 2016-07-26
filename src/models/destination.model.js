@@ -14,6 +14,24 @@ export default function (sequelize, DataTypes) {
         classMethods: {
             associate(models) {
                 Destination.hasMany(models.Trip);
+                Destination.belongsTo(models.MailTemplate, {
+                    foreignKey: {
+                        name: 'acceptedStatusMailTemplateId',
+                        allowNull: true
+                    }
+                });
+                Destination.belongsTo(models.MailTemplate, {
+                    foreignKey: {
+                        name: 'rejectedStatusMailTemplateId',
+                        allowNull: true
+                    }
+                });
+                Destination.belongsTo(models.MailTemplate, {
+                    foreignKey: {
+                        name: 'pendingStatusMailTemplateId',
+                        allowNull: true
+                    }
+                });
             }
         }
     });
