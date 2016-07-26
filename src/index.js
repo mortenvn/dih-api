@@ -4,7 +4,7 @@
  */
 import app from './app';
 import config from './config';
-import { migrateDB, syncDB } from './db-helpers';
+import { migrateDB, syncDB, createDefaultAdmin } from './db-helpers';
 import Sequelize from 'sequelize';
 
 /**
@@ -21,9 +21,10 @@ function listen() {
 }
 
 let db;
-if (config.nodeEnv === 'development') db = syncDB();
+if (config.nodeEnv === 'development' || config.nodeEnv === 'test') db = syncDB();
 else {
-    db = migrateDB().catch(Sequelize.DatabaseError, () => syncDB());
+    db = migrateDB().catch(Sequelize.DatabaseError, () => syncDB())
+    .then(() => createDefaultAdmin(config.adminPassword));
 }
 
 db.then(() => listen());

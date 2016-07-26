@@ -32,3 +32,15 @@ export function migrateDB() {
     return migrate(db.sequelize)
         .up();
 }
+
+export function createDefaultAdmin(password) {
+    return db.User.create({
+        firstname: 'Admin',
+        lastname: 'Capra',
+        role: 'ADMIN',
+        email: 'admin@dih.capra.me'
+    })
+    .then(user => {
+        user.updatePassword(password);
+    });
+}
