@@ -3,6 +3,7 @@
  * @module controllers/destination
  */
 import Sequelize from 'sequelize';
+import Promise from 'bluebird';
 import db from '../models';
 import { ResourceNotFoundError, ValidationError } from '../components/errors';
 
@@ -56,7 +57,17 @@ export function retrieve(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function create(req, res, next) {
-    db.Destination.create(req.body)
+    Promise.all([
+        db.MailTemplate.create(),
+        db.MailTemplate.create(),
+        db.MailTemplate.create()
+    ])
+    .spread((mt1, mt2, mt3) => db.Destination.create({
+        ...req.body,
+        pendingStatusMailTemplateId: mt1.id,
+        acceptedStatusMailTemplateId: mt2.id,
+        rejectedStatusMailTemplateId: mt3.id
+    }))
     .then(savedObj => res.status(201).json(savedObj))
     .catch(Sequelize.ValidationError, err => {
         throw new ValidationError(err);
