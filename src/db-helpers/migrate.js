@@ -3,6 +3,7 @@
  * @module db-helpers/migrate
  */
 import Umzug from 'umzug';
+import db from '../models';
 
 /**
  * default - exports default function
@@ -25,6 +26,7 @@ export default function (sequlizeInstance) {
             params: [
                 sequlizeInstance.getQueryInterface(),
                 sequlizeInstance.constructor,
+                db,
                 () => {
                     throw new Error(`Migration tried to use old style "done" callback.
                     Please upgrade to "umzug" and return a promise instead.`);
