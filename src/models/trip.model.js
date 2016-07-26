@@ -24,8 +24,7 @@ export default function (sequelize, DataTypes) {
             allowNull: false
         },
         wishEndDate: {
-            type: DataTypes.DATE,
-            allowNull: false
+            type: DataTypes.DATE
         },
         hotel: {
             type: DataTypes.STRING
@@ -45,7 +44,7 @@ export default function (sequelize, DataTypes) {
                 Trip.belongsTo(models.Destination, {
                     foreignKey: {
                         name: 'destinationId',
-                        allowNull: false
+                        allowNull: true
                     }
                 });
             },
