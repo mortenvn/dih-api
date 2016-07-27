@@ -79,8 +79,8 @@ export function sendInvite(user, token) {
         subject: 'Velkommen til Dråpen I Havet!',
         template: 'action',
         context: {
-            content: `Du har opprettet en bruker hos Dråpen i Havet, trykk på knappen under
-                for å fullføre registreringen.`,
+            content: `Du har opprettet en bruker hos Dråpen i Havet,
+            trykk på knappen under for å fullføre registreringen.`,
             action: {
                 text: 'Registrer brukerkonto',
                 url: `${config.web}/signup/confirm?token=${token}`
@@ -101,11 +101,11 @@ export function sendInvite(user, token) {
  * @function sendDestinationAcceptance
  * @memberof  module:components/mail
  * @param  {SequlizeInstance} user The user which is going to recive the email
- * @param  {SequlizeInstance} destination The destination the user was accepted to
+ * @param  {string} mailContent The content of the info e-mail to be sent
  * @param  {string} token A JWT used to authorize with the rest api
  * @return {SequlizeInstance} user The user who was sent the email
  */
-export function sendDestinationAcceptance(user, destination, token) {
+export function sendDestinationAction(user, mailContent, token) {
     // @TODO correct URL for mytrips
     const mailOptions = {
         to: user.email,
@@ -113,11 +113,40 @@ export function sendDestinationAcceptance(user, destination, token) {
         subject: 'Du har blitt godkjent som frivillig hos Dråpen i Havet!',
         template: 'action',
         context: {
-            content: `Du har blitt godkjent som frivillig til destinasjonen ${destination.name}`,
+            content: mailContent,
             action: {
                 text: 'Se din reise',
-                url: `${config.web}/mytrips?token=${token}`
+                url: `${config.web}/trips?token=${token}`
             }
+        }
+    };
+
+    return transporter.sendMailAsync(mailOptions)
+        .then(() => user)
+        .catch(err => { // TODO should add some logger, or better use Sentry!
+            console.error(err); // eslint-disable-line
+        });
+}
+
+/**
+ * sendDestinationInfo - Sends an informational
+ * e-mail to a user  with given information as content
+ *
+ * @function sendDestinationInfo
+ * @memberof  module:components/mail
+ * @param  {SequlizeInstance} user The user which is going to recive the email
+ * @param  {string} mailContent The content of the info e-mail to be sent
+ * @return {SequlizeInstance} user The user who was sent the email
+ */
+export function sendDestinationInfo(user, mailContent) {
+    // @TODO correct URL for mytrips
+    const mailOptions = {
+        to: user.email,
+        from: `DIH <${config.email}>`,
+        subject: 'Informasjon fra  Dråpen i Havet!',
+        template: 'info',
+        context: {
+            content: mailContent
         }
     };
 

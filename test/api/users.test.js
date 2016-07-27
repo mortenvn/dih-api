@@ -102,7 +102,7 @@ describe.serial('User API', it => {
         const response = await request(app)
             .post(URI)
             .send({
-                email: 'user@test.test',
+                email: 'test-user@dih.capra.me',
                 firstname: 'User',
                 lastname: 'Test',
                 role: 'USER'
