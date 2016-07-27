@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import Promise from 'bluebird';
 
 module.exports = {
@@ -10,7 +9,7 @@ module.exports = {
                 rejectedStatusMailTemplateId: null
             }
         }).then(destinations => {
-            _.forEach(destinations, (d) => {
+            Promise.map(destinations, (d) => {
                 const destination = d;
                 Promise.all([
                     db.MailTemplate.create(),
