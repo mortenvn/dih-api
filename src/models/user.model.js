@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 import Promise from 'bluebird';
 import { USER_ROLES } from '../components/constants';
 import { CustomValidationError } from '../components/errors';
-import { sendInvite, sendResetPasswordEmail, sendDestinationAcceptance } from '../components/mail';
+import * as mail from '../components/mail';
 import { createJwt } from '../components/auth';
 Promise.promisifyAll(bcrypt);
 
@@ -70,11 +70,11 @@ export default function (sequelize, DataTypes) {
             },
             sendInvite() {
                 const token = this.createJwt({ setPassword: true });
-                return sendInvite(this, token);
+                return mail.sendInvite(this, token);
             },
             sendResetPasswordEmail() {
                 const token = this.createJwt({ setPassword: true });
-                return sendResetPasswordEmail(this, token);
+                return mail.sendResetPasswordEmail(this, token);
             },
             updatePassword(password) {
                 if (!password || password.length < 8) {
@@ -87,9 +87,12 @@ export default function (sequelize, DataTypes) {
                         return this.save();
                     });
             },
-            sendDestinationAcceptance(destination) {
+            sendDestinationAction(destination, mailContent) {
                 const token = this.createJwt();
-                return sendDestinationAcceptance(this, destination, token);
+                return mail.sendDestinationAction(this, mailContent, token);
+            },
+            sendDestinationInfo(destination, mailContent) {
+                return mail.sendDestinationInfo(this, mailContent);
             }
         }
     });

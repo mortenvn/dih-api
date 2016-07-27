@@ -2,6 +2,8 @@
 machine:
     node:
         version: 6.2.2
+    environment:
+        NODE_ENV: test
     services:
         - docker
 
@@ -47,7 +49,7 @@ deployment:
             - npm run docs
             - babel-node deploy.js:
                 environment:
-                    WEB: http://dev.dih.capra.me
-                    EMAIL: dev@dih.capra.me
+                    WEB: http://staging.dih.capra.me
+                    EMAIL: staging@dih.capra.me
                     NODE_ENV: staging
                     PORT: 8000

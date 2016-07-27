@@ -1,7 +1,8 @@
 import { describe } from 'ava-spec';
 import sinon from 'sinon';
 import config from '../../src/config';
-import { updateTransport, sendInvite } from '../../src/components/mail';
+import { createValidJWT } from '../helpers';
+import * as mailComponent from '../../src/components/mail';
 
 let transport;
 const user = {
@@ -20,12 +21,12 @@ describe.serial('Mail Component', it => {
             },
             logger: false
         };
-        updateTransport(transport);
+        mailComponent.updateTransport(transport);
     });
 
     it.serial('should send an invite email, and return the user', async t => {
         sinon.stub(transport, 'send').yields(null);
-        const response = await sendInvite(user);
+        const response = await mailComponent.sendInvite(user);
         t.deepEqual(response, user);
         t.is(transport.send.callCount, 1);
     });
@@ -37,7 +38,33 @@ describe.serial('Mail Component', it => {
             t.regex(mail.data.html, /Registrer brukerkonto/);
             done();
         });
-        const response = await sendInvite(user);
+        const response = await mailComponent.sendInvite(user);
+        t.deepEqual(response, user);
+        t.is(transport.send.callCount, 1);
+    });
+
+    it.serial('should send a general action mail for destination', async t => {
+        sinon.stub(transport, 'send', (mail, done) => {
+            t.is(mail.data.to, user.email);
+            t.is(mail.data.from, `DIH <${config.email}>`);
+            t.regex(mail.data.html, /Take action/);
+            done();
+        });
+        const response = await mailComponent.sendDestinationAction(user,
+            'Take action',
+            createValidJWT(user));
+        t.deepEqual(response, user);
+        t.is(transport.send.callCount, 1);
+    });
+
+    it.serial('should send a general info mail for destination', async t => {
+        sinon.stub(transport, 'send', (mail, done) => {
+            t.is(mail.data.to, user.email);
+            t.is(mail.data.from, `DIH <${config.email}>`);
+            t.regex(mail.data.html, /Information/);
+            done();
+        });
+        const response = await mailComponent.sendDestinationInfo(user, 'Information');
         t.deepEqual(response, user);
         t.is(transport.send.callCount, 1);
     });

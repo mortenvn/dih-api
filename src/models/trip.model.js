@@ -24,8 +24,7 @@ export default function (sequelize, DataTypes) {
             allowNull: false
         },
         wishEndDate: {
-            type: DataTypes.DATE,
-            allowNull: false
+            type: DataTypes.DATE
         },
         hotel: {
             type: DataTypes.STRING
@@ -45,7 +44,7 @@ export default function (sequelize, DataTypes) {
                 Trip.belongsTo(models.Destination, {
                     foreignKey: {
                         name: 'destinationId',
-                        allowNull: false
+                        allowNull: true
                     }
                 });
             },
@@ -56,20 +55,41 @@ export default function (sequelize, DataTypes) {
         hooks: {
             beforeUpdate: [
                 trip => {
-                    if (trip.changed('status') && trip.status === TRIP_STATUSES.ACCEPTED) {
-                        return trip.acceptUser();
+                    if (trip.changed('status')) {
+                        if (trip.status === TRIP_STATUSES.ACCEPTED) {
+                            return trip.userActionToUser(trip.status);
+                        }
+                        if (trip.status === TRIP_STATUSES.REJECTED ||
+                            trip.status === TRIP_STATUSES.PENDING) {
+                            return trip.userInfoToUser(trip.status);
+                        }
                     }
                     return Promise.resolve();
                 }
             ]
         },
         instanceMethods: {
-            acceptUser() {
+            userActionToUser(tripStatus) {
                 return Promise.all([
                     db.Destination.findById(this.destinationId),
                     db.User.findById(this.userId)
                 ])
-                .spread((destination, user) => user.sendDestinationAcceptance(destination));
+                .spread((destination, user) =>
+                    db.MailTemplate
+                    .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
+                    .then(template => user.sendDestinationAction(destination, template.html))
+                );
+            },
+            userInfoToUser(tripStatus) {
+                return Promise.all([
+                    db.Destination.findById(this.destinationId),
+                    db.User.findById(this.userId)
+                ])
+                .spread((destination, user) =>
+                db.MailTemplate
+                .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
+                .then(template => user.sendDestinationInfo(destination, template.html))
+                );
             }
         }
     });
