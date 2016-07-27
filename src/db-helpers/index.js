@@ -33,6 +33,13 @@ export function migrateDB() {
         .up();
 }
 
+/**
+ * createDefaultAdmin - Creates a default user with role ADMIN
+ *
+ * @function createDefaultAdmin
+ * @memberof  module:db-helpers/createDefaultAdmin
+ * @return {SequlizeInstance} user The default user with role ADMIN
+ */
 export function createDefaultAdmin(password) {
     return db.User.create({
         firstname: 'Admin',
@@ -42,5 +49,6 @@ export function createDefaultAdmin(password) {
     })
     .then(user => {
         user.updatePassword(password);
-    });
+    })
+    .catch(db.sequelize.UniqueConstraintError); // In case it's already added
 }
