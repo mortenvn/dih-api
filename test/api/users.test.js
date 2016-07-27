@@ -121,4 +121,16 @@ describe.serial('User API', it => {
             .set('Authorization', `Bearer ${validJwt}`)
             .expect(204);
     });
+
+    it('should not update a user when not admin', async t => {
+        const user = dbObjects[1];
+        const validJwt = createValidJWT(dbObjects[0]);
+        const response = await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ firstname: 'Ada' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(401);
+
+        t.is(response.body.name, 'AuthorizationError');
+    });
 });

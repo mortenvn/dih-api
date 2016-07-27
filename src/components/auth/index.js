@@ -4,7 +4,7 @@
  */
 import jwt from 'jsonwebtoken';
 import Promise from 'bluebird';
-import { AuthenticationError } from '../errors';
+import { AuthenticationError, AuthorizationError } from '../errors';
 import config from '../../config';
 Promise.promisifyAll(jwt);
 
@@ -48,4 +48,26 @@ export function authorize(req, res, next) {
             next();
         })
         .catch(error => next(new AuthenticationError(error.message)));
+}
+
+/**
+ * verifyAdministrator - middleware to check if the current user is an administrator.
+ *
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
+export function verifyAdministrator(req, res, next) {
+    let currentUser = undefined;
+
+    try {
+        currentUser = req.user;
+    } catch (error) {
+        throw new AuthenticationError();
+    }
+
+    if (!currentUser) next(new AuthenticationError());
+    if (currentUser.role !== 'ADMIN') next(new AuthorizationError());
+
+    next();
 }
