@@ -1,4 +1,4 @@
-import { getAllElements, loadFixtures } from '../helpers';
+import { createValidJWT, getAllElements, loadFixtures } from '../helpers';
 import { describe } from 'ava-spec';
 import request from 'supertest-as-promised';
 import { updateTransport } from '../../src/components/mail';
@@ -110,5 +110,15 @@ describe.serial('User API', it => {
             .expect(400);
 
         t.is(response.body.message, 'email must be unique');
+    });
+
+    it('should update a user', async () => {
+        const user = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
+        await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ firstname: 'Alexander' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(204);
     });
 });
