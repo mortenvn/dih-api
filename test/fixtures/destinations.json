@@ -2,35 +2,50 @@
     {
         "model" : "Destination",
         "data": {
-            "name" : "Stavern"
+            "name" : "Stavern",
+            "pendingStatusMailTemplateId": 1,
+            "acceptedStatusMailTemplateId": 2,
+            "rejectedStatusMailTemplateId": 3
         }
     },
 
     {
         "model" : "Destination",
         "data": {
-            "name" : "Lier"
+            "name" : "Lier",
+            "pendingStatusMailTemplateId": 1,
+            "acceptedStatusMailTemplateId": 2,
+            "rejectedStatusMailTemplateId": 3
         }
     },
 
     {
         "model" : "Destination",
         "data": {
-            "name" : "Sandnessjoen"
+            "name" : "Sandnessjoen",
+            "pendingStatusMailTemplateId": 1,
+            "acceptedStatusMailTemplateId": 2,
+            "rejectedStatusMailTemplateId": 3
         }
     },
 
     {
         "model" : "Destination",
         "data": {
-            "name" : "Asker"
+            "name" : "Asker",
+            "pendingStatusMailTemplateId": 1,
+            "acceptedStatusMailTemplateId": 2,
+            "rejectedStatusMailTemplateId": 3
         }
     },
 
     {
         "model" : "Destination",
         "data": {
-            "name" : "YtreEnebakk"
+            "name" : "YtreEnebakk",
+            "pendingStatusMailTemplateId": 1,
+            "acceptedStatusMailTemplateId": 2,
+            "rejectedStatusMailTemplateId": 3
         }
     }
 ]

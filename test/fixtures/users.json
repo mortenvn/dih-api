@@ -5,7 +5,7 @@
 			"firstname": "test",
 			"lastname": "user",
 			"role": "USER",
-			"email": "user@test.test",
+			"email": "test-user@dih.capra.me",
 			"hash": "$2a$10$QRhOhZdrjHhECu/l4Mc4keejdvkZDDZgGBKCp5BQ/OFICRTyo7902",
 			"birth": "1990-04-25T01:32:21.196+0200"
 		}
@@ -16,7 +16,7 @@
 			"firstname": "test",
 			"lastname": "admin",
 			"role": "ADMIN",
-			"email": "admin@test.test",
+			"email": "test-admin@dih.capra.me",
 			"hash": "$2a$10$QRhOhZdrjHhECu/l4Mc4keejdvkZDDZgGBKCp5BQ/OFICRTyo7902",
 			"birth": "1990-04-25T01:32:21.196+0200"
 		}
@@ -27,7 +27,7 @@
 			"firstname": "test",
 			"lastname": "moderator",
 			"role": "MODERATOR",
-			"email": "moderator@test.test",
+			"email": "test-moderator@dih.capra.me",
 			"hash": "$2a$10$QRhOhZdrjHhECu/l4Mc4keejdvkZDDZgGBKCp5BQ/OFICRTyo7902",
 			"birth": "1990-04-25T01:32:21.196+0200"
 		}
