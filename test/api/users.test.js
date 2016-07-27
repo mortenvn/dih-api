@@ -42,16 +42,20 @@ describe.serial('User API', it => {
 
     it('should return a single existing user', async t => {
         const fixture = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
         const response = await request(app)
             .get(`${URI}/${fixture.id}`)
+            .set('Authorization', `Bearer ${validJwt}`)
             .expect(200);
         t.is(response.body.email, fixture.email);
     });
 
     it('should return ResourceNotFound when retrieving nonexisting user', async t => {
         const fixture = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
         const response = await request(app)
             .get(`${URI}/${fixture.id + 10000}`)
+            .set('Authorization', `Bearer ${validJwt}`)
             .expect(404);
         t.is(response.body.name, 'ResourceNotFoundError');
         t.is(response.body.message, 'Could not find resource of type user');

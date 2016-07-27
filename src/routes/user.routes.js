@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', controller.list);
 
-router.get('/:id', controller.retrieve);
+router.get('/:id', authorizeAdministrator, controller.retrieve);
 
 router.put('/:id', authorizeAdministrator, controller.update);
 
