@@ -13,7 +13,7 @@ export default function (sequelize, DataTypes) {
                 isAlpha: true
             }
         },
-        miminmumTripDurationInDays: {
+        minimumTripDurationInDays: {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 10

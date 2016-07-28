@@ -37,7 +37,7 @@ describe.serial('Destination API', it => {
             .get(`${URI}/${fixture.id}`)
             .expect(200);
         t.is(response.body.name, fixture.name);
-        t.is(response.body.miminmumTripDurationInDays, fixture.miminmumTripDurationInDays);
+        t.is(response.body.minimumTripDurationInDays, fixture.minimumTripDurationInDays);
     });
 
     it('should be able to create a new destination ', async t => {
@@ -49,17 +49,17 @@ describe.serial('Destination API', it => {
         t.is(response.body.name, mockDest.name);
     });
 
-    it('should be able to create a new destination with miminmumTripDurationInDays', async t => {
+    it('should be able to create a new destination with minimumTripDurationInDays', async t => {
         const mockDestWithMinTrip = mockDest;
-        mockDestWithMinTrip.miminmumTripDurationInDays = 15;
+        mockDestWithMinTrip.minimumTripDurationInDays = 15;
         const response = await request(app)
             .post(URI)
             .send(mockDest)
             .expect(201)
             .then(res => res);
         t.is(response.body.name, mockDestWithMinTrip.name);
-        t.is(response.body.miminmumTripDurationInDays,
-            mockDestWithMinTrip.miminmumTripDurationInDays);
+        t.is(response.body.minimumTripDurationInDays,
+            mockDestWithMinTrip.minimumTripDurationInDays);
     });
 
 
@@ -85,17 +85,17 @@ describe.serial('Destination API', it => {
         t.is(response.name, changedFixture.name);
     });
 
-    it('should be able to update a destination with a new miminmumTripDurationInDays', async t => {
+    it('should be able to update a destination with a new minimumTripDurationInDays', async t => {
         const fixture = dbObjects[0];
         const changedFixture = fixture;
-        changedFixture.miminmumTripDurationInDays = 15;
+        changedFixture.minimumTripDurationInDays = 15;
         const response = await request(app)
             .put(`${URI}/${fixture.id}`)
             .send(changedFixture)
             .expect(204)
             .then(() => request(app).get(URI))
             .then(res => _.find(res.body, obj => obj.id === fixture.id));
-        t.is(response.miminmumTripDurationInDays, changedFixture.miminmumTripDurationInDays);
+        t.is(response.minimumTripDurationInDays, changedFixture.minimumTripDurationInDays);
     });
 
     it('should not be able to update destinations that does not exist', async () => {
