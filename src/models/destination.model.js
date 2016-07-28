@@ -1,6 +1,6 @@
 import Promise from 'bluebird';
+import { TRIP_STATUSES } from '../components/constants';
 import db from './';
-
 
 export default function (sequelize, DataTypes) {
     const Destination = sequelize.define('destination', {
@@ -52,6 +52,44 @@ export default function (sequelize, DataTypes) {
                         allowNull: true
                     }
                 });
+            },
+            findOneAndIncludeActiveTripCount(destId) {
+                // Sequelize getterMethods do not support Promises,
+                // so these custom find methods are used when one wants to
+                // include certain calculated fields.
+                return Destination.findOne({
+                    where: {
+                        id: destId
+                    }
+                })
+                .then(destination => {
+                    if (!destination) return Promise.reject(null);
+                    return [destination.toJSON(), destination.countTrips({
+                        where: {
+                            status: TRIP_STATUSES.ACTIVE
+                        }
+                    })];
+                })
+                .spread((destination, countOfActiveVolunteers) =>
+                    ({ ...destination, countOfActiveVolunteers })
+                );
+            },
+            findAllAndIncludeActiveTripCount(query) {
+                return Destination.findAll({
+                    where: query
+                })
+                .then(destinations =>
+                    Promise.map(destinations, destination =>
+                        destination.countTrips({
+                            where: {
+                                status: TRIP_STATUSES.ACTIVE
+                            }
+                        })
+                        .then(countOfActiveVolunteers =>
+                            ({ ...destination.toJSON(), countOfActiveVolunteers })
+                        )
+                    )
+                );
             }
         }
     });

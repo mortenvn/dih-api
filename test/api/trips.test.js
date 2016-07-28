@@ -57,7 +57,7 @@ describe.serial('Trip API', it => {
             .get(`${URI}?userId=${tripObjects[0].userId}`)
             .expect(200)
             .then(res => res.body);
-        t.is(response.length, 2);
+        t.is(response.length, tripObjects.length);
     });
 
 
@@ -151,6 +151,7 @@ describe.serial('Trip API', it => {
         t.is(response.body.userId, fixture.userId);
         t.is(response.body.destinationId, fixture.destinationId);
     });
+
 
     it('should not be able to retrieve a single trip that does not exist', async () => {
         await request(app)
