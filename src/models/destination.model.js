@@ -17,8 +17,23 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 10
+        },
+        startDate: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: new Date()
+        },
+        endDate: {
+            type: DataTypes.DATE,
+            allowNull: true
         }
     }, {
+        getterMethods: {
+            isActive() {
+                return (this.endDate ? this.endDate > new Date() : true)
+                && this.startDate <= new Date();
+            }
+        },
         hooks: {
             beforeCreate: [
                 destination =>
@@ -28,7 +43,7 @@ export default function (sequelize, DataTypes) {
                         db.MailTemplate.create()
                     ])
                     .spread((mt1, mt2, mt3) => {
-                        // Eslind disabled due to reassignment
+                        // Eslint disabled due to reassignment
                         // Must reassign as it is the instance to be created
                         destination.pendingStatusMailTemplateId = mt1.id; // eslint-disable-line
                         destination.acceptedStatusMailTemplateId = mt2.id; // eslint-disable-line
