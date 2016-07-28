@@ -40,6 +40,25 @@ describe.serial('Destination API', it => {
         t.is(response.body.minimumTripDurationInDays, fixture.minimumTripDurationInDays);
     });
 
+    it('should include count of active volunteers on retrieval of single destination', async t => {
+        const fixture = dbObjects[2];
+        const response = await request(app)
+            .get(`${URI}/${fixture.id}`)
+            .expect(200);
+        t.is(response.body.countOfActiveVolunteers, 1);
+    });
+
+    it('should include count of active volunteers on retrieval of all destinations', async t => {
+        const response = await request(app)
+            .get(`${URI}`)
+            .expect(200);
+        t.is(response.body[0].countOfActiveVolunteers, 0);
+        t.is(response.body[1].countOfActiveVolunteers, 0);
+        t.is(response.body[2].countOfActiveVolunteers, 1);
+        t.is(response.body[3].countOfActiveVolunteers, 0);
+        t.is(response.body[4].countOfActiveVolunteers, 0);
+    });
+
     it('should be able to create a new destination ', async t => {
         const response = await request(app)
             .post(URI)
