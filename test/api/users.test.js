@@ -126,6 +126,36 @@ describe.serial('User API', it => {
             .expect(204);
     });
 
+    it('should not update a user with blank firstname', async () => {
+        const user = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
+        await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ firstname: '' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(400);
+    });
+
+    it('should not update a user with blank lastname', async () => {
+        const user = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
+        await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ lastname: '' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(400);
+    });
+
+    it('should not update a user with blank email', async () => {
+        const user = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
+        await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ email: '' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(400);
+    });
+
     it('should not update a user when not admin', async t => {
         const user = dbObjects[1];
         const validJwt = createValidJWT(dbObjects[0]);
