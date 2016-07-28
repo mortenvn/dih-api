@@ -12,6 +12,11 @@ export default function (sequelize, DataTypes) {
                 notEmpty: true,
                 isAlpha: true
             }
+        },
+        minimumTripDurationInDays: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 10
         }
     }, {
         hooks: {
