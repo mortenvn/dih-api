@@ -2,7 +2,7 @@
 module.exports = {
 
     up(migration, DataTypes) {
-        return migration.addColumn('destinations', 'miminmumTripDurationInDays', {
+        return migration.addColumn('destinations', 'minimumTripDurationInDays', {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 10
@@ -10,7 +10,7 @@ module.exports = {
     },
 
     down(migration) {
-        return migration.removeColumn('destinations', 'miminmumTripDurationInDays');
+        return migration.removeColumn('destinations', 'minimumTripDurationInDays');
     }
 
 };
