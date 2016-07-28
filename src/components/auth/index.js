@@ -55,6 +55,10 @@ export function authorize(req, res, next) {
 /**
  * authorizeAdministrator - combines two middleware where the first authorizes the
  * users JWT and the second checks for administrator privileges.
+ *
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
  */
 export const authorizeAdministrator =
     composableMiddleware()
@@ -67,6 +71,10 @@ export const authorizeAdministrator =
 /**
  * authorizeModerator - combines two middleware where the first authorizes the users
  * JWT and the second checks for administrator privileges or higher.
+ *
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
  */
 export const authorizeModerator =
     composableMiddleware()
