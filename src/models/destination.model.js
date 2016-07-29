@@ -30,7 +30,9 @@ export default function (sequelize, DataTypes) {
     }, {
         getterMethods: {
             isActive() {
-                return (this.endDate ? this.endDate > new Date() : true)
+                // Check for endDate as it can be null
+                // Then see if the current time is within the range
+                return (this.endDate ? this.endDate >= new Date() : true)
                 && this.startDate <= new Date();
             }
         },
