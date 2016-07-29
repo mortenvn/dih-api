@@ -2,6 +2,7 @@ import { loadFixtures, getAllElements } from '../helpers';
 import { describe } from 'ava-spec';
 import _ from 'lodash';
 import request from 'supertest-as-promised';
+import moment from 'moment';
 import app from '../../src/app';
 
 
@@ -80,26 +81,27 @@ describe.serial('Destination API', it => {
 
     it('should be able to create a new destination with startDate', async t => {
         const mockDestWithStartDate = mockDest;
-        mockDestWithStartDate.startDate = '2020-04-24T23:32:21.196Z';
+        mockDestWithStartDate.startDate = moment().year(moment().year() + 5);
         const response = await request(app)
             .post(URI)
             .send(mockDestWithStartDate)
             .expect(201)
             .then(res => res);
         t.is(response.body.name, mockDestWithStartDate.name);
-        t.is(response.body.startDate, mockDestWithStartDate.startDate);
+        t.is(moment(response.body.startDate).toString(),
+        mockDestWithStartDate.startDate.toString());
     });
 
     it('should be able to create a new destination with endDate', async t => {
         const mockDestWithEndDate = mockDest;
-        mockDestWithEndDate.endDate = '2020-04-24T23:32:21.196Z';
+        mockDestWithEndDate.endDate = moment().year(moment().year() + 5);
         const response = await request(app)
             .post(URI)
             .send(mockDestWithEndDate)
             .expect(201)
             .then(res => res);
         t.is(response.body.name, mockDestWithEndDate.name);
-        t.is(response.body.endDate, mockDestWithEndDate.endDate);
+        t.is(moment(response.body.endDate).toString(), mockDestWithEndDate.endDate.toString());
     });
 
 
@@ -114,7 +116,7 @@ describe.serial('Destination API', it => {
 
     it('should make a destinations isActive false when startDate is in the future', async t => {
         const mockDestWithStartDate = mockDest;
-        mockDestWithStartDate.startDate = '2020-04-25T01:32:21.196+0200';
+        mockDestWithStartDate.startDate = moment().year(moment().year() + 5);
         const response = await request(app)
             .post(URI)
             .send(mockDestWithStartDate)
@@ -126,8 +128,8 @@ describe.serial('Destination API', it => {
 
     it('should make isActive true when endDate is in the future', async t => {
         const activeMockDest = mockDest;
-        activeMockDest.startDate = '2015-05-24T01:32:21.196+0200';
-        activeMockDest.endDate = '2021-05-24T01:32:21.196+0200';
+        activeMockDest.startDate = moment().year(moment().year() - 2);
+        activeMockDest.endDate = moment().year(moment().year() + 5);
         const response = await request(app)
             .post(URI)
             .send(activeMockDest)
@@ -139,8 +141,8 @@ describe.serial('Destination API', it => {
 
     it('should have isActive false if active period has passed', async t => {
         const inactiveactiveMockDest = mockDest;
-        inactiveactiveMockDest.startDate = '2014-04-24T23:32:21.196Z';
-        inactiveactiveMockDest.endDate = '2015-04-24T23:32:21.196Z';
+        inactiveactiveMockDest.startDate = moment().year(moment().year() - 5);
+        inactiveactiveMockDest.endDate = moment().year(moment().year() - 1);
         const response = await request(app)
             .post(URI)
             .send(inactiveactiveMockDest)
