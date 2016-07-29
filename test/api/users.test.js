@@ -1,4 +1,4 @@
-import { getAllElements, loadFixtures } from '../helpers';
+import { createValidJWT, getAllElements, loadFixtures } from '../helpers';
 import { describe } from 'ava-spec';
 import request from 'supertest-as-promised';
 import { updateTransport } from '../../src/components/mail';
@@ -42,16 +42,20 @@ describe.serial('User API', it => {
 
     it('should return a single existing user', async t => {
         const fixture = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
         const response = await request(app)
             .get(`${URI}/${fixture.id}`)
+            .set('Authorization', `Bearer ${validJwt}`)
             .expect(200);
         t.is(response.body.email, fixture.email);
     });
 
     it('should return ResourceNotFound when retrieving nonexisting user', async t => {
         const fixture = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
         const response = await request(app)
             .get(`${URI}/${fixture.id + 10000}`)
+            .set('Authorization', `Bearer ${validJwt}`)
             .expect(404);
         t.is(response.body.name, 'ResourceNotFoundError');
         t.is(response.body.message, 'Could not find resource of type user');
@@ -110,5 +114,57 @@ describe.serial('User API', it => {
             .expect(400);
 
         t.is(response.body.message, 'email must be unique');
+    });
+
+    it('should update a user', async () => {
+        const user = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
+        await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ firstname: 'Alexander' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(204);
+    });
+
+    it('should not update a user with blank firstname', async () => {
+        const user = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
+        await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ firstname: '' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(400);
+    });
+
+    it('should not update a user with blank lastname', async () => {
+        const user = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
+        await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ lastname: '' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(400);
+    });
+
+    it('should not update a user with blank email', async () => {
+        const user = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
+        await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ email: '' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(400);
+    });
+
+    it('should not update a user when not admin', async t => {
+        const user = dbObjects[1];
+        const validJwt = createValidJWT(dbObjects[0]);
+        const response = await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ firstname: 'Ada' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(401);
+
+        t.is(response.body.name, 'AuthorizationError');
     });
 });
