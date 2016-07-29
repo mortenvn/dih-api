@@ -9,7 +9,6 @@ Promise.promisifyAll(jwt);
 
 export function loadFixtures(fixtures) {
     const f = fixtures || [
-        'mailTemplates',
         'users',
         'destinations',
         'trips'
