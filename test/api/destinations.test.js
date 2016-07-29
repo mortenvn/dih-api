@@ -6,10 +6,7 @@ import app from '../../src/app';
 
 
 const mockDest = {
-    name: 'AdaNora',
-    pendingStatusMailTemplateId: 1,
-    acceptedStatusMailTemplateId: 2,
-    rejectedStatusMailTemplateId: 3
+    name: 'AdaNora'
 };
 const URI = '/destinations';
 let dbObjects;
