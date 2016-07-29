@@ -40,6 +40,10 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.DATE
         },
         notes: DataTypes.STRING,
+        volunteerInfo: {
+            type: DataTypes.TEXT,
+            defaultValue: ''
+        },
         hash: DataTypes.STRING,
         role: {
             type: DataTypes.ENUM,
