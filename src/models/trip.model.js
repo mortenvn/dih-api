@@ -68,14 +68,14 @@ export default function (sequelize, DataTypes) {
                         if (trip.status === TRIP_STATUSES.ACCEPTED) {
                             return trip.userActionToUser(trip.status);
                         }
-                        if (trip.status === TRIP_STATUSES.REJECTED ||
-                            trip.status === TRIP_STATUSES.PENDING) {
+                        if (trip.status === TRIP_STATUSES.REJECTED) {
                             return trip.userInfoToUser(trip.status);
                         }
                     }
                     return Promise.resolve();
                 }
-            ]
+            ],
+            afterCreate: trip => trip.userInfoToUser(trip.status)
         },
         instanceMethods: {
             userActionToUser(tripStatus) {
@@ -86,7 +86,9 @@ export default function (sequelize, DataTypes) {
                 .spread((destination, user) =>
                     db.MailTemplate
                     .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
-                    .then(template => user.sendDestinationAction(destination, template.html))
+                    .then(template => {
+                        if (template) user.sendDestinationAction(destination, template.html);
+                    })
                 );
             },
             userInfoToUser(tripStatus) {
@@ -97,7 +99,9 @@ export default function (sequelize, DataTypes) {
                 .spread((destination, user) =>
                 db.MailTemplate
                 .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
-                .then(template => user.sendDestinationInfo(destination, template.html))
+                .then(template => {
+                    if (template) user.sendDestinationInfo(destination, template.html);
+                })
                 );
             }
         }

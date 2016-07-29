@@ -10,9 +10,14 @@ const mockTemplate = {
     html: 'hello world'
 };
 
+const fixtures = [
+    'mailTemplates',
+    'users'
+];
+
 describe.serial('MailTemplates API', it => {
     it.beforeEach(() =>
-        loadFixtures()
+        loadFixtures(fixtures)
             .then(() => getAllElements('MailTemplate'))
             .then(response => {
                 mailTemplateObjects = response;
