@@ -17,6 +17,18 @@ exports.USER_ROLES = {
 };
 
 /**
+ * The possible methods of travel for a trip.
+ * @type {object}
+ * @property {string} PLANE - The user will arrive by plane, should trigger specific fields.
+ * @property {string} OTHER - The uset will arrive by other method than listed, should trigger
+ * a free text field.
+ */
+exports.TRAVEL_METHODS = {
+    PLANE: 'PLANE',
+    OTHER: 'OTHER'
+};
+
+/**
  * The possible roles a user can have.
  * @type {object}
  * @property {string} PENDING - The trip is requested by a user but not handled by an admin

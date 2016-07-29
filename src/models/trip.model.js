@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Promise from 'bluebird';
 import { validateQuery } from '../components/queryValidator';
-import { TRIP_STATUSES } from '../components/constants';
+import { TRAVEL_METHODS, TRIP_STATUSES } from '../components/constants';
 import db from './';
 
 const ALLOWED_QUERY_PARAMS = ['destinationId', 'userId', 'status'];
@@ -31,7 +31,16 @@ export default function (sequelize, DataTypes) {
         },
         notes: {
             type: DataTypes.TEXT
-        }
+        },
+        travelMethod: {
+            type: DataTypes.ENUM,
+            values: _.values(TRAVEL_METHODS)
+        },
+        departureAirport: DataTypes.STRING,
+        flightNumber: DataTypes.STRING,
+        arrivalDate: DataTypes.DATE,
+        departureDate: DataTypes.DATE,
+        otherTravelInformation: DataTypes.TEXT
     }, {
         classMethods: {
             associate(models) {
