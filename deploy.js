@@ -6,7 +6,7 @@ const PG_URL = `postgres://${process.env.PG_USER}:${process.env.PG_PASSWORD}@dih
 const task = {
     "containerDefinitions": [
         {
-            memory: 500,
+            memory: 400,
             portMappings: [
                 {
                     hostPort: parseInt(process.env.PORT, 10),
