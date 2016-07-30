@@ -2,6 +2,7 @@
 import childProcess from 'child-process-promise';
 
 const env = process.env.NODE_ENV;
+const PG_URL = `postgres://${process.env.PG_USER}:${process.env.PG_PASSWORD}@dih-${env}.${process.env.PG_URL_BASE}`;
 const task = {
     "containerDefinitions": [
         {
@@ -18,7 +19,7 @@ const task = {
             environment: [
                 {
                     name: "PG_URL",
-                    value: process.env.PG_URL
+                    value: PG_URL
                 },
                 {
                     name: "NODE_ENV",
@@ -31,6 +32,10 @@ const task = {
                 {
                     name: "REGION",
                     value: process.env.REGION
+                },
+                {
+                    name: "SENTRY_DSN",
+                    value: process.env.SENTRY_DSN
                 },
                 {
                     name: "EMAIL",

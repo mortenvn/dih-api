@@ -1,3 +1,6 @@
+import raven from 'raven';
+import config from '../config';
+
 /**
 * All error handeling and errors used trouought the application.
 * @module components/errors
@@ -14,7 +17,7 @@
 */
 // eslint-disable-next-line no-unused-vars
 export function errorMiddleware(err, req, res, next) {
-    if (process.env.NODE_ENV === 'development') {
+    if (config.nodeEnv === 'development') {
         console.log(err.stack); // eslint-disable-line
     }
 
@@ -25,6 +28,29 @@ export function errorMiddleware(err, req, res, next) {
         name: err.name,
         message: err.message
     });
+}
+
+/**
+ * The possible roles a user can have.
+ * @type {sentryClient}
+ */
+export const sentryClient = new raven.Client(config.sentry, {
+    release: require('../../package.json').version,
+    tags: {
+        environment: config.nodeEnv
+    }
+});
+
+/**
+* handleError - Returns a 404 Page not Found error it the route requested
+* is not matched with any corresponding route.
+*
+* @param  {Object} req - Express request object
+* @param  {Object} res - Express response object
+* @return {Undefined}  - A 404 not found error
+*/
+export function handleError(error) {
+    sentryClient.captureError(error);
 }
 
 /**
