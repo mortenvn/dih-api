@@ -8,11 +8,21 @@ import cors from 'cors';
 import morgan from 'morgan';
 import errorHandler from 'errorhandler';
 import bodyParser from 'body-parser';
+import raven from 'raven';
 import methodOverride from 'method-override';
 import cookieParser from 'cookie-parser';
+import config from './config';
 import routes from './routes';
+import { sentryClient } from './components/errors';
 
 const app = express();
+
+if (config.env === 'production' || config.env === 'staging') {
+    app.use(raven.middleware.express.requestHandler(sentryClient));
+    sentryClient.patchGlobal(() => {
+        process.exit(1);
+    });
+}
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
