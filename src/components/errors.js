@@ -31,7 +31,7 @@ export function errorMiddleware(err, req, res, next) {
 }
 
 /**
- * The possible roles a user can have.
+ * The sentry client used trought the application
  * @type {sentryClient}
  */
 export const sentryClient = new raven.Client(config.sentry, {
@@ -42,12 +42,9 @@ export const sentryClient = new raven.Client(config.sentry, {
 });
 
 /**
-* handleError - Returns a 404 Page not Found error it the route requested
-* is not matched with any corresponding route.
+* handleError - sends the error to sentry to further analysis.
 *
-* @param  {Object} req - Express request object
-* @param  {Object} res - Express response object
-* @return {Undefined}  - A 404 not found error
+* @param  {Object} error - Validation error from  Sequelize
 */
 export function handleError(error) {
     sentryClient.captureError(error);
