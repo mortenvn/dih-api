@@ -2,6 +2,7 @@ import { loadFixtures, getAllElements } from '../helpers';
 import { describe } from 'ava-spec';
 import _ from 'lodash';
 import request from 'supertest-as-promised';
+import moment from 'moment';
 import app from '../../src/app';
 
 
@@ -70,7 +71,7 @@ describe.serial('Destination API', it => {
         mockDestWithMinTrip.minimumTripDurationInDays = 15;
         const response = await request(app)
             .post(URI)
-            .send(mockDest)
+            .send(mockDestWithMinTrip)
             .expect(201)
             .then(res => res);
         t.is(response.body.name, mockDestWithMinTrip.name);
@@ -78,6 +79,78 @@ describe.serial('Destination API', it => {
             mockDestWithMinTrip.minimumTripDurationInDays);
     });
 
+    it('should be able to create a new destination with startDate', async t => {
+        const mockDestWithStartDate = mockDest;
+        mockDestWithStartDate.startDate = moment().year(moment().year() + 5);
+        const response = await request(app)
+            .post(URI)
+            .send(mockDestWithStartDate)
+            .expect(201)
+            .then(res => res);
+        t.is(response.body.name, mockDestWithStartDate.name);
+        t.is(moment(response.body.startDate).toString(),
+        mockDestWithStartDate.startDate.toString());
+    });
+
+    it('should be able to create a new destination with endDate', async t => {
+        const mockDestWithEndDate = mockDest;
+        mockDestWithEndDate.endDate = moment().year(moment().year() + 5);
+        const response = await request(app)
+            .post(URI)
+            .send(mockDestWithEndDate)
+            .expect(201)
+            .then(res => res);
+        t.is(response.body.name, mockDestWithEndDate.name);
+        t.is(moment(response.body.endDate).toString(), mockDestWithEndDate.endDate.toString());
+    });
+
+
+    it('should return destinations with calculated isActive field', async t => {
+        const fixture = dbObjects[0];
+        const response = await request(app)
+            .get(`${URI}/${fixture.id}`)
+            .expect(200)
+            .then(res => res);
+        t.is(response.body.isActive, true);
+    });
+
+    it('should make a destinations isActive false when startDate is in the future', async t => {
+        const mockDestWithStartDate = mockDest;
+        mockDestWithStartDate.startDate = moment().year(moment().year() + 5);
+        const response = await request(app)
+            .post(URI)
+            .send(mockDestWithStartDate)
+            .expect(201)
+            .then(res => res);
+        t.is(response.body.name, mockDestWithStartDate.name);
+        t.is(response.body.isActive, false);
+    });
+
+    it('should make isActive true when endDate is in the future', async t => {
+        const activeMockDest = mockDest;
+        activeMockDest.startDate = moment().year(moment().year() - 2);
+        activeMockDest.endDate = moment().year(moment().year() + 5);
+        const response = await request(app)
+            .post(URI)
+            .send(activeMockDest)
+            .expect(201)
+            .then(res => res);
+        t.is(response.body.name, activeMockDest.name);
+        t.is(response.body.isActive, true);
+    });
+
+    it('should have isActive false if active period has passed', async t => {
+        const inactiveactiveMockDest = mockDest;
+        inactiveactiveMockDest.startDate = moment().year(moment().year() - 5);
+        inactiveactiveMockDest.endDate = moment().year(moment().year() - 1);
+        const response = await request(app)
+            .post(URI)
+            .send(inactiveactiveMockDest)
+            .expect(201)
+            .then(res => res);
+        t.is(response.body.name, inactiveactiveMockDest.name);
+        t.is(response.body.isActive, false);
+    });
 
     it('should not be able to create a new destination with no name ', async () => {
         const mockEmptyString = mockDest;
