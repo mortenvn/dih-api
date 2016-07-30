@@ -2,8 +2,10 @@
  * All functions and setup regarding authentification and authorization.
  * @module db-helpers/index
  */
+import Promise from 'bluebird';
 import migrate from './migrate';
 import db from '../models';
+import { STANDARD_MAIL_TEMPLATES } from '../components/constants';
 
 
 /**
@@ -51,4 +53,30 @@ export function createDefaultAdmin(password) {
         user.updatePassword(password);
     })
     .catch(db.sequelize.UniqueConstraintError); // In case it's already added
+}
+
+export function createMailTemplatesForDestination(destination) {
+    if (!destination.pendingStatusMailTemplateId && // Ensures working migrations
+        !destination.acceptedStatusMailTemplateId && // and tests
+        !destination.rejectedStatusMailTemplateId) {
+        return Promise.resolve();
+    }
+    return Promise.all([ // bulkCreate does not return inserted elements
+        db.MailTemplate.create({
+            html: STANDARD_MAIL_TEMPLATES.TRIP_STATUS_PENDING
+        }),
+        db.MailTemplate.create({
+            html: STANDARD_MAIL_TEMPLATES.TRIP_STATUS_ACCEPTED
+        }),
+        db.MailTemplate.create({
+            html: STANDARD_MAIL_TEMPLATES.TRIP_STATUS_REJECTED
+        })
+    ])
+    .spread((mt1, mt2, mt3) => {
+        // Eslind disabled due to reassignment
+        // Must reassign as it is the instance to be created
+        destination.pendingStatusMailTemplateId = mt1.id; // eslint-disable-line
+        destination.acceptedStatusMailTemplateId = mt2.id; // eslint-disable-line
+        destination.rejectedStatusMailTemplateId = mt3.id; // eslint-disable-line
+    });
 }
