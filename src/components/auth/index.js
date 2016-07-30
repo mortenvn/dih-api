@@ -4,8 +4,10 @@
  */
 import jwt from 'jsonwebtoken';
 import Promise from 'bluebird';
-import { AuthenticationError } from '../errors';
+import { AuthenticationError, AuthorizationError } from '../errors';
 import config from '../../config';
+import { USER_ROLES } from '../constants';
+import composableMiddleware from 'composable-middleware';
 Promise.promisifyAll(jwt);
 
 
@@ -49,3 +51,37 @@ export function authorize(req, res, next) {
         })
         .catch(error => next(new AuthenticationError(error.message)));
 }
+
+/**
+ * authorizeAdministrator - combines two middleware where the first authorizes the
+ * users JWT and the second checks for administrator privileges.
+ *
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
+export const authorizeAdministrator =
+    composableMiddleware()
+        .use(authorize)
+        .use((req, res, next) => {
+            if (req.user.role !== USER_ROLES.ADMIN) next(new AuthorizationError());
+            next();
+        });
+
+/**
+ * authorizeModerator - combines two middleware where the first authorizes the users
+ * JWT and the second checks for administrator privileges or higher.
+ *
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
+export const authorizeModerator =
+    composableMiddleware()
+        .use(authorize)
+        .use((req, res, next) => {
+            if (req.user.role !== USER_ROLES.ADMIN || req.user.role !== USER_ROLES.MODERATOR) {
+                next(new AuthorizationError());
+            }
+            next();
+        });

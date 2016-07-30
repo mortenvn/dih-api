@@ -145,6 +145,22 @@ export class AuthenticationError extends Error {
 }
 
 /**
+* AuthorizationError - Returns a 401 You are not authorized to access this resource,
+* implying that the user does not have enough premissions to complete this request.
+*
+* @param  {String} message - A message sent to the user why he/she is not authenticated
+* @return {Object}  - Error object
+*/
+export class AuthorizationError extends Error {
+    name = 'AuthorizationError';
+    status = 401;
+    constructor(message = 'You are not authorized to access this resource') {
+        super(message);
+        this.message = message;
+    }
+}
+
+/**
  * UriValidationError - Returns a 400 Invalid URI.
  * indicating that the URI the user gave was invalid.
  *

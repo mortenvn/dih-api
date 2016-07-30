@@ -37,6 +37,7 @@
   "dependencies": {
     "bluebird": "^3.4.0",
     "body-parser": "^1.15.1",
+    "composable-middleware": "^0.3.0",
     "continuation-local-storage": "^3.1.7",
     "cookie-parser": "^1.4.3",
     "cors": "^2.7.1",
@@ -73,7 +74,7 @@
     "eslint-plugin-import": "^1.8.1",
     "jsdoc": "^3.4.0",
     "jsdoc-babel": "^0.2.0",
-    "nyc": "^6.6.1",
+    "nyc": "^7.1.0",
     "sequelize-fixtures": "^0.5.3",
     "sinon": "^1.17.4",
     "supertest": "^1.2.0",
