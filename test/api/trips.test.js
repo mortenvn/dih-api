@@ -15,6 +15,9 @@ const mockTrip = {
     wishEndDate: '2021-04-25T01:32:21.196+0200'
 };
 
+const arrivalDate = '2030-04-25T01:32:21.196+0200';
+const departureDate = '2031-04-25T01:32:21.196+0200';
+
 describe.serial('Trip API', it => {
     it.beforeEach(() =>
         loadFixtures()
@@ -57,7 +60,7 @@ describe.serial('Trip API', it => {
             .get(`${URI}?userId=${tripObjects[0].userId}`)
             .expect(200)
             .then(res => res.body);
-        t.is(response.length, 2);
+        t.is(response.length, tripObjects.length);
     });
 
 
@@ -152,6 +155,7 @@ describe.serial('Trip API', it => {
         t.is(response.body.destinationId, fixture.destinationId);
     });
 
+
     it('should not be able to retrieve a single trip that does not exist', async () => {
         await request(app)
             .get(`${URI}/${tripObjects.length + 100}`)
@@ -232,6 +236,72 @@ describe.serial('Trip API', it => {
             .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(invalidChangedFixture)
             .expect(400);
+    });
+
+    it('should be able to update trip with travel method', async () => {
+        const fixture = tripObjects[0];
+        const changedFixture = fixture;
+        changedFixture.travelMethod = 'PLANE';
+        await request(app)
+            .put(`${URI}/${fixture.id}`)
+            .send(changedFixture)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
+            .expect(204);
+    });
+
+    it('should be able to update trip with departure airport', async () => {
+        const fixture = tripObjects[0];
+        const changedFixture = fixture;
+        changedFixture.departureAirport = 'OSL';
+        await request(app)
+            .put(`${URI}/${fixture.id}`)
+            .send(changedFixture)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
+            .expect(204);
+    });
+
+    it('should be able to update trip with flight number', async () => {
+        const fixture = tripObjects[0];
+        const changedFixture = fixture;
+        changedFixture.flightNumber = '	WF794';
+        await request(app)
+            .put(`${URI}/${fixture.id}`)
+            .send(changedFixture)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
+            .expect(204);
+    });
+
+    it('should be able to update trip with arrival date', async () => {
+        const fixture = tripObjects[0];
+        const changedFixture = fixture;
+        changedFixture.arrivalDate = arrivalDate;
+        await request(app)
+            .put(`${URI}/${fixture.id}`)
+            .send(changedFixture)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
+            .expect(204);
+    });
+
+    it('should be able to update trip with departure date', async () => {
+        const fixture = tripObjects[0];
+        const changedFixture = fixture;
+        changedFixture.departureDate = departureDate;
+        await request(app)
+            .put(`${URI}/${fixture.id}`)
+            .send(changedFixture)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
+            .expect(204);
+    });
+
+    it('should be able to update trip with other travel information', async () => {
+        const fixture = tripObjects[0];
+        const changedFixture = fixture;
+        changedFixture.otherTravelInformation = 'Batmobile';
+        await request(app)
+            .put(`${URI}/${fixture.id}`)
+            .send(changedFixture)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
+            .expect(204);
     });
 
     it('should return 404 when you try to update a trip that does not exist', async () => {
