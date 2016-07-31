@@ -8,6 +8,7 @@ import Promise from 'bluebird';
 import hbs from 'nodemailer-express-handlebars';
 import ses from 'nodemailer-ses-transport';
 import path from 'path';
+import { handleError } from '../errors';
 import config from '../../config';
 
 let transporter;
@@ -45,7 +46,7 @@ export function sendResetPasswordEmail(user, token) {
     const mailOptions = {
         to: user.email,
         from: `DIH <${config.email}>`,
-        subject: 'Password reset, Dråpen I Havet!',
+        subject: 'Password reset for A Drop in the Ocean',
         template: 'action',
         context: {
             content: 'You have requestet a password reset, follow this link to set a new password',
@@ -58,9 +59,7 @@ export function sendResetPasswordEmail(user, token) {
 
     return transporter.sendMailAsync(mailOptions)
         .then(() => user)
-        .catch(err => { // TODO should add some logger, or better use Sentry!
-            console.error(err); // eslint-disable-line
-        });
+        .catch(handleError);
 }
 
 /**
@@ -76,13 +75,13 @@ export function sendInvite(user, token) {
     const mailOptions = {
         to: user.email,
         from: `DIH <${config.email}>`,
-        subject: 'Velkommen til Dråpen I Havet!',
+        subject: 'Welcome to A Drop in the Ocean!',
         template: 'action',
         context: {
-            content: `Du har opprettet en bruker hos Dråpen i Havet,
-            trykk på knappen under for å fullføre registreringen.`,
+            content: `You have created an account with A Drop in the Ocean.
+            Click the button below to complete the registration.`,
             action: {
-                text: 'Registrer brukerkonto',
+                text: 'Complete registration',
                 url: `${config.web}/signup/confirm?token=${token}`
             }
         }
@@ -90,9 +89,7 @@ export function sendInvite(user, token) {
 
     return transporter.sendMailAsync(mailOptions)
         .then(() => user)
-        .catch(err => { // TODO should add some logger, or better use Sentry!
-            console.error(err); // eslint-disable-line
-        });
+        .catch(handleError);
 }
 
 /**
@@ -106,16 +103,15 @@ export function sendInvite(user, token) {
  * @return {SequlizeInstance} user The user who was sent the email
  */
 export function sendDestinationAction(user, mailContent, token) {
-    // @TODO correct URL for mytrips
     const mailOptions = {
         to: user.email,
         from: `DIH <${config.email}>`,
-        subject: 'Du har blitt godkjent som frivillig hos Dråpen i Havet!',
+        subject: 'A Drop in the Ocean has accepted you as a volunteer!',
         template: 'action',
         context: {
             content: mailContent,
             action: {
-                text: 'Se din reise',
+                text: 'See your trip',
                 url: `${config.web}/trips?token=${token}`
             }
         }
@@ -123,9 +119,7 @@ export function sendDestinationAction(user, mailContent, token) {
 
     return transporter.sendMailAsync(mailOptions)
         .then(() => user)
-        .catch(err => { // TODO should add some logger, or better use Sentry!
-            console.error(err); // eslint-disable-line
-        });
+        .catch(handleError);
 }
 
 /**
@@ -139,11 +133,10 @@ export function sendDestinationAction(user, mailContent, token) {
  * @return {SequlizeInstance} user The user who was sent the email
  */
 export function sendDestinationInfo(user, mailContent) {
-    // @TODO correct URL for mytrips
     const mailOptions = {
         to: user.email,
         from: `DIH <${config.email}>`,
-        subject: 'Informasjon fra  Dråpen i Havet!',
+        subject: 'Information about your trip with A Drop in the Ocean',
         template: 'info',
         context: {
             content: mailContent
@@ -152,7 +145,5 @@ export function sendDestinationInfo(user, mailContent) {
 
     return transporter.sendMailAsync(mailOptions)
         .then(() => user)
-        .catch(err => { // TODO should add some logger, or better use Sentry!
-            console.error(err); // eslint-disable-line
-        });
+        .catch(handleError);
 }

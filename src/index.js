@@ -2,10 +2,11 @@
  * Entrypoint for starting the server
  * @module index
  */
+import Sequelize from 'sequelize';
 import app from './app';
 import config from './config';
+import { handleError } from './components/errors';
 import { migrateDB, syncDB, createDefaultAdmin } from './db-helpers';
-import Sequelize from 'sequelize';
 
 /**
  * listen - Starts the server with the config given by the environment variables
@@ -23,8 +24,10 @@ function listen() {
 let db;
 if (config.nodeEnv === 'development' || config.nodeEnv === 'test') db = syncDB();
 else {
-    db = migrateDB().catch(Sequelize.DatabaseError, () => syncDB())
-    .then(() => createDefaultAdmin(config.adminPassword));
+    db = migrateDB()
+        .catch(Sequelize.DatabaseError, () => syncDB())
+        .then(() => createDefaultAdmin(config.adminPassword));
 }
 
-db.then(() => listen());
+db.then(() => listen())
+    .catch(handleError);

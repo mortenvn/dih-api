@@ -16,9 +16,7 @@ import { ResourceNotFoundError, ValidationError } from '../components/errors';
  * @param  {Function} next Express next middleware function
  */
 export function list(req, res, next) {
-    db.Destination.findAll({
-        where: req.query
-    })
+    db.Destination.findAllAndIncludeActiveTripCount(req.query)
     .then(res.json.bind(res))
     .catch(next);
 }
@@ -33,14 +31,12 @@ export function list(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function retrieve(req, res, next) {
-    db.Destination.findOne({
-        where: {
-            id: req.params.id
-        }
-    })
+    db.Destination.findOneAndIncludeActiveTripCount(req.params.id)
     .then(destination => {
-        if (!destination) throw new ResourceNotFoundError('destination');
         res.json(destination);
+    })
+    .catch((destination) => { // Rejected because element was not found
+        if (!destination) throw new ResourceNotFoundError('destination');
     })
     .catch(next);
 }

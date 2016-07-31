@@ -18,5 +18,15 @@
             "wishStartDate": "2020-04-25T01:32:21.196+0200",
             "wishEndDate": "2021-04-25T01:32:21.196+0200"
         }
+    },
+    {
+        "model": "Trip",
+        "data": {
+            "status": "ACTIVE",
+            "userId": 1,
+            "destinationId": 3,
+            "wishStartDate": "2020-04-25T01:32:21.196+0200",
+            "wishEndDate": "2021-04-25T01:32:21.196+0200"
+        }
     }
 ]
