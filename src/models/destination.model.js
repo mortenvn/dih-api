@@ -17,8 +17,25 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.INTEGER,
             allowNull: false,
             defaultValue: 10
+        },
+        startDate: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: new Date()
+        },
+        endDate: {
+            type: DataTypes.DATE,
+            allowNull: true
         }
     }, {
+        getterMethods: {
+            isActive() {
+                // Check for endDate as it can be null
+                // Then see if the current time is within the range
+                return (this.endDate ? this.endDate >= new Date() : true)
+                && this.startDate <= new Date();
+            }
+        },
         hooks: {
             beforeCreate: createMailTemplatesForDestination,
             beforeSave: createMailTemplatesForDestination

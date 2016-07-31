@@ -8,6 +8,7 @@ import Promise from 'bluebird';
 import hbs from 'nodemailer-express-handlebars';
 import ses from 'nodemailer-ses-transport';
 import path from 'path';
+import { handleError } from '../errors';
 import config from '../../config';
 
 let transporter;
@@ -58,9 +59,7 @@ export function sendResetPasswordEmail(user, token) {
 
     return transporter.sendMailAsync(mailOptions)
         .then(() => user)
-        .catch(err => { // TODO should add some logger, or better use Sentry!
-            console.error(err); // eslint-disable-line
-        });
+        .catch(handleError);
 }
 
 /**
@@ -90,9 +89,7 @@ export function sendInvite(user, token) {
 
     return transporter.sendMailAsync(mailOptions)
         .then(() => user)
-        .catch(err => { // TODO should add some logger, or better use Sentry!
-            console.error(err); // eslint-disable-line
-        });
+        .catch(handleError);
 }
 
 /**
@@ -122,9 +119,7 @@ export function sendDestinationAction(user, mailContent, token) {
 
     return transporter.sendMailAsync(mailOptions)
         .then(() => user)
-        .catch(err => { // TODO should add some logger, or better use Sentry!
-            console.error(err); // eslint-disable-line
-        });
+        .catch(handleError);
 }
 
 /**
@@ -150,7 +145,5 @@ export function sendDestinationInfo(user, mailContent) {
 
     return transporter.sendMailAsync(mailOptions)
         .then(() => user)
-        .catch(err => { // TODO should add some logger, or better use Sentry!
-            console.error(err); // eslint-disable-line
-        });
+        .catch(handleError);
 }
