@@ -1,7 +1,7 @@
-import { loadFixtures, getAllElements, createValidJWT, validateJwt } from '../helpers';
 import { describe } from 'ava-spec';
 import request from 'supertest-as-promised';
 import sinon from 'sinon';
+import { loadFixtures, getAllElements, createValidJWT, validateJwt } from '../helpers';
 import app from '../../src/app';
 import { updateTransport } from '../../src/components/mail';
 

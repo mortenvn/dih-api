@@ -4,12 +4,12 @@
  */
 import jwt from 'jsonwebtoken';
 import Promise from 'bluebird';
+import composableMiddleware from 'composable-middleware';
 import { AuthenticationError, AuthorizationError } from '../errors';
 import config from '../../config';
 import { USER_ROLES } from '../constants';
-import composableMiddleware from 'composable-middleware';
-Promise.promisifyAll(jwt);
 
+Promise.promisifyAll(jwt);
 
 /**
  * createJwt - Creates a JWT.
@@ -35,7 +35,7 @@ export function createJwt(payload, expiresIn = config.jwtExpiresIn) {
  * @return {type}      description
  */
 export function authorize(req, res, next) {
-    let authToken = undefined;
+    let authToken;
 
     try {
         authToken = req.get('Authorization').split(' ')[1];

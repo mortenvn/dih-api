@@ -3,8 +3,8 @@
  * @module controllers/user
  * @exports controllers/user/list
  */
-import db from '../models';
 import Sequelize from 'sequelize';
+import db from '../models';
 import { DatabaseError, ResourceNotFoundError, ValidationError } from '../components/errors';
 
 
