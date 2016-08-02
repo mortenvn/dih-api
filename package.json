@@ -63,7 +63,6 @@
     "moment": "^2.14.1",
     "sequelize-fixtures": "^0.5.3",
     "umzug": "^1.11.0"
-
   },
   "devDependencies": {
     "babel-cli": "^6.10.1",
