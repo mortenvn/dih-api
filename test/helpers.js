@@ -1,10 +1,11 @@
 import sequelizeFixtures from 'sequelize-fixtures';
-import db from '../src/models';
-import { syncDB } from '../src/db-helpers';
 import path from 'path';
 import Promise from 'bluebird';
 import jwt from 'jsonwebtoken';
+import db from '../src/models';
+import { syncDB } from '../src/db-helpers';
 import config from '../src/config';
+
 Promise.promisifyAll(jwt);
 
 export function loadFixtures(fixtures) {
