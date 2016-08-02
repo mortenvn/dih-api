@@ -1,8 +1,8 @@
-import { loadFixtures, getAllElements } from '../helpers';
 import { describe } from 'ava-spec';
 import _ from 'lodash';
 import request from 'supertest-as-promised';
 import moment from 'moment';
+import { loadFixtures, getAllElements } from '../helpers';
 import app from '../../src/app';
 
 

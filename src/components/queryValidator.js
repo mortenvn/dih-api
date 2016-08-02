@@ -1,3 +1,4 @@
+/* eslint-disable import/prefer-default-export */
 /**
  * Generic validation of query objects
  * @module components/queryValidator

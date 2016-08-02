@@ -1,6 +1,6 @@
-import { loadFixtures, getAllElements, createValidJWT, createInvalidJWT } from '../helpers';
 import { describe } from 'ava-spec';
 import request from 'supertest-as-promised';
+import { loadFixtures, getAllElements, createValidJWT, createInvalidJWT } from '../helpers';
 import app from '../../src/app';
 
 const fixtures = [
