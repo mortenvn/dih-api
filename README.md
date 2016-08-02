@@ -66,11 +66,11 @@ All these users have the password `password`.
 ### Single run
 
 Run unit tests & code lint with `npm test`. This will use your local database.
-Run just unit tests with `npm tests`. This will use your local database.
+Run just unit tests with `npm run tests` with `NODE_ENV=test`. This will use your local database.
 
 ### Watch
 
-Run the unit tests continuously with `npm test:watch`, only the tests currently worked on will run when updated. All tests will run when a server file is updated. This will use your local database.
+Run the unit tests continuously with `npm run test:watch`, only the tests currently worked on will run when updated. All tests will run when a server file is updated. This will use your local database.
 
 ## Deployment
 We have continuous deployment with [Circle CI](http://circleci.com), which builds Docker-images and pushes to AWS EC2.
