@@ -30,16 +30,26 @@ export default function (sequelize, DataTypes) {
         },
         firstname: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         lastname: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            validate: {
+                notEmpty: true
+            }
         },
         birth: {
             type: DataTypes.DATE
         },
         notes: DataTypes.STRING,
+        volunteerInfo: {
+            type: DataTypes.TEXT,
+            defaultValue: ''
+        },
         hash: DataTypes.STRING,
         role: {
             type: DataTypes.ENUM,

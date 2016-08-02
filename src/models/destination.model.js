@@ -1,5 +1,6 @@
 import Promise from 'bluebird';
 import { TRIP_STATUSES } from '../components/constants';
+import { createMailTemplatesForDestination } from '../db-helpers';
 import db from './';
 
 export default function (sequelize, DataTypes) {
@@ -12,24 +13,33 @@ export default function (sequelize, DataTypes) {
                 notEmpty: true,
                 isAlpha: true
             }
+        },
+        minimumTripDurationInDays: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 10
+        },
+        startDate: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: new Date()
+        },
+        endDate: {
+            type: DataTypes.DATE,
+            allowNull: true
         }
     }, {
+        getterMethods: {
+            isActive() {
+                // Check for endDate as it can be null
+                // Then see if the current time is within the range
+                return (this.endDate ? this.endDate >= new Date() : true)
+                && this.startDate <= new Date();
+            }
+        },
         hooks: {
-            beforeCreate: [
-                destination =>
-                    Promise.all([ // bulkCreate does not return inserted elements
-                        db.MailTemplate.create(),
-                        db.MailTemplate.create(),
-                        db.MailTemplate.create()
-                    ])
-                    .spread((mt1, mt2, mt3) => {
-                        // Eslind disabled due to reassignment
-                        // Must reassign as it is the instance to be created
-                        destination.pendingStatusMailTemplateId = mt1.id; // eslint-disable-line
-                        destination.acceptedStatusMailTemplateId = mt2.id; // eslint-disable-line
-                        destination.rejectedStatusMailTemplateId = mt3.id; // eslint-disable-line
-                    })
-            ]
+            beforeCreate: createMailTemplatesForDestination,
+            beforeSave: createMailTemplatesForDestination
         },
         classMethods: {
             associate(models) {
@@ -57,7 +67,7 @@ export default function (sequelize, DataTypes) {
                     { foreignKey: 'destinationId' });
             },
             findOneAndIncludeActiveTripCount(destId) {
-                // Sequelize getterMethods do not support Promises,
+                // Sequelize getterMethods does not support Promises,
                 // so these custom find methods are used when one wants to
                 // include certain calculated fields.
                 return Destination.findOne({
