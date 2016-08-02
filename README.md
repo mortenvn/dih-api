@@ -25,7 +25,9 @@ Name your branches in the following way, where `DIH-num` is a task ID on JIRA:
 
 ## Setup
 ### Database
-To setup the project locally install Postgres and set `PG_URL ` to your database. The format should `postgres://USERNAME:PASSWORD@localhost/DB`. The capitalized words should be replaced with your own values. To export your variable on a Unix-system.
+To setup the project locally install Postgres and set `PG_URL ` to your database. The format should `postgres://USERNAME:PASSWORD@localhost/DB`. The capitalized words should be replaced with your own values.
+
+To export your variable on a Unix-system, simply use the `export` command, i.e. `export PG_URL=your value`.
 
 ### SES for e-mails
 The system uses AWS SES for e-mails. You'll need to set the following environment variables for this to work:
@@ -44,7 +46,7 @@ Run `npm run build` to get a transpiled version of the API, then start with `npm
 If you're gonna develop:
 
 1. Install nodemon `npm install -g nodemon`
-2. Run  `npm run start:dev` Remember that you can run it with environment variables in before the
+2. Run  `npm run start:dev` Remember that you can run it with environment variables in before the command, i.e. `PG_URL=value npm run start:dev`.
 
 This will watch for changes and keep it open for you.
 
