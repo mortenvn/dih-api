@@ -9,8 +9,7 @@ machine:
 
 dependencies:
     pre:
-        - npm install -g n babel-cli
-        - n latest
+        - npm install -g npm@3.9.6 babel-cli
         - sudo pip install awscli
         - aws configure set default.region eu-west-1
         - aws configure set default.output json
