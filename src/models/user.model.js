@@ -9,6 +9,7 @@ import { USER_ROLES } from '../components/constants';
 import { CustomValidationError } from '../components/errors';
 import * as mail from '../components/mail';
 import { createJwt } from '../components/auth';
+
 Promise.promisifyAll(bcrypt);
 
 /**

@@ -1,6 +1,6 @@
-import { createValidJWT, getAllElements, loadFixtures } from '../helpers';
 import { describe } from 'ava-spec';
 import request from 'supertest-as-promised';
+import { createValidJWT, getAllElements, loadFixtures } from '../helpers';
 import { updateTransport } from '../../src/components/mail';
 import app from '../../src/app';
 
