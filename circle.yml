@@ -8,13 +8,13 @@ machine:
         - docker
 
 dependencies:
-    override:
+    pre:
         - npm install -g npm babel-cli
         - sudo pip install awscli
         - aws configure set default.region eu-west-1
         - aws configure set default.output json
         - eval $(aws ecr get-login --region eu-west-1)
-    pre:
+    override:
         - npm install
 
 test:
