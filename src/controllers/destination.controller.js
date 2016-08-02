@@ -53,7 +53,15 @@ export function retrieve(req, res, next) {
  */
 export function create(req, res, next) {
     db.Destination.create(req.body)
-    .then(savedObj => res.status(201).json(savedObj))
+    .then(savedObj => {
+        if (req.body.users) {
+            req.body.users.map(user => savedObj.addUsers(
+                [user.userId],
+                { startDate: user.startDate, endDate: user.endDate })
+            );
+        }
+        res.status(201).json(savedObj);
+    })
     .catch(Sequelize.ValidationError, err => {
         throw new ValidationError(err);
     })
@@ -103,7 +111,16 @@ export function update(req, res, next) {
         if (!item) {
             throw new ResourceNotFoundError('destination');
         }
-        return item.update(req.body);
+        let promise = item.update(req.body);
+        if (req.body.users) {
+            promise = Promise.all([
+                req.body.users.map(user => item.addUsers([user.userId],
+                    { startDate: user.startDate, endDate: user.endDate })
+                )
+            ])
+            .then(item.update(req.body));
+        }
+        return promise;
     })
     .then(() => res.sendStatus(204))
     .catch(Sequelize.ValidationError, err => {
