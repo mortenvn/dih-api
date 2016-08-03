@@ -88,7 +88,7 @@ describe.serial('MailTemplates API', it => {
         const response = await request(app)
             .delete(`${URI}/${mailTemplateObjects[0].id}`)
             .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
-            .expect(200)
+            .expect(204)
             .then(() => request(app).get(URI))
             .then(res => res.body);
         t.is(response.length, mailTemplateObjects.length - 1);

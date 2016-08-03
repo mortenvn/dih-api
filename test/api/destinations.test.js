@@ -212,7 +212,7 @@ describe.serial('Destination API', it => {
     it('should be able to delete a destination', async t => {
         const response = await request(app)
             .delete(`${URI}/${dbObjects[0].id}`)
-            .expect(200)
+            .expect(204)
             .then(() => request(app).get(URI))
             .then(res => res.body);
         t.is(response.length, dbObjects.length - 1);
