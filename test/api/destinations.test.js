@@ -247,4 +247,31 @@ describe.serial('Destination API', it => {
             .then(res => _.find(res.body, obj => obj.id === fixture.id));
         t.is(response.users.length, changedFixture.users.length);
     });
+
+    it('should be able to update a coordinator at a destination', async t => {
+        const fixture = dbObjects[0];
+        const changedFixture = fixture;
+
+        changedFixture.users = [
+            {
+                userId: 1,
+                startDate: '2016-08-09',
+                endDate: null
+            },
+            {
+                userId: 2,
+                startDate: '2016-09-03T08:12:02.554Z',
+                endDate: '2016-09-10T08:12:02.554Z'
+            }
+        ];
+
+        const updateResponse = await request(app)
+            .put(`${URI}/${fixture.id}`)
+            .send(changedFixture)
+            .expect(204)
+            .then(() => request(app).get(URI))
+            .then(res => _.find(res.body, obj => obj.id === fixture.id));
+        t.is(updateResponse.users[0].destinationCoordinator.startDate.substring(0, 10),
+            changedFixture.users[0].startDate);
+    });
 });
