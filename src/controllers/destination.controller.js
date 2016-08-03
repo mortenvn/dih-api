@@ -54,11 +54,8 @@ export function retrieve(req, res, next) {
 export function create(req, res, next) {
     db.Destination.create(req.body)
     .then(savedObj => {
-        let promise = savedObj;
-        if (req.body.users) {
-            promise = savedObj.addCoordinators(req.body.users).then(() => savedObj);
-        }
-        return promise;
+        if (req.body.users) return savedObj.addCoordinators(req.body.users).then(() => savedObj);
+        return savedObj;
     })
     .then((savedObj) => {
         res.status(201).json(savedObj);
