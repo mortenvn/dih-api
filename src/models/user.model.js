@@ -51,6 +51,11 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.TEXT,
             defaultValue: ''
         },
+        readTerms: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
+        },
         hash: DataTypes.STRING,
         role: {
             type: DataTypes.ENUM,
