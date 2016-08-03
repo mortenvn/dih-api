@@ -83,7 +83,7 @@ export function destroy(req, res, next) {
             throw new ResourceNotFoundError('mailTemplate');
         }
     })
-    .then(() => res.sendStatus(200))
+    .then(() => res.sendStatus(204))
     .catch(next);
 }
 

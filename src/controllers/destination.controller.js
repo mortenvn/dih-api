@@ -80,7 +80,7 @@ export function destroy(req, res, next) {
             throw new ResourceNotFoundError('destination');
         }
     })
-    .then(() => res.sendStatus(200))
+    .then(() => res.sendStatus(204))
     .catch(next);
 }
 
