@@ -1,6 +1,7 @@
 import Promise from 'bluebird';
 import { TRIP_STATUSES } from '../components/constants';
 import { createMailTemplatesForDestination } from '../db-helpers';
+import db from './';
 
 export default function (sequelize, DataTypes) {
     const Destination = sequelize.define('destination', {
@@ -60,6 +61,9 @@ export default function (sequelize, DataTypes) {
                         allowNull: true
                     }
                 });
+                Destination.belongsToMany(models.User,
+                    { through: models.DestinationCoordinator },
+                    { foreignKey: 'destinationId' });
             },
             findOneAndIncludeActiveTripCount(destId) {
                 // Sequelize getterMethods does not support Promises,
@@ -68,7 +72,10 @@ export default function (sequelize, DataTypes) {
                 return Destination.findOne({
                     where: {
                         id: destId
-                    }
+                    },
+                    include: [{
+                        model: db.User
+                    }]
                 })
                 .then(destination => {
                     if (!destination) return Promise.reject(null);
@@ -84,7 +91,10 @@ export default function (sequelize, DataTypes) {
             },
             findAllAndIncludeActiveTripCount(query) {
                 return Destination.findAll({
-                    where: query
+                    where: query,
+                    include: [{
+                        model: db.User
+                    }]
                 })
                 .then(destinations =>
                     Promise.map(destinations, destination =>
@@ -98,6 +108,13 @@ export default function (sequelize, DataTypes) {
                         )
                     )
                 );
+            }
+        },
+        instanceMethods: {
+            addCoordinators(users) {
+                return Promise.map(users, user => this.addUsers([user.userId],
+                        { startDate: user.startDate, endDate: user.endDate })
+                    );
             }
         }
     });
