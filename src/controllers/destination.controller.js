@@ -54,13 +54,11 @@ export function retrieve(req, res, next) {
 export function create(req, res, next) {
     db.Destination.create(req.body)
     .then(savedObj => {
+        let promise = res.status(201).json(savedObj);
         if (req.body.users) {
-            req.body.users.map(user => savedObj.addUsers(
-                [user.userId],
-                { startDate: user.startDate, endDate: user.endDate })
-            );
+            promise = savedObj.addCoordinators(req.body.users).then(res.status(201).json(savedObj));
         }
-        res.status(201).json(savedObj);
+        return promise;
     })
     .catch(Sequelize.ValidationError, err => {
         throw new ValidationError(err);
@@ -113,11 +111,7 @@ export function update(req, res, next) {
         }
         let promise = item.update(req.body);
         if (req.body.users) {
-            promise = Promise.all([
-                req.body.users.map(user => item.addUsers([user.userId],
-                    { startDate: user.startDate, endDate: user.endDate })
-                )
-            ])
+            promise = item.addCoordinators(req.body.users)
             .then(item.update(req.body));
         }
         return promise;
