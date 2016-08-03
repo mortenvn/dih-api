@@ -40,6 +40,19 @@ describe.serial('User API', it => {
         t.is(response.length, 3);
     });
 
+    it('should check casing of email address', async t => {
+        const response = await request(app)
+            .post(URI)
+            .send({
+                email: 'test-USER@dih.capra.me',
+                firstname: 'User',
+                lastname: 'Test',
+                role: 'USER'
+            })
+            .expect(400);
+        t.is(response.body.message, 'email must be unique');
+    });
+
     it('should return a single existing user', async t => {
         const fixture = dbObjects[0];
         const validJwt = createValidJWT(dbObjects[1]);
