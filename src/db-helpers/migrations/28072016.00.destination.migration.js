@@ -5,7 +5,7 @@ module.exports = {
         return [
             migration.addColumn('destinations', 'startDate', {
                 type: DataTypes.DATE,
-                allowNull: true,
+                allowNull: false,
                 defaultValue: new Date()
             }),
             migration.addColumn('destinations', 'endDate', {
