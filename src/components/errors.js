@@ -47,7 +47,7 @@ export const sentryClient = new raven.Client(config.sentry, {
 * @param  {Object} error - Validation error from  Sequelize
 */
 export function handleError(error) {
-    sentryClient.captureError(error);
+    if (config.env === 'production' || config.env === 'staging') sentryClient.captureError(error);
 }
 
 /**
