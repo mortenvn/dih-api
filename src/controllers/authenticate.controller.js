@@ -23,7 +23,7 @@ export function login(req, res, next) {
 
     db.User.findOne({
         where: {
-            email
+            email: email.toLowerCase()
         }
     })
     .then(user => {
@@ -53,7 +53,7 @@ export function initiateResetPassword(req, res, next) {
 
     db.User.findOne({
         where: {
-            email
+            email: email.toLowerCase()
         }
     })
     .then(user => {
