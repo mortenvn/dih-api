@@ -54,11 +54,14 @@ export function retrieve(req, res, next) {
 export function create(req, res, next) {
     db.Destination.create(req.body)
     .then(savedObj => {
-        let promise = res.status(201).json(savedObj);
+        let promise = savedObj;
         if (req.body.users) {
-            promise = savedObj.addCoordinators(req.body.users).then(res.status(201).json(savedObj));
+            promise = savedObj.addCoordinators(req.body.users).then(() => savedObj);
         }
         return promise;
+    })
+    .then((savedObj) => {
+        res.status(201).json(savedObj);
     })
     .catch(Sequelize.ValidationError, err => {
         throw new ValidationError(err);
@@ -109,14 +112,15 @@ export function update(req, res, next) {
         if (!item) {
             throw new ResourceNotFoundError('destination');
         }
-        let promise = item.update(req.body);
-        if (req.body.users) {
-            promise = item.addCoordinators(req.body.users)
-            .then(item.update(req.body));
-        }
-        return promise;
+        return item.update(req.body);
     })
-    .then(() => res.sendStatus(204))
+    .then(item => {
+        if (req.body.users) return item.addCoordinators(req.body.users);
+        return Promise.resolve();
+    })
+    .then(() => {
+        res.sendStatus(204);
+    })
     .catch(Sequelize.ValidationError, err => {
         throw new ValidationError(err);
     })

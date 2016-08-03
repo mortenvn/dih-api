@@ -113,11 +113,9 @@ export default function (sequelize, DataTypes) {
         },
         instanceMethods: {
             addCoordinators(users) {
-                return Promise.all([
-                    users.map(user => this.addUsers([user.userId],
+                return Promise.map(users, user => this.addUsers([user.userId],
                         { startDate: user.startDate, endDate: user.endDate })
-                    )
-                ]);
+                    );
             }
         }
     });
