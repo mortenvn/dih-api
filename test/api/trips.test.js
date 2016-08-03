@@ -315,7 +315,7 @@ describe.serial('Trip API', it => {
     it('should be able to delete a trip', async t => {
         const response = await request(app)
             .delete(`${URI}/${tripObjects[0].id}`)
-            .expect(200)
+            .expect(204)
             .then(() => request(app).get(URI))
             .then(res => res.body);
         t.is(response.length, tripObjects.length - 1);
