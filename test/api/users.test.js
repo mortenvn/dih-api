@@ -101,6 +101,20 @@ describe.serial('User API', it => {
         t.is(response.body.role, 'USER');
     });
 
+    it('should set readTerms false not given', async t => {
+        const response = await request(app)
+            .post(URI)
+            .send({
+                email: 'bojack@horseman.com',
+                firstname: 'Bojack',
+                lastname: 'Horseman'
+            })
+            .expect(201);
+
+        t.is(response.body.readTerms, false);
+    });
+
+
     it('should not add a new user without valid email', async t => {
         const response = await request(app)
             .post(URI)
@@ -125,7 +139,6 @@ describe.serial('User API', it => {
                 role: 'USER'
             })
             .expect(400);
-
         t.is(response.body.message, 'email must be unique');
     });
 
