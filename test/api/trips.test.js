@@ -42,6 +42,7 @@ describe.serial('Trip API', it => {
     it('should retrieve a list of all trips', async t => {
         const response = await request(app)
             .get(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(200)
             .then(res => res.body);
         t.is(response.length, tripObjects.length);
@@ -50,6 +51,7 @@ describe.serial('Trip API', it => {
     it('should be able to get all trips of a specific destinationId', async t => {
         const response = await request(app)
             .get(`${URI}?destinationId=${tripObjects[0].destinationId}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(200)
             .then(res => res.body);
         t.is(response.length, 1);
@@ -58,6 +60,7 @@ describe.serial('Trip API', it => {
     it('should be able to get trips of a specific userId', async t => {
         const response = await request(app)
             .get(`${URI}?userId=${tripObjects[0].userId}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(200)
             .then(res => res.body);
         t.is(response.length, tripObjects.length);
@@ -100,6 +103,7 @@ describe.serial('Trip API', it => {
         const fixture = tripObjects[0];
         const response = await request(app)
             .get(`${URI}?startDate=${fixture.startDate}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(400)
             .then(res => res.body);
         t.is(response.name, 'UriValidationError');
@@ -110,6 +114,7 @@ describe.serial('Trip API', it => {
         const fixture = tripObjects[0];
         const response = await request(app)
             .get(`${URI}?endDate=${fixture.endDate}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(400)
             .then(res => res.body);
         t.is(response.name, 'UriValidationError');
@@ -120,6 +125,7 @@ describe.serial('Trip API', it => {
         const fixture = tripObjects[0];
         const response = await request(app)
             .get(`${URI}?wishStartDate=${fixture.wishStartDate}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(400)
             .then(res => res.body);
         t.is(response.name, 'UriValidationError');
@@ -130,6 +136,7 @@ describe.serial('Trip API', it => {
         const fixture = tripObjects[0];
         const response = await request(app)
             .get(`${URI}?wishEndDate=${fixture.wishEndDate}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(400)
             .then(res => res.body);
         t.is(response.name, 'UriValidationError');
@@ -139,6 +146,7 @@ describe.serial('Trip API', it => {
     it('should reject queries on non-existing model properties', async t => {
         const response = await request(app)
             .get(`${URI}?topkek=someValue&capra=summmer`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(400)
             .then(res => res.body);
         t.is(response.name, 'UriValidationError');
@@ -222,7 +230,8 @@ describe.serial('Trip API', it => {
             .send(changedFixture)
             .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(204)
-            .then(() => request(app).get(URI))
+            .then(() => request(app).get(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`))
             .then(res => _.find(res.body, obj => obj.id === fixture.id));
         t.is(validRequestResponse.status, changedFixture.status);
     });
@@ -303,7 +312,6 @@ describe.serial('Trip API', it => {
             .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(204);
     });
-
     it('should return 404 when you try to update a trip that does not exist', async () => {
         await request(app)
             .put(`${URI}/${tripObjects.length + 100}`)
@@ -311,12 +319,12 @@ describe.serial('Trip API', it => {
             .send(mockTrip)
             .expect(404);
     });
-
     it('should be able to delete a trip', async t => {
         const response = await request(app)
             .delete(`${URI}/${tripObjects[0].id}`)
             .expect(204)
-            .then(() => request(app).get(URI))
+            .then(() => request(app).get(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`))
             .then(res => res.body);
         t.is(response.length, tripObjects.length - 1);
     });
@@ -325,5 +333,25 @@ describe.serial('Trip API', it => {
         await request(app)
             .delete(`${URI}/${tripObjects.length + 100}`)
             .expect(404);
+    });
+
+    it('should only return trips belonging to a coordinator when asked by coordinator'
+    , async t => {
+        const coordinator = userObjects[2];
+        await request(app)
+            .get(`${URI}/`)
+            .set('Authorization', `Bearer ${createValidJWT(coordinator)}`)
+            .then(res => res.body)
+            .then(res => t.is(res.length, 1));
+    });
+
+    it('should return all trips when asked by admin'
+    , async t => {
+        const admin = userObjects[1];
+        await request(app)
+            .get(`${URI}/`)
+            .set('Authorization', `Bearer ${createValidJWT(admin)}`)
+            .then(res => res.body)
+            .then(res => t.is(res.length, 3));
     });
 });

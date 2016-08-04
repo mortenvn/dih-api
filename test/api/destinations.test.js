@@ -245,7 +245,8 @@ describe.serial('Destination API', it => {
             .expect(204)
             .then(() => request(app).get(URI))
             .then(res => _.find(res.body, obj => obj.id === fixture.id));
-        t.is(response.users.length, changedFixture.users.length);
+        t.is(response.users.map(user => user.id).includes(1), true);
+        t.is(response.users.map(user => user.id).includes(2), true);
     });
 
     it('should be able to update a coordinator at a destination', async t => {
@@ -254,7 +255,7 @@ describe.serial('Destination API', it => {
 
         changedFixture.users = [
             {
-                userId: 1,
+                userId: 3,
                 startDate: '2016-08-09',
                 endDate: null
             },
@@ -271,7 +272,8 @@ describe.serial('Destination API', it => {
             .expect(204)
             .then(() => request(app).get(URI))
             .then(res => _.find(res.body, obj => obj.id === fixture.id));
-        t.is(updateResponse.users[0].destinationCoordinator.startDate.substring(0, 10),
+        t.is(updateResponse.users.find(user => user.id === 3)
+        .destinationCoordinator.startDate.substring(0, 10),
             changedFixture.users[0].startDate);
     });
 });
