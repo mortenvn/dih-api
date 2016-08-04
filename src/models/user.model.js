@@ -25,6 +25,9 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.STRING,
             unique: true,
             allowNull: false,
+            set(value) {
+                this.setDataValue('email', value.toLowerCase());
+            },
             validate: {
                 isEmail: true
             }
@@ -66,6 +69,10 @@ export default function (sequelize, DataTypes) {
         classMethods: {
             associate(models) {
                 User.hasMany(models.Trip);
+                User.belongsToMany(models.Destination,
+                    { through: models.DestinationCoordinator },
+                    { foreignKey: 'userId' },
+                );
             },
             invite(body) {
                 return User.create(body)
