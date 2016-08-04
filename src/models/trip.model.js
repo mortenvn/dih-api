@@ -59,6 +59,26 @@ export default function (sequelize, DataTypes) {
             },
             validateQuery(query) {
                 return validateQuery(query, ALLOWED_QUERY_PARAMS);
+            },
+            getQueryObject(req) {
+                return new Promise(resolve => {
+                    if (req.user.role === 'MODERATOR') {
+                        return db.User.findOne({
+                            where: req.user.id
+                        })
+                        .then(user => user.getDestinations())
+                        .then(objects => objects.map(object => object.id))
+                        .then(destinationIds => {
+                            console.log({ destinationId: { in: destinationIds } });
+                            resolve({
+                                destinationId: {
+                                    in: destinationIds
+                                }
+                            });
+                        });
+                    }
+                    return resolve(req.query);
+                });
             }
         },
         hooks: {
