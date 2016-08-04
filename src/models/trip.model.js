@@ -62,7 +62,11 @@ export default function (sequelize, DataTypes) {
             },
             getQueryObject(req) {
                 return new Promise(resolve => {
-                    if (req.user.role === 'MODERATOR') {
+                    if (req.user.role === 'USER') {
+                        return resolve({
+                            userId: req.user.id
+                        });
+                    } else if (req.user.role === 'MODERATOR') {
                         return db.User.findOne({
                             where: req.user.id
                         })
@@ -76,8 +80,7 @@ export default function (sequelize, DataTypes) {
                                 }
                             });
                         });
-                    }
-                    return resolve(req.query);
+                    } else if (req.user.role === 'ADMIN') return resolve(req.query);
                 });
             }
         },

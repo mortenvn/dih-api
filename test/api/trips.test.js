@@ -354,4 +354,14 @@ describe.serial('Trip API', it => {
             .then(res => res.body)
             .then(res => t.is(res.length, 3));
     });
+
+    it('should return only trips belonging to a user when asked by user'
+    , async t => {
+        const user = userObjects[0];
+        await request(app)
+            .get(`${URI}/`)
+            .set('Authorization', `Bearer ${createValidJWT(user)}`)
+            .then(res => res.body)
+            .then(res => t.is(res.length, 3));
+    });
 });
