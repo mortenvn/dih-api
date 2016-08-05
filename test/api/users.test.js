@@ -35,6 +35,7 @@ describe.serial('User API', it => {
     it('should reitrieve a list of all users', async t => {
         const response = await request(app)
             .get(URI)
+            .set('Authorization', `Bearer ${createValidJWT(dbObjects[1])}`)
             .expect(200)
             .then(res => res.body);
         t.is(response.length, dbObjects.length);
