@@ -52,7 +52,7 @@ export function retrieve(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function create(req, res, next) {
-    db.Destination.create(req.body)
+    db.Destination.createWithMailTemplates(req.body)
     .then(savedObj => {
         if (req.body.users) return savedObj.addCoordinators(req.body.users).then(() => savedObj);
         return savedObj;

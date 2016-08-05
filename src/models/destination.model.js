@@ -1,5 +1,6 @@
+/* eslint-disable no-param-reassign */
 import Promise from 'bluebird';
-import { TRIP_STATUSES } from '../components/constants';
+import { TRIP_STATUSES, STANDARD_MAIL_TEMPLATES } from '../components/constants';
 import { createMailTemplatesForDestination } from '../db-helpers';
 import db from './';
 
@@ -108,13 +109,35 @@ export default function (sequelize, DataTypes) {
                         )
                     )
                 );
+            },
+            createWithMailTemplates(body) {
+                return db.Destination.create(body)
+                    .then(destination =>
+                        Promise.all([
+                            db.MailTemplate.create({
+                                html: STANDARD_MAIL_TEMPLATES.TRIP_STATUS_PENDING
+                            }),
+                            db.MailTemplate.create({
+                                html: STANDARD_MAIL_TEMPLATES.TRIP_STATUS_ACCEPTED
+                            }),
+                            db.MailTemplate.create({
+                                html: STANDARD_MAIL_TEMPLATES.TRIP_STATUS_REJECTED
+                            })
+                        ])
+                        .spread((pending, accepted, rejected) => {
+                            destination.pendingStatusMailTemplateId = pending.id;
+                            destination.acceptedStatusMailTemplateId = accepted.id;
+                            destination.rejectedStatusMailTemplateId = rejected.id;
+                            return destination.save();
+                        })
+                    );
             }
         },
         instanceMethods: {
             addCoordinators(users) {
                 return Promise.map(users, user => this.addUsers([user.userId],
-                        { startDate: user.startDate, endDate: user.endDate })
-                    );
+                    { startDate: user.startDate, endDate: user.endDate })
+                );
             }
         }
     });
