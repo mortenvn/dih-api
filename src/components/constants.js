@@ -38,6 +38,7 @@ exports.TRAVEL_METHODS = {
  * @property {string} CLOSED - The trip is closed, hence the user has completed this trip
  * @property {string} PRESENT - Volunteer is present at destination
  * @property {string} LEFT - Volunteer has left the destination
+ * @property {string} NOSHOW - Volunteer did not show up at location
  */
 exports.TRIP_STATUSES = {
     PENDING: 'PENDING',
@@ -46,7 +47,8 @@ exports.TRIP_STATUSES = {
     ACTIVE: 'ACTIVE',
     CLOSED: 'CLOSED',
     PRESENT: 'PRESENT',
-    LEFT: 'LEFT'
+    LEFT: 'LEFT',
+    NOSHOW: 'NO SHOW'
 };
 
 /**
