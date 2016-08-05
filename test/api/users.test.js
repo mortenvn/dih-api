@@ -37,7 +37,7 @@ describe.serial('User API', it => {
             .get(URI)
             .expect(200)
             .then(res => res.body);
-        t.is(response.length, 3);
+        t.is(response.length, dbObjects.length);
     });
 
     it('should check casing of email address', async t => {

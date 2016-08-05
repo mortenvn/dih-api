@@ -54,7 +54,7 @@ describe.serial('Trip API', it => {
             .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(200)
             .then(res => res.body);
-        t.is(response.length, 1);
+        t.is(response.length, 2);
     });
 
     it('should be able to get trips of a specific userId', async t => {
@@ -63,7 +63,8 @@ describe.serial('Trip API', it => {
             .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(200)
             .then(res => res.body);
-        t.is(response.length, tripObjects.length);
+        t.is(response.length,
+            tripObjects.filter(tripObject => tripObject.userId === tripObjects[0].userId).length);
     });
 
 
@@ -74,7 +75,7 @@ describe.serial('Trip API', it => {
             .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(200)
             .then(res => res.body);
-        t.is(response.length, 1);
+        t.is(response.length, 2);
     });
 
     it('should be able to get trips of a specific userId and destinationId', async t => {
@@ -342,7 +343,7 @@ describe.serial('Trip API', it => {
             .get(`${URI}/`)
             .set('Authorization', `Bearer ${createValidJWT(coordinator)}`)
             .then(res => res.body)
-            .then(res => t.is(res.length, 1));
+            .then(res => t.is(res.length, 2));
     });
 
     it('should return all trips when asked by admin'
@@ -352,7 +353,7 @@ describe.serial('Trip API', it => {
             .get(`${URI}/`)
             .set('Authorization', `Bearer ${createValidJWT(admin)}`)
             .then(res => res.body)
-            .then(res => t.is(res.length, 3));
+            .then(res => t.is(res.length, 4));
     });
 
     it('should return only trips belonging to a user when asked by user'
@@ -363,5 +364,15 @@ describe.serial('Trip API', it => {
             .set('Authorization', `Bearer ${createValidJWT(user)}`)
             .then(res => res.body)
             .then(res => t.is(res.length, 3));
+    });
+
+    it('should return zero trips for a user with no trips'
+    , async t => {
+        const user = userObjects[3];
+        await request(app)
+            .get(`${URI}/`)
+            .set('Authorization', `Bearer ${createValidJWT(user)}`)
+            .then(res => res.body)
+            .then(res => t.is(res.length, 0));
     });
 });
