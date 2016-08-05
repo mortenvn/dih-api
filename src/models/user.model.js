@@ -85,7 +85,7 @@ export default function (sequelize, DataTypes) {
     }, {
         getterMethods: {
             fullName() {
-                return `${this.firstname} ${this.lastName}`;
+                return `${this.firstname} ${this.lastname}`;
             }
         },
         classMethods: {
