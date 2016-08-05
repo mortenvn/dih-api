@@ -40,7 +40,19 @@ export default function (sequelize, DataTypes) {
         flightNumber: DataTypes.STRING,
         arrivalDate: DataTypes.DATE,
         departureDate: DataTypes.DATE,
-        otherTravelInformation: DataTypes.TEXT
+        otherTravelInformation: DataTypes.TEXT,
+        statusComment: {
+            type: DataTypes.TEXT,
+            defaultValue: ''
+        },
+        dateArrived: {
+            type: DataTypes.DATE,
+            allowNull: true
+        },
+        dateLeft: {
+            type: DataTypes.DATE,
+            allowNull: true
+        }
     }, {
         classMethods: {
             associate(models) {
@@ -89,11 +101,15 @@ export default function (sequelize, DataTypes) {
                 trip => {
                     if (trip.changed('status')) {
                         if (trip.status === TRIP_STATUSES.ACCEPTED) {
-                            return trip.userActionToUser(trip.status);
+                            return trip.userActionToUser(TRIP_STATUSES.ACCEPTED);
                         }
                         if (trip.status === TRIP_STATUSES.REJECTED) {
                             return trip.userInfoToUser(trip.status);
                         }
+                    }
+                    if (trip.status === TRIP_STATUSES.ACCEPTED && trip.hasTravelInfo()) {
+                        // Reassignment because we want to change the sequelize instance
+                        trip.status = TRIP_STATUSES.ACTIVE; // eslint-disable-line
                     }
                     return Promise.resolve();
                 }
@@ -126,6 +142,14 @@ export default function (sequelize, DataTypes) {
                     if (template) user.sendDestinationInfo(destination, template.html);
                 })
                 );
+            },
+            hasTravelInfo() {
+                if (this.travelMethod === TRAVEL_METHODS.PLANE) {
+                    return this.flightNumber && this.departureAirport;
+                } else if (this.travelMethod === TRAVEL_METHODS.OTHER) {
+                    return this.otherTravelInformation;
+                }
+                return false;
             }
         }
     });
