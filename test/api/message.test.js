@@ -3,6 +3,7 @@ import sinon from 'sinon';
 import request from 'supertest-as-promised';
 import { loadFixtures, getAllElements, createValidJWT } from '../helpers';
 import { updateSNS } from '../../src/components/sms';
+import { updateTransport } from '../../src/components/mail';
 import app from '../../src/app';
 
 const fixtures = [
@@ -12,6 +13,7 @@ const fixtures = [
 const URI = '/messages';
 let users;
 let sns;
+let transport;
 describe.serial('Message API', it => {
     it.beforeEach(() =>
         loadFixtures(fixtures)
@@ -26,6 +28,12 @@ describe.serial('Message API', it => {
                         callback();
                     }
                 };
+                transport = {
+                    send(data, callback) {
+                        callback();
+                    }
+                };
+                updateTransport(transport);
                 updateSNS(sns);
             })
     );
@@ -52,6 +60,7 @@ describe.serial('Message API', it => {
     });
 
     it('should send an email to all recipients', async t => {
+        sinon.stub(transport, 'send').yields(null);
         const validJwt = createValidJWT(users[1]);
 
         const response = await request(app)
@@ -65,27 +74,9 @@ describe.serial('Message API', it => {
             .set('Authorization', `Bearer ${validJwt}`)
             .expect(200);
 
+        t.is(transport.send.callCount, users.length);
         t.is(response.body.pending, 0);
         t.is(response.body.sent, users.length);
-    });
-
-    it('should includa an error when operation cannot complete', async t => {
-        const validJwt = createValidJWT(users[1]);
-
-        const response = await request(app)
-            .post(URI)
-            .send({
-                medium: 'EMAIL',
-                subject: 'IMPORTANT EMAIL',
-                message: 'HELLO',
-                recipients: [...users, { name: 'notValidUser' }]
-            })
-            .set('Authorization', `Bearer ${validJwt}`)
-            .expect(200);
-
-        t.is(response.body.pending, 0);
-        t.is(response.body.sent, users.length);
-        t.is(response.body.errors, 1);
     });
 
     it('should send an sms to all recipients', async t => {
