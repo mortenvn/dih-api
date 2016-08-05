@@ -5,10 +5,18 @@
             "name" : "Stavern",
             "pendingStatusMailTemplateId": 1,
             "acceptedStatusMailTemplateId": 2,
-            "rejectedStatusMailTemplateId": 3
+            "rejectedStatusMailTemplateId": 3,
+            "users": [
+                {
+                    "id" :3,
+                    "_through": {
+                        "startDate": "2016-08-30",
+                        "endDate": null
+                    }
+                }
+            ]
         }
     },
-
     {
         "model" : "Destination",
         "data": {

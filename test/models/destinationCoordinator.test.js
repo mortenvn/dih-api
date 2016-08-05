@@ -34,6 +34,6 @@ describe('Destination Coordinator Model', it => {
         .spread((users, destination) => destination.addUsers([1, 2]))
         .then(() => db.Destination.findOne({ where: { id: destObj.id } }))
         .then(dest => dest.countUsers()) //eslint-disable-line
-        .then((users) => t.is(users, 2));
+        .then((users) => t.is(users, 3));
     });
 });

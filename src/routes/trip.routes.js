@@ -4,7 +4,7 @@ import * as controller from '../controllers/trip.controller';
 
 const router = express.Router();
 
-router.get('/', controller.list);
+router.get('/', authorize, controller.list);
 
 router.get('/:id', authorize, controller.retrieve);
 
