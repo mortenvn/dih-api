@@ -22,6 +22,11 @@ const config = {
         secretAccessKey: process.env.SES_SECRETKEY || '',
         region: process.env.REGION || 'eu-west-1'
     },
+    sns: {
+        accessKeyId: process.env.SNS_ACCESSID || '',
+        secretAccessKey: process.env.SNS_SECRETKEY || '',
+        region: process.env.REGION || 'eu-west-1'
+    },
     jwtExpiresIn: '30 days'
 };
 export default config;

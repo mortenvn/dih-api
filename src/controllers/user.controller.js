@@ -7,7 +7,6 @@ import Sequelize from 'sequelize';
 import db from '../models';
 import { DatabaseError, ResourceNotFoundError, ValidationError } from '../components/errors';
 
-
 /**
  * list - List all users in the database
  *

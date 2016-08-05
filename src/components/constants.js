@@ -17,6 +17,19 @@ exports.USER_ROLES = {
 };
 
 /**
+ * The possible message mediums used for communication.
+ * @type {object}
+ * @property {string} SMS - The user will arrive by plane, should trigger specific fields.
+ * @property {string} EMAIL - The uset will arrive by other method than listed, should trigger
+ * a free text field.
+ */
+exports.MESSAGE_MEDIUMS = {
+    SMS: 'SMS',
+    EMAIL: 'EMAIL'
+};
+
+
+/**
  * The possible methods of travel for a trip.
  * @type {object}
  * @property {string} PLANE - The user will arrive by plane, should trigger specific fields.

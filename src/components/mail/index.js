@@ -147,3 +147,32 @@ export function sendDestinationInfo(user, mailContent) {
         .then(() => user)
         .catch(handleError);
 }
+
+/**
+ * sendCustomMail - Sends a custom email to the specified recipient
+ * e-mail to a user  with given information as content
+ *
+ * @function sendCustomMail
+ * @memberof  module:components/mail
+ * @param  {object} recipient The recipient which is going to recive the email
+ * @param  {object} mailData includes the message and subject of the email
+ * @return {object} recipient The recipient who was sent the email
+ */
+export function sendCustomMail(recipient, mailData) {
+    const mailOptions = {
+        to: recipient.email,
+        from: `DIH <${config.email}>`,
+        subject: mailData.subject,
+        template: 'info',
+        context: {
+            content: mailData.message
+        }
+    };
+
+    return transporter.sendMailAsync(mailOptions)
+        .then(() => recipient)
+        .catch(error => {
+            handleError(error);
+            return Promise.reject({ ...recipient, error: error.cause.message });
+        });
+}

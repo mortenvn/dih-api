@@ -46,6 +46,13 @@ export default function (sequelize, DataTypes) {
         birth: {
             type: DataTypes.DATE
         },
+        phoneNumber: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            validate: {
+                is: /^\+(?:[0-9] ?){6,14}[0-9]$/i
+            }
+        },
         notes: DataTypes.STRING,
         volunteerInfo: {
             type: DataTypes.TEXT,
@@ -58,6 +65,11 @@ export default function (sequelize, DataTypes) {
             defaultValue: USER_ROLES.USER
         }
     }, {
+        getterMethods: {
+            fullName() {
+                return `${this.firstname} ${this.lastname}`;
+            }
+        },
         classMethods: {
             associate(models) {
                 User.hasMany(models.Trip);
