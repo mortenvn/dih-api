@@ -17,7 +17,7 @@ import config from '../config';
 */
 // eslint-disable-next-line no-unused-vars
 export function errorMiddleware(err, req, res, next) {
-    if (config.nodeEnv === 'development') {
+    if (config.nodeEnv === 'development' || config.nodeEnv === 'test') {
         console.log(err.stack); // eslint-disable-line
     }
 
@@ -47,7 +47,7 @@ export const sentryClient = new raven.Client(config.sentry, {
 * @param  {Object} error - Validation error from  Sequelize
 */
 export function handleError(error) {
-    sentryClient.captureError(error);
+    if (config.env === 'production' || config.env === 'staging') sentryClient.captureError(error);
 }
 
 /**

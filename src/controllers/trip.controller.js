@@ -6,7 +6,6 @@ import Sequelize from 'sequelize';
 import db from '../models';
 import * as errors from '../components/errors';
 
-
 /**
  * list - List trips that qualify query
  *
@@ -20,8 +19,10 @@ export function list(req, res, next) {
     if (!db.Trip.validateQuery(req.query)) {
         throw new errors.UriValidationError();
     }
-    db.Trip.findAll({
-        where: req.query,
+
+    db.Trip.getQueryObject(req)
+    .then(query => db.Trip.findAll({
+        where: query,
         include: [{
             model: db.User,
             attributes: {
@@ -30,10 +31,11 @@ export function list(req, res, next) {
         }, {
             model: db.Destination
         }]
-    })
+    }))
     .then(res.json.bind(res))
     .catch(next);
 }
+
 
 /**
  * retrieve - Retrieves a single trip by ID.
@@ -101,7 +103,7 @@ export function destroy(req, res, next) {
     })
     .then(count => {
         if (!count) throw new errors.ResourceNotFoundError('trip');
-        res.sendStatus(200);
+        res.sendStatus(204);
     })
     .catch(next);
 }

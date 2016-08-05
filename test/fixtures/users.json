@@ -34,5 +34,16 @@
 			"hash": "$2a$10$QRhOhZdrjHhECu/l4Mc4keejdvkZDDZgGBKCp5BQ/OFICRTyo7902",
 			"birth": "1990-04-25T01:32:21.196+0200"
 		}
+	},
+	{
+		"model": "User",
+		"data": {
+			"firstname": "test2",
+			"lastname": "user2",
+			"role": "USER",
+			"email": "test-user2@dih.capra.me",
+			"hash": "$2a$10$QRhOhZdrjHhECu/l4Mc4keejdvkZDDZgGBKCp5BQ/OFICRTyo7902",
+			"birth": "1990-04-25T01:32:21.196+0200"
+		}
 	}
 ]

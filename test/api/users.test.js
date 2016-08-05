@@ -37,7 +37,20 @@ describe.serial('User API', it => {
             .get(URI)
             .expect(200)
             .then(res => res.body);
-        t.is(response.length, 3);
+        t.is(response.length, dbObjects.length);
+    });
+
+    it('should check casing of email address', async t => {
+        const response = await request(app)
+            .post(URI)
+            .send({
+                email: 'test-USER@dih.capra.me',
+                firstname: 'User',
+                lastname: 'Test',
+                role: 'USER'
+            })
+            .expect(400);
+        t.is(response.body.message, 'email must be unique');
     });
 
     it('should return a single existing user', async t => {
@@ -88,6 +101,20 @@ describe.serial('User API', it => {
         t.is(response.body.role, 'USER');
     });
 
+    it('should set readTerms false not given', async t => {
+        const response = await request(app)
+            .post(URI)
+            .send({
+                email: 'bojack@horseman.com',
+                firstname: 'Bojack',
+                lastname: 'Horseman'
+            })
+            .expect(201);
+
+        t.is(response.body.readTerms, false);
+    });
+
+
     it('should not add a new user without valid email', async t => {
         const response = await request(app)
             .post(URI)
@@ -112,7 +139,6 @@ describe.serial('User API', it => {
                 role: 'USER'
             })
             .expect(400);
-
         t.is(response.body.message, 'email must be unique');
     });
 

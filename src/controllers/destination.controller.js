@@ -53,7 +53,13 @@ export function retrieve(req, res, next) {
  */
 export function create(req, res, next) {
     db.Destination.create(req.body)
-    .then(savedObj => res.status(201).json(savedObj))
+    .then(savedObj => {
+        if (req.body.users) return savedObj.addCoordinators(req.body.users).then(() => savedObj);
+        return savedObj;
+    })
+    .then((savedObj) => {
+        res.status(201).json(savedObj);
+    })
     .catch(Sequelize.ValidationError, err => {
         throw new ValidationError(err);
     })
@@ -80,7 +86,7 @@ export function destroy(req, res, next) {
             throw new ResourceNotFoundError('destination');
         }
     })
-    .then(() => res.sendStatus(200))
+    .then(() => res.sendStatus(204))
     .catch(next);
 }
 
@@ -105,7 +111,13 @@ export function update(req, res, next) {
         }
         return item.update(req.body);
     })
-    .then(() => res.sendStatus(204))
+    .then(item => {
+        if (req.body.users) return item.addCoordinators(req.body.users);
+        return Promise.resolve();
+    })
+    .then(() => {
+        res.sendStatus(204);
+    })
     .catch(Sequelize.ValidationError, err => {
         throw new ValidationError(err);
     })

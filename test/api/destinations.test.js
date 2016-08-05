@@ -7,8 +7,24 @@ import app from '../../src/app';
 
 
 const mockDest = {
-    name: 'AdaNora'
+    name: 'AdaNora',
+    pendingStatusMailTemplateId: 1,
+    acceptedStatusMailTemplateId: 2,
+    rejectedStatusMailTemplateId: 3,
+    users: [
+        {
+            userId: 1,
+            startDate: '2016-08-03T08:12:02.554Z',
+            endDate: null
+        },
+        {
+            userId: 2,
+            startDate: '2016-09-03T08:12:02.554Z',
+            endDate: '2016-09-10T08:12:02.554Z'
+        }
+    ]
 };
+
 const URI = '/destinations';
 let dbObjects;
 
@@ -50,11 +66,10 @@ describe.serial('Destination API', it => {
         const response = await request(app)
             .get(`${URI}`)
             .expect(200);
-        t.is(response.body[0].countOfActiveVolunteers, 0);
-        t.is(response.body[1].countOfActiveVolunteers, 0);
-        t.is(response.body[2].countOfActiveVolunteers, 1);
-        t.is(response.body[3].countOfActiveVolunteers, 0);
-        t.is(response.body[4].countOfActiveVolunteers, 0);
+        response.body.forEach((dest) => {
+            if (dest.id === 3) t.is(dest.countOfActiveVolunteers, 1);
+            else t.is(dest.countOfActiveVolunteers, 0);
+        });
     });
 
     it('should be able to create a new destination ', async t => {
@@ -197,7 +212,7 @@ describe.serial('Destination API', it => {
     it('should be able to delete a destination', async t => {
         const response = await request(app)
             .delete(`${URI}/${dbObjects[0].id}`)
-            .expect(200)
+            .expect(204)
             .then(() => request(app).get(URI))
             .then(res => res.body);
         t.is(response.length, dbObjects.length - 1);
@@ -207,5 +222,58 @@ describe.serial('Destination API', it => {
         await request(app)
             .delete(`${URI}/100`)
             .expect(404);
+    });
+
+    it('should be able to update a destination with several coordinators', async t => {
+        const fixture = dbObjects[0];
+        const changedFixture = fixture;
+        changedFixture.users = [
+            {
+                userId: 1,
+                startDate: '2016-08-03T08:12:02.554Z',
+                endDate: null
+            },
+            {
+                userId: 2,
+                startDate: '2016-09-03T08:12:02.554Z',
+                endDate: '2016-09-10T08:12:02.554Z'
+            }
+        ];
+        const response = await request(app)
+            .put(`${URI}/${fixture.id}`)
+            .send(changedFixture)
+            .expect(204)
+            .then(() => request(app).get(URI))
+            .then(res => _.find(res.body, obj => obj.id === fixture.id));
+        t.is(response.users.map(user => user.id).includes(1), true);
+        t.is(response.users.map(user => user.id).includes(2), true);
+    });
+
+    it('should be able to update a coordinator at a destination', async t => {
+        const fixture = dbObjects[0];
+        const changedFixture = fixture;
+
+        changedFixture.users = [
+            {
+                userId: 3,
+                startDate: '2016-08-09',
+                endDate: null
+            },
+            {
+                userId: 2,
+                startDate: '2016-09-03T08:12:02.554Z',
+                endDate: '2016-09-10T08:12:02.554Z'
+            }
+        ];
+
+        const updateResponse = await request(app)
+            .put(`${URI}/${fixture.id}`)
+            .send(changedFixture)
+            .expect(204)
+            .then(() => request(app).get(URI))
+            .then(res => _.find(res.body, obj => obj.id === fixture.id));
+        t.is(updateResponse.users.find(user => user.id === 3)
+        .destinationCoordinator.startDate.substring(0, 10),
+            changedFixture.users[0].startDate);
     });
 });

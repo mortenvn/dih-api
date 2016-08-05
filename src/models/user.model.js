@@ -25,6 +25,9 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.STRING,
             unique: true,
             allowNull: false,
+            set(value) {
+                this.setDataValue('email', value.toLowerCase());
+            },
             validate: {
                 isEmail: true
             }
@@ -53,10 +56,28 @@ export default function (sequelize, DataTypes) {
                 is: /^\+(?:[0-9] ?){6,14}[0-9]$/i
             }
         },
+        medicalDegree: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        medicalDegreeLicenseNumber: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        languages: {
+            type: DataTypes.TEXT,
+            allowNull: false,
+            defaultValue: ''
+        },
         notes: DataTypes.STRING,
         volunteerInfo: {
             type: DataTypes.TEXT,
             defaultValue: ''
+        },
+        readTerms: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
         },
         hash: DataTypes.STRING,
         role: {
@@ -73,6 +94,10 @@ export default function (sequelize, DataTypes) {
         classMethods: {
             associate(models) {
                 User.hasMany(models.Trip);
+                User.belongsToMany(models.Destination,
+                    { through: models.DestinationCoordinator },
+                    { foreignKey: 'userId' },
+                );
             },
             invite(body) {
                 return User.create(body)
