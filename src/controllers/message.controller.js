@@ -6,10 +6,11 @@ import Promise from 'bluebird';
 import { MESSAGE_MEDIUMS } from '../components/constants';
 import { sendSMS } from '../components/sms';
 import { sendCustomMail } from '../components/mail';
+
 /**
- * update - Updates a message given id and that the message exists
+ * send - Sends a message either sms or email to all recipients
  *
- * @function update
+ * @function send
  * @memberof  module:controllers/message
  * @param  {Object} req  Express request object
  * @param  {Object} res  Express response object

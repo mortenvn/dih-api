@@ -150,7 +150,6 @@ export function sendDestinationInfo(user, mailContent) {
 
 /**
  * sendCustomMail - Sends a custom email to the specified recipient
- * e-mail to a user  with given information as content
  *
  * @function sendCustomMail
  * @memberof  module:components/mail
