@@ -1,12 +1,12 @@
 import express from 'express';
-import { authorizeAdministrator } from '../components/auth';
+import { authorizeAdministrator, authorizeModerator } from '../components/auth';
 import * as controller from '../controllers/user.controller';
 
 const router = express.Router();
 
 router.get('/', controller.list);
 
-router.get('/:id', authorizeAdministrator, controller.retrieve);
+router.get('/:id', authorizeModerator, controller.retrieve);
 
 router.put('/:id', authorizeAdministrator, controller.update);
 
