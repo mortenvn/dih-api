@@ -84,7 +84,9 @@ export default function (sequelize, DataTypes) {
         }
     }, {
         getterMethods: {
-            fullName() { return `${this.firstname} ${this.lastName}`; }
+            fullName() {
+                return `${this.firstname} ${this.lastName}`;
+            }
         },
         classMethods: {
             associate(models) {
