@@ -25,6 +25,9 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.STRING,
             unique: true,
             allowNull: false,
+            set(value) {
+                this.setDataValue('email', value.toLowerCase());
+            },
             validate: {
                 isEmail: true
             }
@@ -50,6 +53,11 @@ export default function (sequelize, DataTypes) {
         volunteerInfo: {
             type: DataTypes.TEXT,
             defaultValue: ''
+        },
+        readTerms: {
+            type: DataTypes.BOOLEAN,
+            defaultValue: false,
+            allowNull: false
         },
         hash: DataTypes.STRING,
         role: {

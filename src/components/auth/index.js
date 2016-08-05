@@ -80,7 +80,8 @@ export const authorizeModerator =
     composableMiddleware()
         .use(authorize)
         .use((req, res, next) => {
-            if (req.user.role !== USER_ROLES.ADMIN || req.user.role !== USER_ROLES.MODERATOR) {
+            const role = req.user.role;
+            if (!(USER_ROLES.MODERATOR === role || USER_ROLES.ADMIN === role)) {
                 next(new AuthorizationError());
             }
             next();

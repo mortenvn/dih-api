@@ -10,8 +10,7 @@ export default function (sequelize, DataTypes) {
             unique: true,
             allowNull: false,
             validate: {
-                notEmpty: true,
-                isAlpha: true
+                notEmpty: true
             }
         },
         minimumTripDurationInDays: {
