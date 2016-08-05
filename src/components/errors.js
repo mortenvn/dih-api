@@ -17,7 +17,7 @@ import config from '../config';
 */
 // eslint-disable-next-line no-unused-vars
 export function errorMiddleware(err, req, res, next) {
-    if (config.nodeEnv === 'development' || config.nodeEnv === 'test') {
+    if (config.nodeEnv === 'development') {
         console.log(err.stack); // eslint-disable-line
     }
 

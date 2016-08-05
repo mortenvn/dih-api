@@ -73,7 +73,6 @@ export default function (sequelize, DataTypes) {
                         .then(user => user.getDestinations())
                         .then(objects => objects.map(object => object.id))
                         .then(destinationIds => {
-                            console.log({ destinationId: { in: destinationIds } });
                             resolve({
                                 destinationId: {
                                     in: destinationIds
