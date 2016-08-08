@@ -51,7 +51,10 @@ export default function (sequelize, DataTypes) {
         },
         phoneNumber: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: true,
+            validate: {
+                is: /^\+(?:[0-9] ?){6,14}[0-9]$/i
+            }
         },
         medicalDegree: {
             type: DataTypes.STRING,

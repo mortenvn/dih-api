@@ -189,7 +189,7 @@ describe.serial('User API', it => {
             .put(`${URI}/${user.id}`)
             .send({ firstname: 'Ada' })
             .set('Authorization', `Bearer ${validJwt}`)
-            .expect(401);
+            .expect(403);
 
         t.is(response.body.name, 'AuthorizationError');
     });
