@@ -16,8 +16,7 @@ export function loadFixtures(fixtures) {
     ];
     const fixturePaths = f.map(file => `${path.resolve(__dirname)}/fixtures/${file}.json`);
     return syncDB({ force: true })
-        .then(() => sequelizeFixtures.loadFiles(fixturePaths, db))
-        .catch(err => console.log(err));
+        .then(() => sequelizeFixtures.loadFiles(fixturePaths, db));
 }
 
 /**

@@ -3,6 +3,7 @@
 		"model": "User",
 		"data": {
 			"firstname": "test",
+			"phoneNumber": "+4793838520",
 			"lastname": "user",
 			"role": "USER",
 			"email": "test-user@dih.capra.me",
@@ -14,6 +15,7 @@
 		"model": "User",
 		"data": {
 			"firstname": "test",
+			"phoneNumber": "+4793838520",
 			"lastname": "admin",
 			"role": "ADMIN",
 			"email": "test-admin@dih.capra.me",
@@ -25,6 +27,7 @@
 		"model": "User",
 		"data": {
 			"firstname": "test",
+			"phoneNumber": "+4793838520",
 			"lastname": "moderator",
 			"role": "MODERATOR",
 			"email": "test-moderator@dih.capra.me",
