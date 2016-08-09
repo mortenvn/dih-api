@@ -48,7 +48,7 @@ If you're gonna develop:
 1. Install nodemon `npm install -g nodemon`
 2. Run  `npm run start:dev` Remember that you can run it with environment variables in before the command, i.e. `PG_URL=value npm run start:dev`.
 
-This will watch for changes and keep it open for you.
+This will watch for changes and keep the application open for you.
 
 ### Test data
 To enter some test data into your database, run `npm run load`. It will give you some test users
@@ -70,7 +70,7 @@ All these users have the password `password`.
 
 ### Watch
 
-Run the unit tests continuously with `npm run test:watch`, only the tests currently worked on will run when updated. 
+Run the unit tests continuously with `npm run test:watch`, only the tests currently worked on will run when updated.
 All tests will run when a server file is updated. This will use your local database.
 
 ## Deployment
