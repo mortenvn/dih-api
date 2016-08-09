@@ -46,6 +46,34 @@ export default function (sequelize, DataTypes) {
                 notEmpty: true
             }
         },
+        gender: {
+            type: DataTypes.ENUM,
+            allowNull: false
+        },
+        nationality: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        addressLine1: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        addressLine2: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        postalCode: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        city: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        country: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
         birth: {
             type: DataTypes.DATE
         },
