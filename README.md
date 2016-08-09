@@ -20,7 +20,7 @@ The project has a strategy for what to name our branches, so that changes in the
 Name your branches in the following way, where `DIH-num` is a task ID on JIRA:
 
 * If it's a feature (new functionality) name the branch `feature/DIH-num`.
-* If it's a bugfix name the branch `bugfix/DIH_num`.
+* If it's a bugfix name the branch `bugfix/DIH-num`.
 * If it's a technical task, name the branch `tech/DIH-num`
 
 ## Setup
