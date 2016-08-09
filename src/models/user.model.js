@@ -5,7 +5,7 @@
 import _ from 'lodash';
 import bcrypt from 'bcrypt';
 import Promise from 'bluebird';
-import { USER_ROLES } from '../components/constants';
+import { USER_ROLES, GENDERS } from '../components/constants';
 import { CustomValidationError } from '../components/errors';
 import * as mail from '../components/mail';
 import { createJwt } from '../components/auth';
@@ -48,7 +48,8 @@ export default function (sequelize, DataTypes) {
         },
         gender: {
             type: DataTypes.ENUM,
-            allowNull: false
+            values: _.values(GENDERS),
+            allowNull: true
         },
         nationality: {
             type: DataTypes.STRING,
