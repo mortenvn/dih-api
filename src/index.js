@@ -32,9 +32,6 @@ function listen() {
 //         .catch(handleError);
 // }
 syncDB({ force: true })
-    .then(val => {
-        console.log(val);
-        createDefaultAdmin(config.adminPassword);
-    })
+    .then(createDefaultAdmin(config.adminPassword))
     .then(() => listen())
     .catch(handleError);
