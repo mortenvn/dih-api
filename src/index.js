@@ -22,11 +22,11 @@ function listen() {
 }
 
 let db;
-if (config.nodeEnv === 'development' || config.nodeEnv === 'test') db = syncDB();
-else {
+if (config.nodeEnv === 'development' || config.nodeEnv === 'staging' || config.nodeEnv === 'test') {
+    db = syncDB();
+} else {
     db = migrateDB()
-        .catch(Sequelize.DatabaseError, () =>
-        syncDB({ force: config.nodeEnv === 'staging' }))
+        .catch(Sequelize.DatabaseError, () => syncDB())
         .then(() => createDefaultAdmin(config.adminPassword))
         .catch(handleError);
 }
