@@ -65,8 +65,8 @@ All these users have the password `password`.
 
 ### Single run
 
-Run unit tests & code lint with `npm test`. This will use your local database.
-Run just unit tests with `npm run tests` with `NODE_ENV=test`. This will use your local database.
+* Run unit tests & code lint with `npm test`. This will use your local database.
+* Run just unit tests with `npm run tests` with `NODE_ENV=test`. This will use your local database.
 
 ### Watch
 
