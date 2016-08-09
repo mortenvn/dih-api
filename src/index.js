@@ -6,7 +6,7 @@
 import app from './app';
 import config from './config';
 import { handleError } from './components/errors';
-import { syncDB, createDefaultAdmin } from './db-helpers';
+import { syncDB } from './db-helpers';
 
 /**
  * listen - Starts the server with the config given by the environment variables
@@ -32,6 +32,5 @@ function listen() {
 //         .catch(handleError);
 // }
 syncDB({ force: true })
-    .then(createDefaultAdmin(config.adminPassword))
     .then(() => listen())
     .catch(handleError);
