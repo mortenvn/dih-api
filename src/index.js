@@ -25,8 +25,10 @@ let db;
 if (config.nodeEnv === 'development' || config.nodeEnv === 'test') db = syncDB();
 else {
     db = migrateDB()
-        .catch(Sequelize.DatabaseError, () => syncDB())
-        .then(() => createDefaultAdmin(config.adminPassword));
+        .catch(Sequelize.DatabaseError, () =>
+        syncDB({ force: config.nodeEnv === 'staging' }))
+        .then(() => createDefaultAdmin(config.adminPassword))
+        .catch(handleError);
 }
 
 db.then(() => listen())

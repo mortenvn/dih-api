@@ -20,7 +20,7 @@ The project has a strategy for what to name our branches, so that changes in the
 Name your branches in the following way, where `DIH-num` is a task ID on JIRA:
 
 * If it's a feature (new functionality) name the branch `feature/DIH-num`.
-* If it's a bugfix name the branch `bugfix/DIH_num`.
+* If it's a bugfix name the branch `bugfix/DIH-num`.
 * If it's a technical task, name the branch `tech/DIH-num`
 
 ## Setup
@@ -65,12 +65,13 @@ All these users have the password `password`.
 
 ### Single run
 
-Run unit tests & code lint with `npm test`. This will use your local database.
-Run just unit tests with `npm run tests` with `NODE_ENV=test`. This will use your local database.
+* Run unit tests & code lint with `npm test`. This will use your local database.
+* Run just unit tests with `npm run tests` with `NODE_ENV=test`. This will use your local database.
 
 ### Watch
 
-Run the unit tests continuously with `npm run test:watch`, only the tests currently worked on will run when updated. All tests will run when a server file is updated. This will use your local database.
+Run the unit tests continuously with `npm run test:watch`, only the tests currently worked on will run when updated. 
+All tests will run when a server file is updated. This will use your local database.
 
 ## Deployment
 We have continuous deployment with [Circle CI](http://circleci.com), which builds Docker-images and pushes to AWS EC2.

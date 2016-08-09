@@ -1,16 +1,17 @@
 import express from 'express';
 import * as controller from '../controllers/destination.controller';
+import { authorizeAdministrator, authorize } from '../components/auth';
 
 const router = express.Router();
 
-router.get('/', controller.list);
+router.get('/', authorize, controller.list);
 
-router.get('/:id', controller.retrieve);
+router.get('/:id', authorize, controller.retrieve);
 
-router.post('/', controller.create);
+router.post('/', authorizeAdministrator, controller.create);
 
-router.delete('/:id', controller.destroy);
+router.delete('/:id', authorizeAdministrator, controller.destroy);
 
-router.put('/:id', controller.update);
+router.put('/:id', authorizeAdministrator, controller.update);
 
 export default router;
