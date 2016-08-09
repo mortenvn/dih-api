@@ -23,7 +23,7 @@ function listen() {
 
 let db;
 if (config.nodeEnv === 'development' || config.nodeEnv === 'staging' || config.nodeEnv === 'test') {
-    db = syncDB();
+    db = syncDB({ force: true });
 } else {
     db = migrateDB()
         .catch(Sequelize.DatabaseError, () => syncDB())
