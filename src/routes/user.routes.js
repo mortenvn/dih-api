@@ -4,7 +4,7 @@ import * as controller from '../controllers/user.controller';
 
 const router = express.Router();
 
-router.get('/', controller.list);
+router.get('/', authorizeModerator, controller.list);
 
 router.get('/:id', authorizeModerator, controller.retrieve);
 

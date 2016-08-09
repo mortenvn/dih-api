@@ -2,7 +2,7 @@ import { describe } from 'ava-spec';
 import _ from 'lodash';
 import request from 'supertest-as-promised';
 import moment from 'moment';
-import { loadFixtures, getAllElements } from '../helpers';
+import { loadFixtures, getAllElements, createValidJWT } from '../helpers';
 import app from '../../src/app';
 
 
@@ -27,6 +27,7 @@ const mockDest = {
 
 const URI = '/destinations';
 let dbObjects;
+let userObjects;
 
 describe.serial('Destination API', it => {
     it.beforeEach(() =>
@@ -35,11 +36,16 @@ describe.serial('Destination API', it => {
             .then(response => {
                 dbObjects = response;
             })
+            .then(() => getAllElements('User'))
+            .then(response => {
+                userObjects = response;
+            })
     );
 
     it('should retrieve a list of all destinations', async t => {
         const response = await request(app)
             .get(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[0])}`)
             .expect(200)
             .then(res => res.body);
         t.is(response.length, dbObjects.length);
@@ -49,6 +55,7 @@ describe.serial('Destination API', it => {
         const fixture = dbObjects[0];
         const response = await request(app)
             .get(`${URI}/${fixture.id}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[0])}`)
             .expect(200);
         t.is(response.body.name, fixture.name);
         t.is(response.body.minimumTripDurationInDays, fixture.minimumTripDurationInDays);
@@ -58,6 +65,7 @@ describe.serial('Destination API', it => {
         const fixture = dbObjects[2];
         const response = await request(app)
             .get(`${URI}/${fixture.id}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[0])}`)
             .expect(200);
         t.is(response.body.countOfActiveVolunteers, 1);
     });
@@ -65,6 +73,7 @@ describe.serial('Destination API', it => {
     it('should include count of active volunteers on retrieval of all destinations', async t => {
         const response = await request(app)
             .get(`${URI}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[0])}`)
             .expect(200);
         response.body.forEach((dest) => {
             if (dest.id === 3) t.is(dest.countOfActiveVolunteers, 1);
@@ -75,6 +84,7 @@ describe.serial('Destination API', it => {
     it('should be able to create a new destination ', async t => {
         const response = await request(app)
             .post(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(mockDest)
             .expect(201)
             .then(res => res);
@@ -86,6 +96,7 @@ describe.serial('Destination API', it => {
         mockDestWithMinTrip.minimumTripDurationInDays = 15;
         const response = await request(app)
             .post(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(mockDestWithMinTrip)
             .expect(201)
             .then(res => res);
@@ -99,6 +110,7 @@ describe.serial('Destination API', it => {
         mockDestWithStartDate.startDate = moment().year(moment().year() + 5);
         const response = await request(app)
             .post(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(mockDestWithStartDate)
             .expect(201)
             .then(res => res);
@@ -112,6 +124,7 @@ describe.serial('Destination API', it => {
         mockDestWithEndDate.endDate = moment().year(moment().year() + 5);
         const response = await request(app)
             .post(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(mockDestWithEndDate)
             .expect(201)
             .then(res => res);
@@ -124,6 +137,7 @@ describe.serial('Destination API', it => {
         const fixture = dbObjects[0];
         const response = await request(app)
             .get(`${URI}/${fixture.id}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(200)
             .then(res => res);
         t.is(response.body.isActive, true);
@@ -134,6 +148,7 @@ describe.serial('Destination API', it => {
         mockDestWithStartDate.startDate = moment().year(moment().year() + 5);
         const response = await request(app)
             .post(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(mockDestWithStartDate)
             .expect(201)
             .then(res => res);
@@ -147,6 +162,7 @@ describe.serial('Destination API', it => {
         activeMockDest.endDate = moment().year(moment().year() + 5);
         const response = await request(app)
             .post(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(activeMockDest)
             .expect(201)
             .then(res => res);
@@ -160,6 +176,7 @@ describe.serial('Destination API', it => {
         inactiveactiveMockDest.endDate = moment().year(moment().year() - 1);
         const response = await request(app)
             .post(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(inactiveactiveMockDest)
             .expect(201)
             .then(res => res);
@@ -172,6 +189,7 @@ describe.serial('Destination API', it => {
         mockEmptyString.name = '';
         return await request(app)
             .post(URI, mockEmptyString)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(400);
     });
 
@@ -182,9 +200,11 @@ describe.serial('Destination API', it => {
         changedFixture.name = 'changedName';
         const response = await request(app)
             .put(`${URI}/${fixture.id}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(changedFixture)
             .expect(204)
-            .then(() => request(app).get(URI))
+            .then(() => request(app).get(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`))
             .then(res => _.find(res.body, obj => obj.id === fixture.id));
         t.is(response.name, changedFixture.name);
     });
@@ -195,9 +215,11 @@ describe.serial('Destination API', it => {
         changedFixture.minimumTripDurationInDays = 15;
         const response = await request(app)
             .put(`${URI}/${fixture.id}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(changedFixture)
             .expect(204)
-            .then(() => request(app).get(URI))
+            .then(() => request(app).get(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`))
             .then(res => _.find(res.body, obj => obj.id === fixture.id));
         t.is(response.minimumTripDurationInDays, changedFixture.minimumTripDurationInDays);
     });
@@ -205,6 +227,7 @@ describe.serial('Destination API', it => {
     it('should not be able to update destinations that does not exist', async () => {
         await request(app)
             .put(`${URI}/100`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(mockDest)
             .expect(404);
     });
@@ -212,8 +235,10 @@ describe.serial('Destination API', it => {
     it('should be able to delete a destination', async t => {
         const response = await request(app)
             .delete(`${URI}/${dbObjects[0].id}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(204)
-            .then(() => request(app).get(URI))
+            .then(() => request(app).get(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`))
             .then(res => res.body);
         t.is(response.length, dbObjects.length - 1);
     });
@@ -221,6 +246,7 @@ describe.serial('Destination API', it => {
     it('should return 404 when you try to delete an item that does not exist', async () => {
         await request(app)
             .delete(`${URI}/100`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .expect(404);
     });
 
@@ -241,9 +267,11 @@ describe.serial('Destination API', it => {
         ];
         const response = await request(app)
             .put(`${URI}/${fixture.id}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(changedFixture)
             .expect(204)
-            .then(() => request(app).get(URI))
+            .then(() => request(app).get(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`))
             .then(res => _.find(res.body, obj => obj.id === fixture.id));
         t.is(response.users.map(user => user.id).includes(1), true);
         t.is(response.users.map(user => user.id).includes(2), true);
@@ -268,9 +296,11 @@ describe.serial('Destination API', it => {
 
         const updateResponse = await request(app)
             .put(`${URI}/${fixture.id}`)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
             .send(changedFixture)
             .expect(204)
-            .then(() => request(app).get(URI))
+            .then(() => request(app).get(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`))
             .then(res => _.find(res.body, obj => obj.id === fixture.id));
         t.is(updateResponse.users.find(user => user.id === 3)
         .destinationCoordinator.startDate.substring(0, 10),
