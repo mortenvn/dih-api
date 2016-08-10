@@ -11,8 +11,9 @@ let userObjects;
 let destinationObjects;
 const mockTrip = {
     status: 'PENDING',
-    wishStartDate: '2020-04-25T01:32:21.196+0200',
-    wishEndDate: '2021-04-25T01:32:21.196+0200'
+    startDate: '2020-04-01T01:32:21.196+0200',
+    endDate: '2020-04-25T01:32:21.196+0200',
+    notes: 'Looking forward to my trip.'
 };
 
 const arrivalDate = '2030-04-25T01:32:21.196+0200';
@@ -32,10 +33,10 @@ describe.serial('Trip API', it => {
             .then(() => getAllElements('User'))
             .then(response => {
                 userObjects = response;
+                mockTrip.userid = userObjects[0].id;
             })
             .then(() => {
                 mockTrip.destinationId = destinationObjects[1].id;
-                mockTrip.userId = userObjects[0].id;
             })
     );
 
@@ -122,28 +123,6 @@ describe.serial('Trip API', it => {
         t.is(response.message, 'Invalid URI.');
     });
 
-    it('should be not be able to query on wishStartDate', async t => {
-        const fixture = tripObjects[0];
-        const response = await request(app)
-            .get(`${URI}?wishStartDate=${fixture.wishStartDate}`)
-            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
-            .expect(400)
-            .then(res => res.body);
-        t.is(response.name, 'UriValidationError');
-        t.is(response.message, 'Invalid URI.');
-    });
-
-    it('should be not be able to query on wishEndDate', async t => {
-        const fixture = tripObjects[0];
-        const response = await request(app)
-            .get(`${URI}?wishEndDate=${fixture.wishEndDate}`)
-            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
-            .expect(400)
-            .then(res => res.body);
-        t.is(response.name, 'UriValidationError');
-        t.is(response.message, 'Invalid URI.');
-    });
-
     it('should reject queries on non-existing model properties', async t => {
         const response = await request(app)
             .get(`${URI}?topkek=someValue&capra=summmer`)
@@ -172,54 +151,59 @@ describe.serial('Trip API', it => {
             .expect(404);
     });
 
-    it('should be able to create a new trip for user', async t => {
+    it('should let user create a new trip', async t => {
+        const user = userObjects[0];
         const response = await request(app)
             .post(URI)
-            .set('Authorization', `Bearer ${createValidJWT(userObjects[0])}`)
+            .set('Authorization', `Bearer ${createValidJWT(user)}`)
             .send(mockTrip)
             .expect(201)
             .then(res => res);
         t.is(response.body.status, mockTrip.status);
     });
 
-    it('should be able to create a new trip with other user when admin ', async t => {
+    it('should set status to pending when no status is provided', async t => {
+        const user = userObjects[0];
+        const mock = mockTrip;
+        delete mock.status;
         const response = await request(app)
             .post(URI)
-            .send({
-                ...mockTrip,
-                userId: userObjects[0].id
-            })
-            .set('Authorization', `Bearer ${createValidJWT(userObjects[0])}`)
+            .set('Authorization', `Bearer ${createValidJWT(user)}`)
+            .send(mock)
+            .expect(201);
+        t.is(response.body.status, 'PENDING');
+    });
+
+    it('should be able to create a new trip with other user when admin ', async t => {
+        const mock = mockTrip;
+        mock.userId = userObjects[0].id;
+        const response = await request(app)
+            .post(URI)
+            .set('Authorization', `Bearer ${createValidJWT(userObjects[1])}`)
+            .send(mock)
             .expect(201)
             .then(res => res);
         t.is(response.body.userId, userObjects[0].id);
-    });
-
-    it('should not be able to create a new trip with missing status field', async () => {
-        const mockWithEmptyStatus = mockTrip;
-        delete mockWithEmptyStatus.status;
-        await request(app)
-            .post(URI, mockWithEmptyStatus)
-            .set('Authorization', `Bearer ${createValidJWT(userObjects[0])}`)
-            .expect(400);
     });
 
     it('should not be able to create a new trip with missing destinationId field', async () => {
         const mockWithEmptyDestination = mockTrip;
         delete mockWithEmptyDestination.destinationId;
         await request(app)
-            .post(URI, mockWithEmptyDestination)
+            .post(URI)
             .set('Authorization', `Bearer ${createValidJWT(userObjects[0])}`)
+            .send(mockWithEmptyDestination)
             .expect(400);
     });
 
-    it('should not be able to create a new trip with missing userId field', async () => {
+    it('should be able to create a new trip with missing userId field', async () => {
         const mockWithEmptyUser = mockTrip;
         delete mockWithEmptyUser.userId;
         await request(app)
-            .post(URI, mockWithEmptyUser)
+            .post(URI)
             .set('Authorization', `Bearer ${createValidJWT(userObjects[0])}`)
-            .expect(400);
+            .send(mockWithEmptyUser)
+            .expect(201);
     });
 
     it('should be able to update a trip with a valid new status', async t => {
@@ -262,7 +246,7 @@ describe.serial('Trip API', it => {
     it('should be able to update trip with departure airport', async () => {
         const fixture = tripObjects[0];
         const changedFixture = fixture;
-        changedFixture.departureAirport = 'OSL';
+        changedFixture.departureAirport = 'OSL+';
         await request(app)
             .put(`${URI}/${fixture.id}`)
             .send(changedFixture)
@@ -342,7 +326,7 @@ describe.serial('Trip API', it => {
     , async t => {
         const coordinator = userObjects[2];
         await request(app)
-            .get(`${URI}/`)
+            .get(URI)
             .set('Authorization', `Bearer ${createValidJWT(coordinator)}`)
             .then(res => res.body)
             .then(res => t.is(res.length, 2));

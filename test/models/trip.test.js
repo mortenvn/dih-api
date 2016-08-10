@@ -14,9 +14,7 @@ const mockTrip = {
     destinationId: 1,
     status: 'PENDING',
     startDate: null,
-    endDate: null,
-    wishStartDate: '2017-04-25T01:32:21.196+0200',
-    wishEndDate: '2018-04-25T01:32:21.196+0200'
+    endDate: null
 };
 
 describe('Trip Model', it => {
