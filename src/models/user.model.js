@@ -53,27 +53,33 @@ export default function (sequelize, DataTypes) {
         },
         nationality: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            defaultValue: ''
         },
         addressLine1: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: false,
+            defaultValue: ''
         },
         addressLine2: {
             type: DataTypes.STRING,
-            allowNull: true
+            allowNull: false,
+            defaultValue: ''
         },
         postalCode: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: true,
+            defaultValue: ''
         },
         city: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            defaultValue: ''
         },
         country: {
             type: DataTypes.STRING,
-            allowNull: false
+            allowNull: false,
+            defaultValue: ''
         },
         birth: {
             type: DataTypes.DATE
@@ -94,9 +100,8 @@ export default function (sequelize, DataTypes) {
             allowNull: true
         },
         languages: {
-            type: DataTypes.ARRAY,
-            allowNull: false,
-            defaultValue: []
+            type: DataTypes.STRING,
+            allowNull: true
         },
         notes: DataTypes.STRING,
         volunteerInfo: {
