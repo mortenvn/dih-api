@@ -170,12 +170,12 @@ export default function (sequelize, DataTypes) {
                         return this.save();
                     });
             },
-            sendDestinationAction(destination, mailContent) {
+            sendDestinationAction(tripId, tripStatus, destination, mailContent) {
                 const token = this.createJwt();
-                return mail.sendDestinationAction(this, mailContent, token);
+                return mail.sendDestinationAction(tripId, tripStatus, this, mailContent, token);
             },
-            sendDestinationInfo(destination, mailContent) {
-                return mail.sendDestinationInfo(this, mailContent);
+            sendDestinationInfo(tripStatus, destination, mailContent) {
+                return mail.sendDestinationInfo(tripStatus, this, mailContent);
             }
         }
     });
