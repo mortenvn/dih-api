@@ -36,7 +36,7 @@ deployment:
             - babel-node deploy.js:
                 environment:
                     WEB: http://dih.capra.me
-                    EMAIL: production@dih.capra.me
+                    EMAIL: frivillig@dih.capra.me
                     NODE_ENV: production
                     PORT: 9000
 

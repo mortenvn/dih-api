@@ -31,7 +31,7 @@ function listen() {
 //         .then(() => createDefaultAdmin(config.adminPassword))
 //         .catch(handleError);
 // }
-syncDB({ force: true })
+syncDB()
     .then(createDefaultAdmin(config.adminPassword))
     .then(() => listen())
     .catch(handleError);
