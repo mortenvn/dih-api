@@ -3,10 +3,9 @@
  * @module controllers/user
  * @exports controllers/user/list
  */
-import db from '../models';
 import Sequelize from 'sequelize';
-import { ResourceNotFoundError, ValidationError } from '../components/errors';
-
+import db from '../models';
+import { DatabaseError, ResourceNotFoundError, ValidationError } from '../components/errors';
 
 /**
  * list - List all users in the database
@@ -46,6 +45,35 @@ export function retrieve(req, res, next) {
 }
 
 /**
+ * update - Updates a single user given ID and that the user exists.
+ *
+ * @function update
+ * @memberof module:controllers/user
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
+export function update(req, res, next) {
+    db.User.findOne({
+        where: {
+            id: req.params.id
+        }
+    })
+    .then(user => {
+        if (!user) throw new ResourceNotFoundError('user');
+        return user.update(req.body);
+    })
+    .then(() => res.sendStatus(204))
+    .catch(Sequelize.ValidationError, err => {
+        throw new ValidationError(err);
+    })
+    .catch(Sequelize.DatabaseError, err => {
+        throw new DatabaseError(err);
+    })
+    .catch(next);
+}
+
+/**
  * create - creates a user.
  *
  * @function create
@@ -58,7 +86,6 @@ export function create(req, res, next) {
     db.User.invite({
         firstname: req.body.firstname,
         lastname: req.body.lastname,
-        birth: req.body.birth,
         email: req.body.email
     })
     .then(user => res.status(201).json(user))

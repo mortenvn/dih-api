@@ -1,12 +1,12 @@
 import express from 'express';
-import * as controller from '../controllers/destination.controller';
-import { authorizeAdministrator, authorize } from '../components/auth';
+import * as controller from '../controllers/mailTemplate.controller';
+import { authorizeAdministrator } from '../components/auth';
 
 const router = express.Router();
 
-router.get('/', authorize, controller.list);
+router.get('/', authorizeAdministrator, controller.list);
 
-router.get('/:id', authorize, controller.retrieve);
+router.get('/:id', authorizeAdministrator, controller.retrieve);
 
 router.post('/', authorizeAdministrator, controller.create);
 

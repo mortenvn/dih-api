@@ -2,17 +2,19 @@
 machine:
     node:
         version: 6.2.2
+    environment:
+        NODE_ENV: test
     services:
         - docker
 
 dependencies:
-    override:
+    pre:
         - npm install -g npm babel-cli
         - sudo pip install awscli
         - aws configure set default.region eu-west-1
         - aws configure set default.output json
         - eval $(aws ecr get-login --region eu-west-1)
-    pre:
+    override:
         - npm install
 
 test:
@@ -33,7 +35,7 @@ deployment:
             - docker push $EXTERNAL_REGISTRY:production-latest
             - babel-node deploy.js:
                 environment:
-                    WEB: https://dih.capra.me
+                    WEB: http://dih.capra.me
                     EMAIL: production@dih.capra.me
                     NODE_ENV: production
                     PORT: 9000
@@ -47,7 +49,7 @@ deployment:
             - npm run docs
             - babel-node deploy.js:
                 environment:
-                    WEB: https://staging.dih.capra.me
+                    WEB: http://staging.dih.capra.me
                     EMAIL: staging@dih.capra.me
                     NODE_ENV: staging
                     PORT: 8000

@@ -14,10 +14,17 @@ const config = {
     nodeEnv: process.env.NODE_ENV || 'development',
     secret: process.env.SECRET || 'hemmelig',
     email: process.env.MAIL || 'info@dih.capra.me',
+    sentry: process.env.SENTRY_DSN || '',
     web: process.env.WEB || 'http://localhost:3000',
+    adminPassword: process.env.ADMIN_PASSWORD || 'capra2016',
     ses: {
         accessKeyId: process.env.SES_ACCESSID || '',
         secretAccessKey: process.env.SES_SECRETKEY || '',
+        region: process.env.REGION || 'eu-west-1'
+    },
+    sns: {
+        accessKeyId: process.env.SNS_ACCESSID || '',
+        secretAccessKey: process.env.SNS_SECRETKEY || '',
         region: process.env.REGION || 'eu-west-1'
     },
     jwtExpiresIn: '30 days'

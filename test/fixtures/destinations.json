@@ -2,35 +2,58 @@
     {
         "model" : "Destination",
         "data": {
-            "name" : "Stavern"
+            "name" : "Stavern",
+            "pendingStatusMailTemplateId": 1,
+            "acceptedStatusMailTemplateId": 2,
+            "rejectedStatusMailTemplateId": 3,
+            "users": [
+                {
+                    "id" :3,
+                    "_through": {
+                        "startDate": "2016-08-30",
+                        "endDate": null
+                    }
+                }
+            ]
+        }
+    },
+    {
+        "model" : "Destination",
+        "data": {
+            "name" : "Lier",
+            "pendingStatusMailTemplateId": 1,
+            "acceptedStatusMailTemplateId": 2,
+            "rejectedStatusMailTemplateId": 3
         }
     },
 
     {
         "model" : "Destination",
         "data": {
-            "name" : "Lier"
+            "name" : "Sandnessjoen",
+            "pendingStatusMailTemplateId": 1,
+            "acceptedStatusMailTemplateId": 2,
+            "rejectedStatusMailTemplateId": 3
         }
     },
 
     {
         "model" : "Destination",
         "data": {
-            "name" : "Sandnessjoen"
+            "name" : "Asker",
+            "pendingStatusMailTemplateId": 1,
+            "acceptedStatusMailTemplateId": 2,
+            "rejectedStatusMailTemplateId": 3
         }
     },
 
     {
         "model" : "Destination",
         "data": {
-            "name" : "Asker"
-        }
-    },
-
-    {
-        "model" : "Destination",
-        "data": {
-            "name" : "YtreEnebakk"
+            "name" : "YtreEnebakk",
+            "pendingStatusMailTemplateId": 1,
+            "acceptedStatusMailTemplateId": 2,
+            "rejectedStatusMailTemplateId": 3
         }
     }
 ]

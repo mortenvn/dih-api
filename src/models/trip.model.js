@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Promise from 'bluebird';
 import { validateQuery } from '../components/queryValidator';
-import { TRIP_STATUSES } from '../components/constants';
+import { TRAVEL_METHODS, TRIP_STATUSES } from '../components/constants';
 import db from './';
 
 const ALLOWED_QUERY_PARAMS = ['destinationId', 'userId', 'status'];
@@ -19,13 +19,32 @@ export default function (sequelize, DataTypes) {
         endDate: {
             type: DataTypes.DATE
         },
-        wishStartDate: {
-            type: DataTypes.DATE,
-            allowNull: false
+        hotel: {
+            type: DataTypes.STRING
         },
-        wishEndDate: {
+        notes: {
+            type: DataTypes.TEXT
+        },
+        travelMethod: {
+            type: DataTypes.ENUM,
+            values: _.values(TRAVEL_METHODS)
+        },
+        departureAirport: DataTypes.STRING,
+        flightNumber: DataTypes.STRING,
+        arrivalDate: DataTypes.DATE,
+        departureDate: DataTypes.DATE,
+        otherTravelInformation: DataTypes.TEXT,
+        statusComment: {
+            type: DataTypes.TEXT,
+            defaultValue: ''
+        },
+        dateArrived: {
             type: DataTypes.DATE,
-            allowNull: false
+            allowNull: true
+        },
+        dateLeft: {
+            type: DataTypes.DATE,
+            allowNull: true
         }
     }, {
         classMethods: {
@@ -39,31 +58,93 @@ export default function (sequelize, DataTypes) {
                 Trip.belongsTo(models.Destination, {
                     foreignKey: {
                         name: 'destinationId',
-                        allowNull: false
+                        allowNull: true
                     }
                 });
             },
             validateQuery(query) {
                 return validateQuery(query, ALLOWED_QUERY_PARAMS);
+            },
+            isValidReqBody(body) {
+                return body.destinationId;
+            },
+            getQueryObject(req) {
+                return new Promise(resolve => {
+                    if (req.user.role === 'USER') {
+                        return resolve({
+                            userId: req.user.id
+                        });
+                    } else if (req.user.role === 'MODERATOR') {
+                        return db.User.findOne({
+                            where: req.user.id
+                        })
+                        .then(user => user.getDestinations())
+                        .then(objects => objects.map(object => object.id))
+                        .then(destinationIds => {
+                            resolve({
+                                destinationId: {
+                                    in: destinationIds
+                                }
+                            });
+                        });
+                    } else if (req.user.role === 'ADMIN') return resolve(req.query);
+                });
             }
         },
         hooks: {
             beforeUpdate: [
                 trip => {
-                    if (trip.changed('status') && trip.status === TRIP_STATUSES.ACCEPTED) {
-                        return trip.acceptUser();
+                    if (trip.changed('status')) {
+                        if (trip.status === TRIP_STATUSES.ACCEPTED) {
+                            return trip.userActionToUser(TRIP_STATUSES.ACCEPTED);
+                        }
+                        if (trip.status === TRIP_STATUSES.REJECTED) {
+                            return trip.userInfoToUser(trip.status);
+                        }
+                    }
+                    if (trip.status === TRIP_STATUSES.ACCEPTED && trip.hasTravelInfo()) {
+                        // Reassignment because we want to change the sequelize instance
+                        trip.status = TRIP_STATUSES.ACTIVE; // eslint-disable-line
                     }
                     return Promise.resolve();
                 }
-            ]
+            ],
+            afterCreate: trip => trip.userInfoToUser(trip.status)
         },
         instanceMethods: {
-            acceptUser() {
+            userActionToUser(tripStatus) {
                 return Promise.all([
                     db.Destination.findById(this.destinationId),
                     db.User.findById(this.userId)
                 ])
-                .spread((destination, user) => user.sendDestinationAcceptance(destination));
+                .spread((destination, user) =>
+                    db.MailTemplate
+                    .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
+                    .then(template => {
+                        if (template) user.sendDestinationAction(destination, template.html);
+                    })
+                );
+            },
+            userInfoToUser(tripStatus) {
+                return Promise.all([
+                    db.Destination.findById(this.destinationId),
+                    db.User.findById(this.userId)
+                ])
+                .spread((destination, user) =>
+                db.MailTemplate
+                .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
+                .then(template => {
+                    if (template) user.sendDestinationInfo(destination, template.html);
+                })
+                );
+            },
+            hasTravelInfo() {
+                if (this.travelMethod === TRAVEL_METHODS.PLANE) {
+                    return this.flightNumber && this.departureAirport;
+                } else if (this.travelMethod === TRAVEL_METHODS.OTHER) {
+                    return this.otherTravelInformation;
+                }
+                return false;
             }
         }
     });

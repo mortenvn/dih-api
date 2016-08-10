@@ -34,6 +34,10 @@ const task = {
                     value: process.env.REGION
                 },
                 {
+                    name: "SENTRY_DSN",
+                    value: process.env.SENTRY_DSN
+                },
+                {
                     name: "EMAIL",
                     value: process.env.EMAIL
                 },
@@ -66,7 +70,7 @@ const task = {
                     "awslogs-region": "eu-west-1"
                 }
             },
-            cpu: 300,
+            cpu: 400,
         }
     ],
     "family": `dih-api-${env}`

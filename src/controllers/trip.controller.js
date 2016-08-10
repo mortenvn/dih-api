@@ -6,7 +6,6 @@ import Sequelize from 'sequelize';
 import db from '../models';
 import * as errors from '../components/errors';
 
-
 /**
  * list - List trips that qualify query
  *
@@ -20,8 +19,38 @@ export function list(req, res, next) {
     if (!db.Trip.validateQuery(req.query)) {
         throw new errors.UriValidationError();
     }
-    db.Trip.findAll({
-        where: req.query,
+
+    db.Trip.getQueryObject(req)
+    .then(query => db.Trip.findAll({
+        where: query,
+        include: [{
+            model: db.User,
+            attributes: {
+                exclude: ['hash']
+            }
+        }, {
+            model: db.Destination
+        }]
+    }))
+    .then(res.json.bind(res))
+    .catch(next);
+}
+
+
+/**
+ * retrieve - Retrieves a single trip by ID.
+ *
+ * @function retrieve
+ * @memberof module:controllers/trip
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
+export function retrieve(req, res, next) {
+    db.Trip.findOne({
+        where: {
+            id: req.params.id
+        },
         include: [{
             model: db.User,
             attributes: {
@@ -31,7 +60,10 @@ export function list(req, res, next) {
             model: db.Destination
         }]
     })
-    .then(res.json.bind(res))
+    .then(trip => {
+        if (!trip) throw new errors.ResourceNotFoundError('trip');
+        res.json(trip);
+    })
     .catch(next);
 }
 
@@ -45,9 +77,18 @@ export function list(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function create(req, res, next) {
+    if (!db.Trip.isValidReqBody(req.body)) {
+        throw new errors.CustomValidationError('Fields are missing in request body');
+    }
+    let userId;
+    if (req.user.role === 'ADMIN' && req.body.userId) {
+        userId = req.body.userId;
+    } else {
+        userId = req.user.id;
+    }
     db.Trip.create({
         ...req.body,
-        userId: req.user.id
+        userId
     })
     .then(savedObj => res.status(201).json(savedObj))
     .catch(Sequelize.ValidationError, err => {
@@ -73,7 +114,7 @@ export function destroy(req, res, next) {
     })
     .then(count => {
         if (!count) throw new errors.ResourceNotFoundError('trip');
-        res.sendStatus(200);
+        res.sendStatus(204);
     })
     .catch(next);
 }

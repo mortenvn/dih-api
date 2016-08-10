@@ -4,10 +4,12 @@
  */
 import jwt from 'jsonwebtoken';
 import Promise from 'bluebird';
-import { AuthenticationError } from '../errors';
+import composableMiddleware from 'composable-middleware';
+import { AuthenticationError, AuthorizationError } from '../errors';
 import config from '../../config';
-Promise.promisifyAll(jwt);
+import { USER_ROLES } from '../constants';
 
+Promise.promisifyAll(jwt);
 
 /**
  * createJwt - Creates a JWT.
@@ -33,7 +35,7 @@ export function createJwt(payload, expiresIn = config.jwtExpiresIn) {
  * @return {type}      description
  */
 export function authorize(req, res, next) {
-    let authToken = undefined;
+    let authToken;
 
     try {
         authToken = req.get('Authorization').split(' ')[1];
@@ -49,3 +51,38 @@ export function authorize(req, res, next) {
         })
         .catch(error => next(new AuthenticationError(error.message)));
 }
+
+/**
+ * authorizeAdministrator - combines two middleware where the first authorizes the
+ * users JWT and the second checks for administrator privileges.
+ *
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
+export const authorizeAdministrator =
+    composableMiddleware()
+        .use(authorize)
+        .use((req, res, next) => {
+            if (req.user.role !== USER_ROLES.ADMIN) next(new AuthorizationError());
+            next();
+        });
+
+/**
+ * authorizeModerator - combines two middleware where the first authorizes the users
+ * JWT and the second checks for administrator privileges or higher.
+ *
+ * @param  {Object} req  Express request object
+ * @param  {Object} res  Express response object
+ * @param  {Function} next Express next middleware function
+ */
+export const authorizeModerator =
+    composableMiddleware()
+        .use(authorize)
+        .use((req, res, next) => {
+            const role = req.user.role;
+            if (!(USER_ROLES.MODERATOR === role || USER_ROLES.ADMIN === role)) {
+                next(new AuthorizationError());
+            }
+            next();
+        });

@@ -20,18 +20,46 @@ The project has a strategy for what to name our branches, so that changes in the
 Name your branches in the following way, where `DIH-num` is a task ID on JIRA:
 
 * If it's a feature (new functionality) name the branch `feature/DIH-num`.
-* If it's a bugfix name the branch `bugfix/DIH_num`.
+* If it's a bugfix name the branch `bugfix/DIH-num`.
 * If it's a technical task, name the branch `tech/DIH-num`
 
 ## Setup
-To setup the project locally install Postgres and set `PG_URL ` to your database. Run `npm run build` to get a transpiled version of the API, then start with `npm start`.
+### Database
+To setup the project locally install Postgres and set `PG_URL ` to your database. The format should `postgres://USERNAME:PASSWORD@localhost/DB`. The capitalized words should be replaced with your own values.
 
+To export your variable on a Unix-system, simply use the `export` command, i.e. `export PG_URL=your value`.
+
+### SES for e-mails
+The system uses AWS SES for e-mails. You'll need to set the following environment variables for this to work:
+
+* `SES_ACCESSID`
+* `SES_SECRETKEY`
+
+You can also set your AWS region with `REGION`.
+
+ Contact one of the contributors to get more information on how to be added to the AWS teams, or take a look at [Confluence](https://confluence.capraconsulting.no/pages/viewpage.action?pageId=83398017) for some standard values you can use for testing.
+
+### Local production environment
+Run `npm run build` to get a transpiled version of the API, then start with `npm start`.
+
+### Local development environment
 If you're gonna develop:
 
 1. Install nodemon `npm install -g nodemon`
-2. Run  `npm run start:dev`
+2. Run  `npm run start:dev` Remember that you can run it with environment variables in before the command, i.e. `PG_URL=value npm run start:dev`.
 
-This will watch for changes and keep it open for you.
+This will watch for changes and keep the application open for you.
+
+### Test data
+To enter some test data into your database, run `npm run load`. It will give you some test users
+
+|Role | Username |
+|:--|:--|
+|User | `test-user@dih.capra.me`|
+|Moderator| `test-moderator@dih.capra.me`|
+|Administrator| `test-admin@dih.capra.me`|
+
+All these users have the password `password`.
 
 To enter some test data into your database, run `npm run load`.
 
@@ -39,17 +67,13 @@ To enter some test data into your database, run `npm run load`.
 
 ### Single run
 
-Run unit tests & code lint with `npm test`. This will use your local database.
-Run just unit tests with `npm tests`. This will use your local database.
+* Run unit tests & code lint with `npm test`. This will use your local database.
+* Run just unit tests with `npm run tests` with `NODE_ENV=test`. This will use your local database.
 
 ### Watch
 
-Run the unit tests continuously with `npm test:watch`, only the tests currently worked on will run when updated. All tests will run when a server file is updated. This will use your local database.
-
-For testing everything isolated (without a local Postgres)  we use Docker Compose, which pulls a Postgres-image, sets it up with the API and runs the tests:
-
-1. Build the image `docker build -t dih/api-dev .`
-2.  Run `docker-compose up`
+Run the unit tests continuously with `npm run test:watch`, only the tests currently worked on will run when updated.
+All tests will run when a server file is updated. This will use your local database.
 
 ## Deployment
 We have continuous deployment with [Circle CI](http://circleci.com), which builds Docker-images and pushes to AWS EC2.

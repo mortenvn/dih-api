@@ -1,6 +1,6 @@
-import { getAllElements, loadFixtures } from '../helpers';
 import { describe } from 'ava-spec';
 import request from 'supertest-as-promised';
+import { createValidJWT, getAllElements, loadFixtures } from '../helpers';
 import { updateTransport } from '../../src/components/mail';
 import app from '../../src/app';
 
@@ -35,23 +35,41 @@ describe.serial('User API', it => {
     it('should reitrieve a list of all users', async t => {
         const response = await request(app)
             .get(URI)
+            .set('Authorization', `Bearer ${createValidJWT(dbObjects[1])}`)
             .expect(200)
             .then(res => res.body);
-        t.is(response.length, 3);
+        t.is(response.length, dbObjects.length);
+    });
+
+    it('should check casing of email address', async t => {
+        const response = await request(app)
+            .post(URI)
+            .send({
+                email: 'test-USER@dih.capra.me',
+                firstname: 'User',
+                lastname: 'Test',
+                role: 'USER'
+            })
+            .expect(400);
+        t.is(response.body.message, 'email must be unique');
     });
 
     it('should return a single existing user', async t => {
         const fixture = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
         const response = await request(app)
             .get(`${URI}/${fixture.id}`)
+            .set('Authorization', `Bearer ${validJwt}`)
             .expect(200);
         t.is(response.body.email, fixture.email);
     });
 
     it('should return ResourceNotFound when retrieving nonexisting user', async t => {
         const fixture = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
         const response = await request(app)
             .get(`${URI}/${fixture.id + 10000}`)
+            .set('Authorization', `Bearer ${validJwt}`)
             .expect(404);
         t.is(response.body.name, 'ResourceNotFoundError');
         t.is(response.body.message, 'Could not find resource of type user');
@@ -64,7 +82,6 @@ describe.serial('User API', it => {
                 email: 'eric@example.com',
                 firstname: 'Eric',
                 lastname: 'Cartman',
-                birth: '1990-07-01T12:42:00.196Z',
                 role: 'USER'
             })
             .expect(201);
@@ -78,13 +95,26 @@ describe.serial('User API', it => {
             .send({
                 email: 'kyle@example.com',
                 firstname: 'Kyle',
-                lastname: 'Broflovski',
-                birth: '1999-07-01T12:42:00.196Z'
+                lastname: 'Broflovski'
             })
             .expect(201);
 
         t.is(response.body.role, 'USER');
     });
+
+    it('should set readTerms false not given', async t => {
+        const response = await request(app)
+            .post(URI)
+            .send({
+                email: 'bojack@horseman.com',
+                firstname: 'Bojack',
+                lastname: 'Horseman'
+            })
+            .expect(201);
+
+        t.is(response.body.readTerms, false);
+    });
+
 
     it('should not add a new user without valid email', async t => {
         const response = await request(app)
@@ -93,7 +123,6 @@ describe.serial('User API', it => {
                 email: 'eric.example.com',
                 firstname: 'Eric',
                 lastname: 'Cartman',
-                birth: '1990-07-01T12:42:00.196Z',
                 role: 'USER'
             })
             .expect(400);
@@ -105,14 +134,64 @@ describe.serial('User API', it => {
         const response = await request(app)
             .post(URI)
             .send({
-                email: 'user@test.test',
+                email: 'test-user@dih.capra.me',
                 firstname: 'User',
                 lastname: 'Test',
-                birth: '1999-07-01T12:42:00.196Z',
                 role: 'USER'
             })
             .expect(400);
-
         t.is(response.body.message, 'email must be unique');
+    });
+
+    it('should update a user', async () => {
+        const user = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
+        await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ firstname: 'Alexander' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(204);
+    });
+
+    it('should not update a user with blank firstname', async () => {
+        const user = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
+        await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ firstname: '' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(400);
+    });
+
+    it('should not update a user with blank lastname', async () => {
+        const user = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
+        await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ lastname: '' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(400);
+    });
+
+    it('should not update a user with blank email', async () => {
+        const user = dbObjects[0];
+        const validJwt = createValidJWT(dbObjects[1]);
+        await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ email: '' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(400);
+    });
+
+    it('should not update a user when not admin', async t => {
+        const user = dbObjects[1];
+        const validJwt = createValidJWT(dbObjects[0]);
+        const response = await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ firstname: 'Ada' })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(403);
+
+        t.is(response.body.name, 'AuthorizationError');
     });
 });

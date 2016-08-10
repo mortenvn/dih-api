@@ -1,22 +1,23 @@
-import { loadFixtures, getAllElements, createValidJWT, createInvalidJWT } from '../helpers';
 import { describe } from 'ava-spec';
 import request from 'supertest-as-promised';
+import { loadFixtures, getAllElements, createValidJWT, createInvalidJWT } from '../helpers';
 import app from '../../src/app';
-
-const fixtures = [
-    'users'
-];
 
 const URI = '/account';
 
 let dbObjects;
+let trips;
 
 describe.serial('Account API', it => {
     it.beforeEach(() =>
-        loadFixtures(fixtures)
+        loadFixtures()
             .then(() => getAllElements('User'))
             .then(response => {
                 dbObjects = response;
+            })
+            .then(() => getAllElements('Trip'))
+            .then(response => {
+                trips = response;
             })
     );
 
@@ -47,6 +48,16 @@ describe.serial('Account API', it => {
             .set('Authorization', `Bearer ${validJwt}`)
             .expect(200);
         t.is(response.body.email, dbObjects[0].email);
+    });
+
+    it('should be able to get trips of the current user', async t => {
+        const user = dbObjects[0];
+        const response = await request(app)
+            .get(`${URI}/trips`)
+            .set('Authorization', `Bearer ${createValidJWT(user)}`)
+            .expect(200)
+            .then(res => res.body);
+        t.is(response.length, trips.filter(tripObject => tripObject.userId === user.id).length);
     });
 
     it('should not be able to retrieve non existing jwt user', async t => {
