@@ -100,8 +100,9 @@ export default function (sequelize, DataTypes) {
             allowNull: true
         },
         languages: {
-            type: DataTypes.STRING,
-            allowNull: true
+            type: DataTypes.ARRAY(DataTypes.STRING),
+            allowNull: false,
+            defaultValue: []
         },
         notes: DataTypes.STRING,
         volunteerInfo: {
