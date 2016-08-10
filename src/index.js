@@ -31,4 +31,3 @@ else {
 }
 
 db.then(() => listen())
-    .catch(handleError);
