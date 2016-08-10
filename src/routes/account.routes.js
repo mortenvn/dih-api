@@ -6,5 +6,6 @@ const router = express.Router();
 
 router.get('/', authorize, controller.retrieve);
 router.put('/', authorize, controller.update);
+router.get('/trips', authorize, controller.trips);
 
 export default router;

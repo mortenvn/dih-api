@@ -50,7 +50,15 @@ export function retrieve(req, res, next) {
     db.Trip.findOne({
         where: {
             id: req.params.id
-        }
+        },
+        include: [{
+            model: db.User,
+            attributes: {
+                exclude: ['hash']
+            }
+        }, {
+            model: db.Destination
+        }]
     })
     .then(trip => {
         if (!trip) throw new errors.ResourceNotFoundError('trip');
@@ -69,6 +77,9 @@ export function retrieve(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function create(req, res, next) {
+    if (!db.Trip.isValidReqBody(req.body)) {
+        throw new errors.CustomValidationError('Fields are missing in request body');
+    }
     let userId;
     if (req.user.role === 'ADMIN' && req.body.userId) {
         userId = req.body.userId;

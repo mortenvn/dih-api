@@ -19,13 +19,6 @@ export default function (sequelize, DataTypes) {
         endDate: {
             type: DataTypes.DATE
         },
-        wishStartDate: {
-            type: DataTypes.DATE,
-            allowNull: false
-        },
-        wishEndDate: {
-            type: DataTypes.DATE
-        },
         hotel: {
             type: DataTypes.STRING
         },
@@ -59,6 +52,9 @@ export default function (sequelize, DataTypes) {
             },
             validateQuery(query) {
                 return validateQuery(query, ALLOWED_QUERY_PARAMS);
+            },
+            isValidReqBody(body) {
+                return body.destinationId;
             },
             getQueryObject(req) {
                 return new Promise(resolve => {

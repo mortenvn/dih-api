@@ -65,6 +65,17 @@ exports.TRIP_STATUSES = {
 };
 
 /**
+ * Gnders that a user can have
+ * @type {object}
+ * @property {string} MALE - Male
+ * @property {string} FEMALE - Female
+ */
+exports.GENDERS = {
+    MALE: 'MALE',
+    FEMALE: 'FEMALE'
+};
+
+/**
  * The standard email templates used for new destinatons
  * @type {object}
  * @property {string} TRIP_STATUS_PENDING - Template used when trip status is set to pending
@@ -73,7 +84,7 @@ exports.TRIP_STATUSES = {
  */
 exports.STANDARD_MAIL_TEMPLATES = {
     TRIP_STATUS_PENDING: `Hi, <br>
-    <p>We have received your request to volunteer for us. We will get back you
+    <p>We have received your request to volunteer for us. We will get back to you
     within a few days. </p>
     <p>Thank you for wanting to volunteer with us. <br>
     Sincerely, A Drop in the Ocean </p>`,

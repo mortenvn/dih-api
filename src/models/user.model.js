@@ -5,7 +5,7 @@
 import _ from 'lodash';
 import bcrypt from 'bcrypt';
 import Promise from 'bluebird';
-import { USER_ROLES } from '../components/constants';
+import { USER_ROLES, GENDERS } from '../components/constants';
 import { CustomValidationError } from '../components/errors';
 import * as mail from '../components/mail';
 import { createJwt } from '../components/auth';
@@ -46,6 +46,41 @@ export default function (sequelize, DataTypes) {
                 notEmpty: true
             }
         },
+        gender: {
+            type: DataTypes.ENUM,
+            values: _.values(GENDERS),
+            allowNull: true
+        },
+        nationality: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: ''
+        },
+        addressLine1: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: ''
+        },
+        addressLine2: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: ''
+        },
+        postalCode: {
+            type: DataTypes.STRING,
+            allowNull: true,
+            defaultValue: ''
+        },
+        city: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: ''
+        },
+        country: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            defaultValue: ''
+        },
         birth: {
             type: DataTypes.DATE
         },
@@ -65,9 +100,9 @@ export default function (sequelize, DataTypes) {
             allowNull: true
         },
         languages: {
-            type: DataTypes.TEXT,
+            type: DataTypes.ARRAY(DataTypes.STRING),
             allowNull: false,
-            defaultValue: ''
+            defaultValue: []
         },
         notes: DataTypes.STRING,
         volunteerInfo: {

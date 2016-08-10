@@ -5,8 +5,8 @@
             "status": "PENDING",
             "userId": 1,
             "destinationId": 1,
-            "wishStartDate": "2018-04-25T01:32:21.196+0200",
-            "wishEndDate": "2020-04-25T01:32:21.196+0200"
+            "startDate": "2018-04-25T01:32:21.196+0200",
+            "endDate": "2020-04-25T01:32:21.196+0200"
         }
     },
     {
@@ -15,8 +15,8 @@
             "status": "CLOSED",
             "userId": 1,
             "destinationId": 2,
-            "wishStartDate": "2020-04-25T01:32:21.196+0200",
-            "wishEndDate": "2021-04-25T01:32:21.196+0200"
+            "startDate": "2020-04-25T01:32:21.196+0200",
+            "endDate": "2021-04-25T01:32:21.196+0200"
         }
     },
     {
@@ -25,8 +25,8 @@
             "status": "ACTIVE",
             "userId": 1,
             "destinationId": 3,
-            "wishStartDate": "2020-04-25T01:32:21.196+0200",
-            "wishEndDate": "2021-04-25T01:32:21.196+0200"
+            "startDate": "2020-04-25T01:32:21.196+0200",
+            "endDate": "2021-04-25T01:32:21.196+0200"
         }
     },
 
@@ -36,8 +36,8 @@
             "status": "PENDING",
             "userId": 2,
             "destinationId": 1,
-            "wishStartDate": "2020-04-25T01:32:21.196+0200",
-            "wishEndDate": "2021-04-25T01:32:21.196+0200"
+            "startDate": "2020-04-25T01:32:21.196+0200",
+            "endDate": "2021-04-25T01:32:21.196+0200"
         }
     },
 
