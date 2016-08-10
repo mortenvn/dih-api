@@ -50,7 +50,15 @@ export function retrieve(req, res, next) {
     db.Trip.findOne({
         where: {
             id: req.params.id
-        }
+        },
+        include: [{
+            model: db.User,
+            attributes: {
+                exclude: ['hash']
+            }
+        }, {
+            model: db.Destination
+        }]
     })
     .then(trip => {
         if (!trip) throw new errors.ResourceNotFoundError('trip');
