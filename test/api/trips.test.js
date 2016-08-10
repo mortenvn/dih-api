@@ -355,7 +355,7 @@ describe.serial('Trip API', it => {
             .get(`${URI}/`)
             .set('Authorization', `Bearer ${createValidJWT(admin)}`)
             .then(res => res.body)
-            .then(res => t.is(res.length, 4));
+            .then(res => t.is(res.length, 5));
     });
 
     it('should return only trips belonging to a user when asked by user'
@@ -365,7 +365,7 @@ describe.serial('Trip API', it => {
             .get(`${URI}/`)
             .set('Authorization', `Bearer ${createValidJWT(user)}`)
             .then(res => res.body)
-            .then(res => t.is(res.length, 3));
+            .then(res => t.is(res.length, 4));
     });
 
     it('should return zero trips for a user with no trips'
