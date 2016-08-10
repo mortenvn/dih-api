@@ -30,4 +30,4 @@ else {
         .catch(handleError);
 }
 
-db.then(() => listen())
+db.then(() => listen());
