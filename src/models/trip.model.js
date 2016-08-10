@@ -40,19 +40,7 @@ export default function (sequelize, DataTypes) {
         flightNumber: DataTypes.STRING,
         arrivalDate: DataTypes.DATE,
         departureDate: DataTypes.DATE,
-        otherTravelInformation: DataTypes.TEXT,
-        statusComment: {
-            type: DataTypes.TEXT,
-            defaultValue: ''
-        },
-        dateArrived: {
-            type: DataTypes.DATE,
-            allowNull: true
-        },
-        dateLeft: {
-            type: DataTypes.DATE,
-            allowNull: true
-        }
+        otherTravelInformation: DataTypes.TEXT
     }, {
         classMethods: {
             associate(models) {
@@ -100,15 +88,11 @@ export default function (sequelize, DataTypes) {
                 trip => {
                     if (trip.changed('status')) {
                         if (trip.status === TRIP_STATUSES.ACCEPTED) {
-                            return trip.userActionToUser(TRIP_STATUSES.ACCEPTED);
+                            return trip.userActionToUser(trip.id, trip.status);
                         }
                         if (trip.status === TRIP_STATUSES.REJECTED) {
                             return trip.userInfoToUser(trip.status);
                         }
-                    }
-                    if (trip.status === TRIP_STATUSES.ACCEPTED && trip.hasTravelInfo()) {
-                        // Reassignment because we want to change the sequelize instance
-                        trip.status = TRIP_STATUSES.ACTIVE; // eslint-disable-line
                     }
                     return Promise.resolve();
                 }
@@ -116,7 +100,7 @@ export default function (sequelize, DataTypes) {
             afterCreate: trip => trip.userInfoToUser(trip.status)
         },
         instanceMethods: {
-            userActionToUser(tripStatus) {
+            userActionToUser(tripId, tripStatus) {
                 return Promise.all([
                     db.Destination.findById(this.destinationId),
                     db.User.findById(this.userId)
@@ -125,7 +109,10 @@ export default function (sequelize, DataTypes) {
                     db.MailTemplate
                     .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
                     .then(template => {
-                        if (template) user.sendDestinationAction(destination, template.html);
+                        if (template) {
+                            user.sendDestinationAction(tripId, tripStatus.toLowerCase(),
+                            destination, template.html);
+                        }
                     })
                 );
             },
@@ -138,17 +125,12 @@ export default function (sequelize, DataTypes) {
                 db.MailTemplate
                 .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
                 .then(template => {
-                    if (template) user.sendDestinationInfo(destination, template.html);
+                    if (template) {
+                        user.sendDestinationInfo(tripStatus.toLowerCase(),
+                        destination, template.html);
+                    }
                 })
                 );
-            },
-            hasTravelInfo() {
-                if (this.travelMethod === TRAVEL_METHODS.PLANE) {
-                    return this.flightNumber && this.departureAirport;
-                } else if (this.travelMethod === TRAVEL_METHODS.OTHER) {
-                    return this.otherTravelInformation;
-                }
-                return false;
             }
         }
     });
