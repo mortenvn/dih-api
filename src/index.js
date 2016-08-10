@@ -30,6 +30,4 @@ else {
         .catch(handleError);
 }
 
-db = syncDB({ force: true });
-
 db.then(() => listen());
