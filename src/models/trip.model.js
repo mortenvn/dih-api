@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Promise from 'bluebird';
 import { validateQuery } from '../components/queryValidator';
-import { TRAVEL_METHODS, TRIP_STATUSES } from '../components/constants';
+import { TRAVEL_METHODS, TRIP_STATUSES, STANDARD_MAIL_TEMPLATES } from '../components/constants';
 import db from './';
 
 const ALLOWED_QUERY_PARAMS = ['destinationId', 'userId', 'status'];
@@ -117,15 +117,21 @@ export default function (sequelize, DataTypes) {
                     db.Destination.findById(this.destinationId),
                     db.User.findById(this.userId)
                 ])
-                .spread((destination, user) =>
-                db.MailTemplate
-                .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
-                .then(template => {
-                    if (template) {
-                        user.sendDestinationInfo(tripStatus.toLowerCase(),
-                        destination, template.html);
+                .spread((destination, user) => {
+                    if (destination) {
+                        db.MailTemplate
+                        .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
+                        .then(template => {
+                            if (template) {
+                                user.sendDestinationInfo(tripStatus.toLowerCase(),
+                                destination, template.html);
+                            }
+                        });
+                    } else if (!destination && tripStatus.toLowerCase() === 'pending') {
+                        user.sendDestinationInfo('pending',
+                        destination, STANDARD_MAIL_TEMPLATES.TRIP_STATUS_PENDING);
                     }
-                })
+                }
                 );
             }
         }
