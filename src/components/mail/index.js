@@ -45,7 +45,7 @@ updateTransport(ses(config.ses));
 export function sendResetPasswordEmail(user, token) {
     const mailOptions = {
         to: user.email,
-        from: `DIH <${config.email}>`,
+        from: `A Drop in the Ocean <${config.email}>`,
         subject: 'Password reset for A Drop in the Ocean',
         template: 'action',
         context: {
@@ -74,7 +74,7 @@ export function sendResetPasswordEmail(user, token) {
 export function sendInvite(user, token) {
     const mailOptions = {
         to: user.email,
-        from: `DIH <${config.email}>`,
+        from: `A Drop in the Ocean <${config.email}>`,
         subject: 'Complete registration - A Drop in the Ocean!',
         template: 'action',
         context: {
@@ -105,7 +105,8 @@ export function sendInvite(user, token) {
 export function sendDestinationAction(tripId, tripStatus, user, mailContent, token) {
     const mailOptions = {
         to: user.email,
-        from: `DIH <${config.email}>`,
+        from: `A Drop in the Ocean <${config.email}>`,
+        replyTo: config.email,
         template: 'action',
         context: {
             content: mailContent
@@ -136,7 +137,8 @@ export function sendDestinationAction(tripId, tripStatus, user, mailContent, tok
 export function sendDestinationInfo(tripStatus, user, mailContent) {
     const mailOptions = {
         to: user.email,
-        from: `DIH <${config.email}>`,
+        from: `A Drop in the Ocean <${config.email}>`,
+        replyTo: config.email,
         template: 'info',
         context: {
             content: mailContent
@@ -164,7 +166,8 @@ export function sendDestinationInfo(tripStatus, user, mailContent) {
 export function sendCustomMail(recipient, mailData) {
     const mailOptions = {
         to: recipient.email,
-        from: `DIH <${config.email}>`,
+        from: `A Drop in the Ocean <${config.email}>`,
+        replyTo: config.email,
         subject: mailData.subject,
         template: 'info',
         context: {

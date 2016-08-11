@@ -87,7 +87,7 @@ exports.STANDARD_MAIL_TEMPLATES = {
     <p>We have received your request to volunteer for us. We will get back to you
     within a few days. </p>
     <p>Thank you for wanting to volunteer with us. <br>
-    Sincerely, A Drop in the Ocean </p>`,
+     </p>`,
     TRIP_STATUS_ACCEPTED: `Hi, <br>
     <p>We are pleased to announce that your request to volunteer
     with us has been approved. </p>
@@ -102,10 +102,9 @@ exports.STANDARD_MAIL_TEMPLATES = {
     </p>
     <p>
     Thank you. <br>
-    Sincerely, A Drop in the Ocean</p> `,
+    </p> `,
     TRIP_STATUS_REJECTED: `Hi,
     <p>Unfortunately, we do not need volunteers in the period you requested.
     If you have the opportunity to travel to another destination or in another period,
-    we appreciate if you would request a new travel at our page. </p>
-    Sincerely, A Drop in the Ocean `
+    we appreciate if you would request a new travel at our page. </p>`
 };
