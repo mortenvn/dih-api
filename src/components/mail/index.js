@@ -10,6 +10,7 @@ import ses from 'nodemailer-ses-transport';
 import path from 'path';
 import { handleError } from '../errors';
 import config from '../../config';
+import { TRIP_STATUSES } from '../constants';
 
 let transporter;
 const options = hbs({
@@ -111,7 +112,7 @@ export function sendDestinationAction(tripId, tripStatus, user, mailContent, tok
             content: mailContent
         }
     };
-    if (tripStatus === 'accepted') {
+    if (tripStatus === TRIP_STATUSES.ACCEPTED) {
         mailOptions.subject = 'Trip request approved - A Drop in the Ocean';
         mailOptions.context.action = {
             text: 'Complete Trip Registration',
@@ -142,9 +143,9 @@ export function sendDestinationInfo(tripStatus, user, mailContent) {
             content: mailContent
         }
     };
-    if (tripStatus === 'rejected') {
+    if (tripStatus === TRIP_STATUSES.REJECTED) {
         mailOptions.subject = 'Trip request denied - A Drop in the Ocean';
-    } else if (tripStatus === 'pending') {
+    } else if (tripStatus === TRIP_STATUSES.PENDING) {
         mailOptions.subject = 'Trip request received - A Drop in the Ocean';
     }
     return transporter.sendMailAsync(mailOptions)

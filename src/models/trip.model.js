@@ -106,7 +106,7 @@ export default function (sequelize, DataTypes) {
                     .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
                     .then(template => {
                         if (template) {
-                            user.sendDestinationAction(tripId, tripStatus.toLowerCase(),
+                            user.sendDestinationAction(tripId, tripStatus,
                             destination, template.html);
                         }
                     })
@@ -122,7 +122,7 @@ export default function (sequelize, DataTypes) {
                 .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
                 .then(template => {
                     if (template) {
-                        user.sendDestinationInfo(tripStatus.toLowerCase(),
+                        user.sendDestinationInfo(tripStatus,
                         destination, template.html);
                     }
                 })
