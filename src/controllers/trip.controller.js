@@ -47,10 +47,9 @@ export function list(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function retrieve(req, res, next) {
-    db.Trip.findOne({
-        where: {
-            id: req.params.id
-        },
+    db.Trip.getQueryObject(req)
+    .then(query => db.Trip.findAll({
+        where: query,
         include: [{
             model: db.User,
             attributes: {
@@ -59,7 +58,9 @@ export function retrieve(req, res, next) {
         }, {
             model: db.Destination
         }]
-    })
+    }))
+    .then(trips =>
+        trips.find(trip => parseInt(trip.id, 10) === parseInt(req.params.id, 10)))
     .then(trip => {
         if (!trip) throw new errors.ResourceNotFoundError('trip');
         res.json(trip);
