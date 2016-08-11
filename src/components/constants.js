@@ -84,28 +84,28 @@ exports.GENDERS = {
  */
 exports.STANDARD_MAIL_TEMPLATES = {
     TRIP_STATUS_PENDING: `Hi, <br>
-    <p>We have received your request to volunteer for us, and within a few days
-    we'll get back to you regarding the need for volunteers in the requested period. </p>
+    <p>We have received your request to volunteer for us. We will get back to you
+    within a few days. </p>
     <p>Thank you for wanting to volunteer with us. <br>
-    Sincerely, the Drop administration </p>`,
+    Sincerely, A Drop in the Ocean </p>`,
     TRIP_STATUS_ACCEPTED: `Hi, <br>
     <p>We are pleased to announce that your request to volunteer
-    with us during the period you have submitted has been approved. </p>
-    As soon as you have booked your travel and accommodations, please register
-    this under "My trips" on the website. You will also receive an invitation
-    to a travel group for the destination and period on Facebook. <br>
-    There you'll meet others who travel to this destination during the
-    same period and get information about hotels, rental cars, etc. <br>
+    with us has been approved. </p>
+    In order to travel with us, you have to register travel and accommodation details
+    under "My Trips" on your profile.
+    <p<
+    You will receive an invitation to a travel group for the destination and period
+    on Facebook.
     <p>
     We recommend that you check with your doctor to see if you need additional vaccines,
     and make sure you have your travel insurance in order.
     </p>
     <p>
-    Thank you for wanting to be a Drop and making an effort to help refugees! <br>
-    Sincerely, the Drop administration</p> `,
+    Thank you. <br>
+    Sincerely, A Drop in the Ocean</p> `,
     TRIP_STATUS_REJECTED: `Hi,
     <p>Unfortunately, we do not need volunteers in the period you requested.
     If you have the opportunity to travel to another destination or in another period,
     we appreciate if you would request a new travel at our page. </p>
-    Sincerely, the Drop administration `
+    Sincerely, A Drop in the Ocean `
 };

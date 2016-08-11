@@ -10,6 +10,7 @@ import ses from 'nodemailer-ses-transport';
 import path from 'path';
 import { handleError } from '../errors';
 import config from '../../config';
+import { TRIP_STATUSES } from '../constants';
 
 let transporter;
 const options = hbs({
@@ -75,7 +76,7 @@ export function sendInvite(user, token) {
     const mailOptions = {
         to: user.email,
         from: `DIH <${config.email}>`,
-        subject: 'Welcome to A Drop in the Ocean!',
+        subject: 'Complete registration - A Drop in the Ocean!',
         template: 'action',
         context: {
             content: `You have created an account with A Drop in the Ocean.
@@ -102,21 +103,22 @@ export function sendInvite(user, token) {
  * @param  {string} token A JWT used to authorize with the rest api
  * @return {SequlizeInstance} user The user who was sent the email
  */
-export function sendDestinationAction(user, mailContent, token) {
+export function sendDestinationAction(tripId, tripStatus, user, mailContent, token) {
     const mailOptions = {
         to: user.email,
         from: `DIH <${config.email}>`,
-        subject: 'A Drop in the Ocean has accepted you as a volunteer!',
         template: 'action',
         context: {
-            content: mailContent,
-            action: {
-                text: 'See your trip',
-                url: `${config.web}/trips?token=${token}`
-            }
+            content: mailContent
         }
     };
-
+    if (tripStatus === TRIP_STATUSES.ACCEPTED) {
+        mailOptions.subject = 'Trip request approved - A Drop in the Ocean';
+        mailOptions.context.action = {
+            text: 'Complete Trip Registration',
+            url: `${config.web}/trips/${tripId}/edit/?token=${token}`
+        };
+    }
     return transporter.sendMailAsync(mailOptions)
         .then(() => user)
         .catch(handleError);
@@ -132,17 +134,20 @@ export function sendDestinationAction(user, mailContent, token) {
  * @param  {string} mailContent The content of the info e-mail to be sent
  * @return {SequlizeInstance} user The user who was sent the email
  */
-export function sendDestinationInfo(user, mailContent) {
+export function sendDestinationInfo(tripStatus, user, mailContent) {
     const mailOptions = {
         to: user.email,
         from: `DIH <${config.email}>`,
-        subject: 'Information about your trip with A Drop in the Ocean',
         template: 'info',
         context: {
             content: mailContent
         }
     };
-
+    if (tripStatus === TRIP_STATUSES.REJECTED) {
+        mailOptions.subject = 'Trip request denied - A Drop in the Ocean';
+    } else if (tripStatus === TRIP_STATUSES.PENDING) {
+        mailOptions.subject = 'Trip request received - A Drop in the Ocean';
+    }
     return transporter.sendMailAsync(mailOptions)
         .then(() => user)
         .catch(handleError);

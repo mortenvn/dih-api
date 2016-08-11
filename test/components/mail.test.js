@@ -62,7 +62,7 @@ describe.serial('Mail Component', it => {
             t.regex(mail.data.html, /Take action/);
             done();
         });
-        const response = await mailComponent.sendDestinationAction(user,
+        const response = await mailComponent.sendDestinationAction(1, 'accepted', user,
             'Take action',
             createValidJWT(user));
         t.deepEqual(response, user);
@@ -76,7 +76,7 @@ describe.serial('Mail Component', it => {
             t.regex(mail.data.html, /Information/);
             done();
         });
-        const response = await mailComponent.sendDestinationInfo(user, 'Information');
+        const response = await mailComponent.sendDestinationInfo('rejected', user, 'Information');
         t.deepEqual(response, user);
         t.is(transport.send.callCount, 1);
     });
