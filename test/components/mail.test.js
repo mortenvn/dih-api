@@ -34,7 +34,7 @@ describe.serial('Mail Component', it => {
     it.serial('should send an invite email, with correct content', async t => {
         sinon.stub(transport, 'send', (mail, done) => {
             t.is(mail.data.to, user.email);
-            t.is(mail.data.from, `DIH <${config.email}>`);
+            t.is(mail.data.from, `A Drop in the Ocean <${config.email}>`);
             t.regex(mail.data.html, /Complete registration/);
             done();
         });
@@ -46,7 +46,7 @@ describe.serial('Mail Component', it => {
     it.serial('should send an forgotten passsword email, with correct content', async t => {
         sinon.stub(transport, 'send', (mail, done) => {
             t.is(mail.data.to, user.email);
-            t.is(mail.data.from, `DIH <${config.email}>`);
+            t.is(mail.data.from, `A Drop in the Ocean <${config.email}>`);
             t.regex(mail.data.html, /Reset password/);
             done();
         });
@@ -58,7 +58,7 @@ describe.serial('Mail Component', it => {
     it.serial('should send a general action mail for destination', async t => {
         sinon.stub(transport, 'send', (mail, done) => {
             t.is(mail.data.to, user.email);
-            t.is(mail.data.from, `DIH <${config.email}>`);
+            t.is(mail.data.from, `A Drop in the Ocean <${config.email}>`);
             t.regex(mail.data.html, /Take action/);
             done();
         });
@@ -72,7 +72,7 @@ describe.serial('Mail Component', it => {
     it.serial('should send a general info mail for destination', async t => {
         sinon.stub(transport, 'send', (mail, done) => {
             t.is(mail.data.to, user.email);
-            t.is(mail.data.from, `DIH <${config.email}>`);
+            t.is(mail.data.from, `A Drop in the Ocean <${config.email}>`);
             t.regex(mail.data.html, /Information/);
             done();
         });

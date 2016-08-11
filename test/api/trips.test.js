@@ -186,14 +186,14 @@ describe.serial('Trip API', it => {
         t.is(response.body.userId, userObjects[0].id);
     });
 
-    it('should not be able to create a new trip with missing destinationId field', async () => {
+    it('should be able to create a new trip with missing destinationId field', async () => {
         const mockWithEmptyDestination = mockTrip;
         delete mockWithEmptyDestination.destinationId;
         await request(app)
             .post(URI)
             .set('Authorization', `Bearer ${createValidJWT(userObjects[0])}`)
             .send(mockWithEmptyDestination)
-            .expect(400);
+            .expect(201);
     });
 
     it('should be able to create a new trip with missing userId field', async () => {
