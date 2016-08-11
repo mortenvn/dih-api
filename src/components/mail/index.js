@@ -107,7 +107,7 @@ export function sendDestinationAction(tripId, tripStatus, user, mailContent, tok
     const mailOptions = {
         to: user.email,
         from: `A Drop in the Ocean <${config.email}>`,
-        replyTo: config.email,
+        replyTo: config.replyEmail,
         template: 'action',
         context: {
             content: mailContent
@@ -139,7 +139,7 @@ export function sendDestinationInfo(tripStatus, user, mailContent) {
     const mailOptions = {
         to: user.email,
         from: `A Drop in the Ocean <${config.email}>`,
-        replyTo: config.email,
+        replyTo: config.replyEmail,
         template: 'info',
         context: {
             content: mailContent
@@ -168,7 +168,7 @@ export function sendCustomMail(recipient, mailData) {
     const mailOptions = {
         to: recipient.email,
         from: `A Drop in the Ocean <${config.email}>`,
-        replyTo: config.email,
+        replyTo: config.replyEmail,
         subject: mailData.subject,
         template: 'info',
         context: {
