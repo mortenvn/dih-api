@@ -1,8 +1,8 @@
+import sinon from 'sinon';
 import { describe } from 'ava-spec';
 import db from '../../src/models';
 import { syncDB } from '../../src/db-helpers';
 import { updateTransport } from '../../src/components/mail';
-import sinon from 'sinon';
 
 // TODO
 // test instance methods like createJwt and toJSON function
