@@ -106,7 +106,7 @@ export default function (sequelize, DataTypes) {
                     .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
                     .then(template => {
                         if (template) {
-                            user.sendDestinationAction(tripId, tripStatus.toLowerCase(),
+                            user.sendDestinationAction(tripId, tripStatus,
                             destination, template.html);
                         }
                     })
@@ -123,12 +123,12 @@ export default function (sequelize, DataTypes) {
                         .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
                         .then(template => {
                             if (template) {
-                                user.sendDestinationInfo(tripStatus.toLowerCase(),
+                                user.sendDestinationInfo(tripStatus,
                                 destination, template.html);
                             }
                         });
-                    } else if (!destination && tripStatus.toLowerCase() === 'pending') {
-                        user.sendDestinationInfo('pending',
+                    } else if (!destination && tripStatus === TRIP_STATUSES.PENDING) {
+                        user.sendDestinationInfo(TRIP_STATUSES.PENDING,
                         destination, STANDARD_MAIL_TEMPLATES.TRIP_STATUS_PENDING);
                     }
                 }
