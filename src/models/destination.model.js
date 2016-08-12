@@ -101,7 +101,7 @@ export default function (sequelize, DataTypes) {
                     Promise.map(destinations, destination =>
                         destination.countTrips({
                             where: {
-                                status: TRIP_STATUSES.ACTIVE
+                                status: TRIP_STATUSES.PRESENT
                             }
                         })
                         .then(countOfActiveVolunteers =>
