@@ -14,6 +14,7 @@ const config = {
     nodeEnv: process.env.NODE_ENV || 'development',
     secret: process.env.SECRET || 'hemmelig',
     email: process.env.EMAIL || 'frivillig@dih.capra.me',
+    replyEmail: process.env.REPLY_EMAIL || 'frivillig@drapenihavet.no',
     sentry: process.env.SENTRY_DSN || '',
     web: process.env.WEB || 'http://localhost:3000',
     adminPassword: process.env.ADMIN_PASSWORD || 'capra2016',
