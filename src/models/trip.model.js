@@ -66,13 +66,16 @@ export default function (sequelize, DataTypes) {
                         return db.User.findOne({
                             where: req.user.id
                         })
-                        .then(user => user.getDestinations())
+                        .then(coordinator => coordinator.getDestinations())
                         .then(objects => objects.map(object => object.id))
                         .then(destinationIds => {
                             resolve({
-                                destinationId: {
-                                    in: destinationIds
-                                }
+                                $or: [{
+                                    destinationId: {
+                                        in: destinationIds
+                                    } },
+                                { userId: req.user.id }
+                            ]
                             });
                         });
                     } else if (req.user.role === 'ADMIN') return resolve(req.query);
