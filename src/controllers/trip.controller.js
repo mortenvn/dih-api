@@ -47,20 +47,38 @@ export function list(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function retrieve(req, res, next) {
-    db.Trip.getQueryObject(req)
-    .then(query => db.Trip.findAll({
-        where: query,
-        include: [{
-            model: db.User,
-            attributes: {
-                exclude: ['hash']
-            }
-        }, {
-            model: db.Destination
-        }]
-    }))
-    .then(trips =>
-        trips.find(trip => parseInt(trip.id, 10) === parseInt(req.params.id, 10)))
+    let Promise;
+    if (req.user.role === 'ADMIN') {
+        Promise = db.Trip.findOne({
+            where: {
+                id: req.params.id
+            },
+            include: [{
+                model: db.User,
+                attributes: {
+                    exclude: ['hash']
+                }
+            }, {
+                model: db.Destination
+            }]
+        });
+    } else {
+        Promise = db.Trip.getQueryObject(req)
+        .then(query => db.Trip.findAll({
+            where: query,
+            include: [{
+                model: db.User,
+                attributes: {
+                    exclude: ['hash']
+                }
+            }, {
+                model: db.Destination
+            }]
+        }
+        ))
+        .then(trips => trips.find(trip => parseInt(trip.id, 10) === parseInt(req.params.id, 10)));
+    }
+    Promise
     .then(trip => {
         if (!trip) throw new errors.ResourceNotFoundError('trip');
         res.json(trip);
