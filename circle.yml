@@ -35,7 +35,7 @@ deployment:
             - docker push $EXTERNAL_REGISTRY:production-latest
             - babel-node deploy.js:
                 environment:
-                    WEB: http://dih.capra.me
+                    WEB: http://app.drapenihavet.no
                     EMAIL: frivillig@dih.capra.me
                     NODE_ENV: production
                     PORT: 9000

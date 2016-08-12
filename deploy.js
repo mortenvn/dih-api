@@ -52,6 +52,14 @@ const task = {
                 {
                     name: "SES_SECRETKEY",
                     value: process.env.SES_SECRETKEY
+                },
+                {
+                    name: "SNS_ACCESSID",
+                    value: process.env.SES_ACCESSID
+                },
+                {
+                    name: "SNS_SECRETKEY",
+                    value: process.env.SES_SECRETKEY
                 }
             ],
             image: `036160847874.dkr.ecr.eu-west-1.amazonaws.com/dih-api:${env}-latest`,
