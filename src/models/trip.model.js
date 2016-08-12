@@ -1,7 +1,8 @@
 import _ from 'lodash';
 import Promise from 'bluebird';
 import { validateQuery } from '../components/queryValidator';
-import { TRAVEL_METHODS, TRIP_STATUSES } from '../components/constants';
+import { TRAVEL_METHODS, TRIP_STATUSES, USER_ROLES, STANDARD_MAIL_TEMPLATES }
+from '../components/constants';
 import db from './';
 
 const ALLOWED_QUERY_PARAMS = ['destinationId', 'userId', 'status'];
@@ -70,24 +71,27 @@ export default function (sequelize, DataTypes) {
             },
             getQueryObject(req) {
                 return new Promise(resolve => {
-                    if (req.user.role === 'USER') {
+                    if (req.user.role === USER_ROLES.USER) {
                         return resolve({
                             userId: req.user.id
                         });
-                    } else if (req.user.role === 'MODERATOR') {
+                    } else if (req.user.role === USER_ROLES.MODERATOR) {
                         return db.User.findOne({
                             where: req.user.id
                         })
-                        .then(user => user.getDestinations())
+                        .then(coordinator => coordinator.getDestinations())
                         .then(objects => objects.map(object => object.id))
                         .then(destinationIds => {
                             resolve({
-                                destinationId: {
-                                    in: destinationIds
-                                }
+                                $or: [{
+                                    destinationId: {
+                                        in: destinationIds
+                                    } },
+                                { userId: req.user.id }
+                            ]
                             });
                         });
-                    } else if (req.user.role === 'ADMIN') return resolve(req.query);
+                    } else if (req.user.role === USER_ROLES.ADMIN) return resolve(req.query);
                 });
             }
         },
@@ -96,7 +100,9 @@ export default function (sequelize, DataTypes) {
                 trip => {
                     if (trip.changed('status')) {
                         if (trip.status === TRIP_STATUSES.ACCEPTED) {
-                            return trip.userActionToUser(TRIP_STATUSES.ACCEPTED);
+                            // Don't return. If it has travelInfo the status should be
+                            // set to active
+                            trip.userActionToUser(trip.id, trip.status);
                         }
                         if (trip.status === TRIP_STATUSES.REJECTED) {
                             return trip.userInfoToUser(trip.status);
@@ -112,7 +118,7 @@ export default function (sequelize, DataTypes) {
             afterCreate: trip => trip.userInfoToUser(trip.status)
         },
         instanceMethods: {
-            userActionToUser(tripStatus) {
+            userActionToUser(tripId, tripStatus) {
                 return Promise.all([
                     db.Destination.findById(this.destinationId),
                     db.User.findById(this.userId)
@@ -121,7 +127,10 @@ export default function (sequelize, DataTypes) {
                     db.MailTemplate
                     .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
                     .then(template => {
-                        if (template) user.sendDestinationAction(destination, template.html);
+                        if (template) {
+                            user.sendDestinationAction(tripId, tripStatus,
+                                destination, template.html);
+                        }
                     })
                 );
             },
@@ -130,12 +139,21 @@ export default function (sequelize, DataTypes) {
                     db.Destination.findById(this.destinationId),
                     db.User.findById(this.userId)
                 ])
-                .spread((destination, user) =>
-                db.MailTemplate
-                .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
-                .then(template => {
-                    if (template) user.sendDestinationInfo(destination, template.html);
-                })
+                .spread((destination, user) => {
+                    if (destination) {
+                        db.MailTemplate
+                        .findById(destination[`${tripStatus.toLowerCase()}StatusMailTemplateId`])
+                        .then(template => {
+                            if (template) {
+                                user.sendDestinationInfo(tripStatus,
+                                destination, template.html);
+                            }
+                        });
+                    } else if (!destination && tripStatus === TRIP_STATUSES.PENDING) {
+                        user.sendDestinationInfo(TRIP_STATUSES.PENDING,
+                        destination, STANDARD_MAIL_TEMPLATES.TRIP_STATUS_PENDING);
+                    }
+                }
                 );
             },
             hasTravelInfo() {

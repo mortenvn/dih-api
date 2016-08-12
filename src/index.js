@@ -26,10 +26,9 @@ if (config.nodeEnv === 'development' || config.nodeEnv === 'test') db = syncDB()
 else {
     db = migrateDB()
         .catch(Sequelize.DatabaseError, () => syncDB())
-        .then(() => createDefaultAdmin(config.adminPassword))
         .catch(handleError);
 }
 
-db = syncDB({ force: true });
-
-db.then(() => listen());
+db
+    .then(() => createDefaultAdmin(config.adminPassword))
+    .then(() => listen());

@@ -5,6 +5,7 @@
 import Sequelize from 'sequelize';
 import db from '../models';
 import * as errors from '../components/errors';
+import { USER_ROLES } from '../components/constants';
 
 /**
  * list - List trips that qualify query
@@ -47,19 +48,38 @@ export function list(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function retrieve(req, res, next) {
-    db.Trip.findOne({
-        where: {
-            id: req.params.id
-        },
-        include: [{
-            model: db.User,
-            attributes: {
-                exclude: ['hash']
-            }
-        }, {
-            model: db.Destination
-        }]
-    })
+    let Promise;
+    if (req.user.role === USER_ROLES.ADMIN) {
+        Promise = db.Trip.findOne({
+            where: {
+                id: req.params.id
+            },
+            include: [{
+                model: db.User,
+                attributes: {
+                    exclude: ['hash']
+                }
+            }, {
+                model: db.Destination
+            }]
+        });
+    } else {
+        Promise = db.Trip.getQueryObject(req)
+        .then(query => db.Trip.findAll({
+            where: query,
+            include: [{
+                model: db.User,
+                attributes: {
+                    exclude: ['hash']
+                }
+            }, {
+                model: db.Destination
+            }]
+        }
+        ))
+        .then(trips => trips.find(trip => parseInt(trip.id, 10) === parseInt(req.params.id, 10)));
+    }
+    Promise
     .then(trip => {
         if (!trip) throw new errors.ResourceNotFoundError('trip');
         res.json(trip);
@@ -77,9 +97,6 @@ export function retrieve(req, res, next) {
  * @param  {Function} next Express next middleware function
  */
 export function create(req, res, next) {
-    if (!db.Trip.isValidReqBody(req.body)) {
-        throw new errors.CustomValidationError('Fields are missing in request body');
-    }
     let userId;
     if (req.user.role === 'ADMIN' && req.body.userId) {
         userId = req.body.userId;

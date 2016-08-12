@@ -186,14 +186,14 @@ describe.serial('Trip API', it => {
         t.is(response.body.userId, userObjects[0].id);
     });
 
-    it('should not be able to create a new trip with missing destinationId field', async () => {
+    it('should be able to create a new trip with missing destinationId field', async () => {
         const mockWithEmptyDestination = mockTrip;
         delete mockWithEmptyDestination.destinationId;
         await request(app)
             .post(URI)
             .set('Authorization', `Bearer ${createValidJWT(userObjects[0])}`)
             .send(mockWithEmptyDestination)
-            .expect(400);
+            .expect(201);
     });
 
     it('should be able to create a new trip with missing userId field', async () => {
@@ -339,7 +339,7 @@ describe.serial('Trip API', it => {
             .get(`${URI}/`)
             .set('Authorization', `Bearer ${createValidJWT(admin)}`)
             .then(res => res.body)
-            .then(res => t.is(res.length, 4));
+            .then(res => t.is(res.length, 5));
     });
 
     it('should return only trips belonging to a user when asked by user'
@@ -349,7 +349,7 @@ describe.serial('Trip API', it => {
             .get(`${URI}/`)
             .set('Authorization', `Bearer ${createValidJWT(user)}`)
             .then(res => res.body)
-            .then(res => t.is(res.length, 3));
+            .then(res => t.is(res.length, 4));
     });
 
     it('should return zero trips for a user with no trips'
