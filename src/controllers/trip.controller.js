@@ -5,6 +5,7 @@
 import Sequelize from 'sequelize';
 import db from '../models';
 import * as errors from '../components/errors';
+import { USER_ROLES } from '../components/constants';
 
 /**
  * list - List trips that qualify query
@@ -48,7 +49,7 @@ export function list(req, res, next) {
  */
 export function retrieve(req, res, next) {
     let Promise;
-    if (req.user.role === 'ADMIN') {
+    if (req.user.role === USER_ROLES.ADMIN) {
         Promise = db.Trip.findOne({
             where: {
                 id: req.params.id

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import Promise from 'bluebird';
 import { validateQuery } from '../components/queryValidator';
-import { TRAVEL_METHODS, TRIP_STATUSES } from '../components/constants';
+import { TRAVEL_METHODS, TRIP_STATUSES, USER_ROLES } from '../components/constants';
 import db from './';
 
 const ALLOWED_QUERY_PARAMS = ['destinationId', 'userId', 'status'];
@@ -58,11 +58,11 @@ export default function (sequelize, DataTypes) {
             },
             getQueryObject(req) {
                 return new Promise(resolve => {
-                    if (req.user.role === 'USER') {
+                    if (req.user.role === USER_ROLES.USER) {
                         return resolve({
                             userId: req.user.id
                         });
-                    } else if (req.user.role === 'MODERATOR') {
+                    } else if (req.user.role === USER_ROLES.MODERATOR) {
                         return db.User.findOne({
                             where: req.user.id
                         })
@@ -78,7 +78,7 @@ export default function (sequelize, DataTypes) {
                             ]
                             });
                         });
-                    } else if (req.user.role === 'ADMIN') return resolve(req.query);
+                    } else if (req.user.role === USER_ROLES.ADMIN) return resolve(req.query);
                 });
             }
         },
