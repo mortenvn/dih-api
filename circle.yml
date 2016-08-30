@@ -36,7 +36,7 @@ deployment:
             - babel-node deploy.js:
                 environment:
                     WEB: http://app.drapenihavet.no
-                    EMAIL: frivillig@dih.capra.me
+                    EMAIL: frivillig@drapenihavet.no
                     NODE_ENV: production
                     PORT: 9000
 
