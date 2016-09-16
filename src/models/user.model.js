@@ -99,6 +99,10 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.STRING,
             allowNull: true
         },
+        emergencyContactInfo: {
+            type: DataTypes.TEXT,
+            allowNull: true
+        },
         languages: {
             type: DataTypes.TEXT,
             allowNull: true
