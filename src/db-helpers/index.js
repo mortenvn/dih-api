@@ -55,6 +55,13 @@ export function createDefaultAdmin(password) {
     .catch(db.sequelize.UniqueConstraintError); // In case it's already added
 }
 
+/**
+ * createMailTemplatesForDestination - Creates default mail templates for a destination
+ *
+ * @function createMailTemplatesForDestination
+ * @memberof  module:db-helpers/createMailTemplatesForDestination
+ * @return {Promise}
+ */
 export function createMailTemplatesForDestination(destination) {
     if (!destination.pendingStatusMailTemplateId && // Ensures working migrations
         !destination.acceptedStatusMailTemplateId && // and tests
