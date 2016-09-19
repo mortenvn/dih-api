@@ -1,6 +1,6 @@
 module.exports = {
     up(migration, DataTypes) {
-        return migration.changeColumn('users', 'emergencyContactInfo', {
+        return migration.addColumn('users', 'emergencyContactInfo', {
             type: DataTypes.TEXT,
             allowNull: true
         });
