@@ -156,6 +156,40 @@ export function sendDestinationInfo(tripStatus, user, mailContent) {
 }
 
 /**
+ * sendDeactivationInfo - Sends an informational
+ * e-mail to a user that has deactivated their profile
+ *
+ * @function sendDeactivationInfo
+ * @memberof  module:components/mail
+ * @param  {SequlizeInstance} user The user which is going to recive the email
+ * @param  {string} mailContent The content of the info e-mail to be sent
+ * @return {SequlizeInstance} user The user who was sent the email
+ */
+export function sendDeactivationInfo(user) {
+    const content = `Dear, ${user.firstname} ${user.lastname}.
+<p>
+You've pressed the button to delete your profile with us. If you at any time
+want to come back, just reregister at our
+<a href="http://app.drapenihavet.no">website</a>. </br>
+If you didn't delete your profile, please send us an
+<a href="mailto:post@drapenihavet.no">e-mail</a> as soon as possible.
+</p>
+Thanks!`;
+    const mailOptions = {
+        to: user.email,
+        from: `A Drop in the Ocean <${config.email}>`,
+        replyTo: config.replyEmail,
+        subject: 'Your profile has been deleted',
+        template: 'info',
+        context: { content }
+    };
+    return transporter.sendMailAsync(mailOptions)
+        .then(() => user)
+        .catch(handleError);
+}
+
+
+/**
  * sendCustomMail - Sends a custom email to the specified recipient
  *
  * @function sendCustomMail

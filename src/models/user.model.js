@@ -2,6 +2,7 @@
 * User model
 * @module models/user
 */
+import { randomBytes } from 'crypto';
 import _ from 'lodash';
 import bcrypt from 'bcrypt';
 import Promise from 'bluebird';
@@ -147,6 +148,19 @@ export default function (sequelize, DataTypes) {
                 .then(user => user.sendInvite());
             }
         },
+        hooks: {
+            beforeUpdate: [
+                user => {
+                    if (user.changed('isActive') && !user.isActive) {
+                        user.sendDeactivationInfo(); // Inform user
+                        // Set e-mail to something random so user can same email later
+                        const randomStringBeforeAt = randomBytes(16).toString('hex');
+                        const randomStringAfterAt = randomBytes(16).toString('hex');
+                        user.email = `${randomStringBeforeAt}@${randomStringAfterAt}.com`; // eslint-disable-line
+                    }
+                }
+            ]
+        },
         instanceMethods: {
             authenticate(password) {
                 return bcrypt.compareAsync(password, this.hash);
@@ -158,6 +172,9 @@ export default function (sequelize, DataTypes) {
             },
             createJwt(additionalPayload) {
                 return createJwt({ ...this.toJSON(), ...additionalPayload });
+            },
+            sendDeactivationInfo() {
+                return mail.sendDeactivationInfo(this);
             },
             sendInvite() {
                 const token = this.createJwt({ setPassword: true });
