@@ -122,6 +122,11 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.ENUM,
             values: _.values(USER_ROLES),
             defaultValue: USER_ROLES.USER
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true
         }
     }, {
         getterMethods: {
