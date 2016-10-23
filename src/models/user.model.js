@@ -152,12 +152,16 @@ export default function (sequelize, DataTypes) {
             beforeUpdate: [
                 user => {
                     if (user.changed('isActive') && !user.isActive) {
-                        user.sendDeactivationInfo(); // Inform user
-                        // Set e-mail to something random so user can same email later
-                        const randomStringBeforeAt = randomBytes(16).toString('hex');
-                        const randomStringAfterAt = randomBytes(16).toString('hex');
-                        user.email = `${randomStringBeforeAt}@${randomStringAfterAt}.com`; // eslint-disable-line
+                        return user.sendDeactivationInfo() // Inform user
+                        .then(() => {
+                            // Set e-mail to something random so user can same email later
+                            const randomStringBeforeAt = randomBytes(16).toString('hex');
+                            const randomStringAfterAt = randomBytes(16).toString('hex');
+                            user.email = `${randomStringBeforeAt}@${randomStringAfterAt}.com`; // eslint-disable-line
+                            return user;
+                        });
                     }
+                    return Promise.resolve();
                 }
             ]
         },
