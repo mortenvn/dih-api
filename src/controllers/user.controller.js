@@ -17,7 +17,7 @@ import { DatabaseError, ResourceNotFoundError, ValidationError } from '../compon
  * @param  {Function} next Express next middleware function
  */
 export function list(req, res, next) {
-    db.User.findAll()
+    db.User.findAll({ where: { isActive: false } })
     .then(res.json.bind(res))
     .catch(next);
 }
@@ -34,7 +34,8 @@ export function list(req, res, next) {
 export function retrieve(req, res, next) {
     db.User.findOne({
         where: {
-            id: req.params.id
+            id: req.params.id,
+            isActive: false
         }
     })
     .then(user => {
