@@ -195,7 +195,7 @@ describe.serial('User API', it => {
         t.is(response.body.name, 'AuthorizationError');
     });
 
-    it('should be able to deactivate a user', async t => {
+    it('should not be able to fetch a deactivated user', async t => {
         const user = dbObjects[1];
         const validJwt = createValidJWT(user);
         const response = await request(app)
@@ -203,12 +203,26 @@ describe.serial('User API', it => {
             .send({ isActive: false })
             .set('Authorization', `Bearer ${validJwt}`)
             .expect(204)
-            .then(() =>
-                request(app)
-                    .get(`${URI}/${user.id}`)
-                    .set('Authorization', `Bearer ${validJwt}`)
-                );
-        t.is(response.body.isActive, false);
-        t.not(response.body.email, user.email);
+            .then(() => request(app)
+                .get(`${URI}/${user.id}`)
+                .set('Authorization', `Bearer ${validJwt}`)
+            );
+        t.is(response.body.name, 'ResourceNotFoundError');
+        t.is(response.body.message, 'Could not find resource of type user');
+    });
+
+    it('should not be able to list a deactivated user', async t => {
+        const user = dbObjects[1];
+        const validJwt = createValidJWT(user);
+        const response = await request(app)
+            .put(`${URI}/${user.id}`)
+            .send({ isActive: false })
+            .set('Authorization', `Bearer ${validJwt}`)
+            .expect(204)
+            .then(() => request(app)
+                .get(URI)
+                .set('Authorization', `Bearer ${validJwt}`)
+            );
+        t.is(response.body.length, dbObjects.length - 1);
     });
 });
