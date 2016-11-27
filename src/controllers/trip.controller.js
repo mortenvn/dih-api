@@ -56,6 +56,7 @@ export function retrieve(req, res, next) {
             },
             include: [{
                 model: db.User,
+                where: { isActive: true },
                 attributes: {
                     exclude: ['hash']
                 }
@@ -69,6 +70,7 @@ export function retrieve(req, res, next) {
             where: query,
             include: [{
                 model: db.User,
+                where: { isActive: true },
                 attributes: {
                     exclude: ['hash']
                 }

@@ -2,6 +2,7 @@
 * User model
 * @module models/user
 */
+import { randomBytes } from 'crypto';
 import _ from 'lodash';
 import bcrypt from 'bcrypt';
 import Promise from 'bluebird';
@@ -122,6 +123,11 @@ export default function (sequelize, DataTypes) {
             type: DataTypes.ENUM,
             values: _.values(USER_ROLES),
             defaultValue: USER_ROLES.USER
+        },
+        isActive: {
+            type: DataTypes.BOOLEAN,
+            allowNull: false,
+            defaultValue: true
         }
     }, {
         getterMethods: {
@@ -142,6 +148,23 @@ export default function (sequelize, DataTypes) {
                 .then(user => user.sendInvite());
             }
         },
+        hooks: {
+            beforeUpdate: [
+                user => {
+                    if (user.changed('isActive') && !user.isActive) {
+                        return user.sendDeactivationInfo() // Inform user
+                        .then(() => {
+                            // Set e-mail to something random so user can same email later
+                            const randomStringBeforeAt = randomBytes(16).toString('hex');
+                            const randomStringAfterAt = randomBytes(16).toString('hex');
+                            user.email = `${randomStringBeforeAt}@${randomStringAfterAt}.com`; // eslint-disable-line
+                            return user;
+                        });
+                    }
+                    return Promise.resolve();
+                }
+            ]
+        },
         instanceMethods: {
             authenticate(password) {
                 return bcrypt.compareAsync(password, this.hash);
@@ -153,6 +176,9 @@ export default function (sequelize, DataTypes) {
             },
             createJwt(additionalPayload) {
                 return createJwt({ ...this.toJSON(), ...additionalPayload });
+            },
+            sendDeactivationInfo() {
+                return mail.sendDeactivationInfo(this);
             },
             sendInvite() {
                 const token = this.createJwt({ setPassword: true });
