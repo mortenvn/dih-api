@@ -1,0 +1,24 @@
+version: '2'
+
+services:
+
+  postgres:
+    image: postgres:9.5
+    ports:
+      - '127.0.0.1:5432:5432'
+    environment:
+      - POSTGRES_USER=dih
+
+  fakesmtp:
+    image: digiplant/fake-smtp
+    ports:
+      - "25:25"
+    volumes:
+      - ./email:/var/mail
+
+  fakesns:
+    image: airdock/fake-sns
+    ports:
+      - "9292:9292"
+    volumes:
+      - ./sms:/srv/ruby/fake-sns:rw
