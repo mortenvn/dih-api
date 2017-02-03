@@ -13,6 +13,7 @@ dependencies:
         - aws configure set default.output json
         - eval $(aws ecr get-login --region eu-west-1)
         - sudo -u postgres createuser dih -s
+        - sudo –u postgres createdb dih
         - npm install -g yarn
     override:
         - yarn
