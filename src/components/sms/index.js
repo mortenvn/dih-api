@@ -36,6 +36,15 @@ export function sendSMS(recipient, smsData) {
         PhoneNumber: recipient.phoneNumber,
         Subject: smsData.sender
     };
+
+    // This is for allowing us to see the messages in development
+    // And mocking a good response.
+    if (config.nodeEnv === 'development') {
+        console.log(params);
+        return Promise.resolve(recipient);
+    }
+
+
     return sns.setSMSAttributesAsync({
         attributes: {
             DefaultSenderID: smsData.sender

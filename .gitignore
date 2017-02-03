@@ -14,4 +14,4 @@ email
 coverage
 .nyc_output
 doc
-sms
+/sms

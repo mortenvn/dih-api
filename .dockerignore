@@ -9,7 +9,7 @@ docs
 out
 *.swo
 .environment
-sms
+/sms
 dist
 email
 coverage
