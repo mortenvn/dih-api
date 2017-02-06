@@ -43,7 +43,7 @@
     "bluebird": "3.4.0",
     "body-parser": "1.15.1",
     "composable-middleware": "0.3.0",
-    "continuation-local-storage": "3.1.7",
+    "continuation-local-storage": "3.2.0",
     "cookie-parser": "1.4.3",
     "cors": "2.7.1",
     "errorhandler": "1.4.3",
