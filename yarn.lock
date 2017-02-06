@@ -1889,13 +1889,14 @@ ecdsa-sig-formatter@1.0.9:
     base64url "^2.0.0"
     safe-buffer "^5.0.1"
 
-ecs-deploy-cli@0.0.5:
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/ecs-deploy-cli/-/ecs-deploy-cli-0.0.5.tgz#cae5c6d5d9483cf6c5b846fedd8f0a6e1628d773"
+ecs-deploy-cli@0.0.6:
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/ecs-deploy-cli/-/ecs-deploy-cli-0.0.6.tgz#6671a8a390bf0382af8014556bf37234031d1aef"
   dependencies:
     aws-sdk "^2.6.5"
     bluebird "^3.4.6"
     chalk "^1.1.3"
+    lodash "^4.17.4"
     yargs "^5.0.0"
 
 ee-first@1.1.1:
@@ -3339,7 +3340,7 @@ lodash@^3.2.0:
   version "3.10.1"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
 
-lodash@^4.0.0, lodash@^4.1.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.2.0, lodash@^4.3.0:
+lodash@^4.0.0, lodash@^4.1.0, lodash@^4.13.1, lodash@^4.14.0, lodash@^4.17.4, lodash@^4.2.0, lodash@^4.3.0:
   version "4.17.4"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.4.tgz#78203a4d1c328ae1d86dca6460e369b57f4055ae"
 

@@ -16,8 +16,8 @@
     "tests": "NODE_ENV=test nyc ava --serial",
     "test:watch": "NODE_ENV=test ava --serial --watch",
     "load": "babel-node test/load.js",
-    "deploy:production": "ecs-deploy-cli --cluster dih-cluster --service dih-api-production production.task.json",
-    "deploy:staging": "ecs-deploy-cli --cluster dih-cluster --service dih-api-staging staging.task.json"
+    "deploy:production": "ecs-deploy-cli --update --cluster dih-cluster --service dih-api-production --family dih-api-production",
+    "deploy:staging": "ecs-deploy-cli --update --cluster dih-cluster --service dih-api-staging --family dih-api-staging"
   },
   "ava": {
     "require": "babel-core/register",
@@ -46,6 +46,7 @@
     "continuation-local-storage": "3.1.7",
     "cookie-parser": "1.4.3",
     "cors": "2.7.1",
+    "ecs-deploy-cli": "0.0.6",
     "errorhandler": "1.4.3",
     "express": "4.13.4",
     "express-handlebars": "3.0.0",

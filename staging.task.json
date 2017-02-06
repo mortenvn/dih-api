@@ -1,9 +1,0 @@
-{
-  "containerDefinitions": [
-    {
-      "name": "dih-api-staging",
-      "image": "036160847874.dkr.ecr.eu-west-1.amazonaws.com/dih-api:staging-latest"
-    }
-  ],
-  "family": "dih-api-staging"
-}

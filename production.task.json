@@ -1,9 +1,0 @@
-{
-  "containerDefinitions": [
-    {
-      "name": "dih-api-production",
-      "image": "036160847874.dkr.ecr.eu-west-1.amazonaws.com/dih-api:production-latest"
-    }
-  ],
-  "family": "dih-api-production"
-}
