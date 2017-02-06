@@ -60,7 +60,7 @@
     "raven": "1.1.1",
     "sequelize": "3.23.3",
     "sequelize-fixtures": "0.5.3",
-    "sinon": "1.17.4",
+    "sinon": "1.17.7",
     "supertest": "3.0.0",
     "supertest-as-promised": "4.0.2",
     "umzug": "1.11.0"
