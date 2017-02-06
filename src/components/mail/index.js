@@ -6,7 +6,6 @@ import nodemailer from 'nodemailer';
 import handlebars from 'express-handlebars';
 import Promise from 'bluebird';
 import hbs from 'nodemailer-express-handlebars';
-import ses from 'nodemailer-ses-transport';
 import path from 'path';
 import { handleError } from '../errors';
 import config from '../../config';
@@ -32,7 +31,7 @@ export function updateTransport(transport) {
     transporter.use('compile', options);
 }
 
-updateTransport(ses(config.ses));
+updateTransport(config.smtpUrl);
 
 /**
  * sendResetPasswordEmail - Sends an reset password email to the specified user,
@@ -47,6 +46,7 @@ export function sendResetPasswordEmail(user, token) {
     const mailOptions = {
         to: user.email,
         from: `A Drop in the Ocean <${config.email}>`,
+        replyTo: config.email,
         subject: 'Password reset for A Drop in the Ocean',
         template: 'action',
         context: {
@@ -76,6 +76,7 @@ export function sendInvite(user, token) {
     const mailOptions = {
         to: user.email,
         from: `A Drop in the Ocean <${config.email}>`,
+        replyTo: config.email,
         subject: 'Complete registration - A Drop in the Ocean!',
         template: 'action',
         context: {
@@ -107,7 +108,7 @@ export function sendDestinationAction(tripId, tripStatus, user, mailContent, tok
     const mailOptions = {
         to: user.email,
         from: `A Drop in the Ocean <${config.email}>`,
-        replyTo: config.replyEmail,
+        replyTo: config.email,
         template: 'action',
         context: {
             content: mailContent
@@ -139,7 +140,7 @@ export function sendDestinationInfo(tripStatus, user, mailContent) {
     const mailOptions = {
         to: user.email,
         from: `A Drop in the Ocean <${config.email}>`,
-        replyTo: config.replyEmail,
+        replyTo: config.email,
         template: 'info',
         context: {
             content: mailContent
@@ -178,7 +179,7 @@ Thanks!`;
     const mailOptions = {
         to: user.email,
         from: `A Drop in the Ocean <${config.email}>`,
-        replyTo: config.replyEmail,
+        replyTo: config.email,
         subject: 'Your profile has been deleted',
         template: 'info',
         context: { content }
@@ -202,7 +203,7 @@ export function sendCustomMail(recipient, mailData) {
     const mailOptions = {
         to: recipient.email,
         from: `A Drop in the Ocean <${config.email}>`,
-        replyTo: config.replyEmail,
+        replyTo: config.email,
         subject: mailData.subject,
         template: 'info',
         context: {

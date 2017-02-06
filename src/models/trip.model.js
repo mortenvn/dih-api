@@ -88,7 +88,7 @@ export default function (sequelize, DataTypes) {
                                         in: destinationIds
                                     } },
                                 { userId: req.user.id }
-                            ]
+                                ]
                             });
                         });
                     } else if (req.user.role === USER_ROLES.ADMIN) return resolve(req.query);

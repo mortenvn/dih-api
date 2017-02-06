@@ -11,5 +11,9 @@ EXPOSE 9000
 COPY . /app
 
 # Build image
-RUN npm install
-RUN npm run build
+RUN npm install yarn -g
+RUN yarn install
+RUN yarn build
+
+# Start the server
+ENTRYPOINT ["yarn", "start"]
