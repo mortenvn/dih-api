@@ -40,7 +40,7 @@ export function sendSMS(recipient, smsData) {
     // This is for allowing us to see the messages in development
     // And mocking a good response.
     if (config.nodeEnv === 'development') {
-        console.log(params);
+        console.log(params); // eslint-disable-line
         return Promise.resolve(recipient);
     }
 

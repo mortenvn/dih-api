@@ -6,12 +6,16 @@ import nodemailer from 'nodemailer';
 import handlebars from 'express-handlebars';
 import Promise from 'bluebird';
 import hbs from 'nodemailer-express-handlebars';
+import ses from 'nodemailer-ses-transport';
 import path from 'path';
 import { handleError } from '../errors';
 import config from '../../config';
 import { TRIP_STATUSES } from '../constants';
 
 let transporter;
+const transport = config.nodeEnv === 'development'
+    ? config.smtpUrl : ses({ region: config.region });
+
 const options = hbs({
     viewEngine: handlebars.create({}),
     viewPath: path.resolve(__dirname.replace('/dist/', '/src/'))
@@ -24,14 +28,14 @@ const options = hbs({
  *
  * @function updateTransport
  * @memberof  module:components/mail
- * @param  {Object} transport the transport ubject we would like to use
+ * @param  {Object} transportMedium the transport ubject we would like to use
  */
-export function updateTransport(transport) {
-    transporter = Promise.promisifyAll(nodemailer.createTransport(transport));
+export function updateTransport(transportMedium) {
+    transporter = Promise.promisifyAll(nodemailer.createTransport(transportMedium));
     transporter.use('compile', options);
 }
 
-updateTransport(config.smtpUrl);
+updateTransport(transport);
 
 /**
  * sendResetPasswordEmail - Sends an reset password email to the specified user,

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { loadFixtures } from './helpers';
 
 // verify that we are not in production
